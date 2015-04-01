@@ -1,0 +1,52 @@
+h1#h1logo {
+	margin: 10px;
+	color: #888888;
+}
+
+div#header {
+	height: 60px;
+	background:url(../images/vc-header.jpg) repeat-x;
+}
+
+div#logo {
+	float: left;
+}
+
+div#headertext {
+	float: left;
+	height: 50px;
+	vertical-align: middle;
+	margin-left: 10px;
+}
+
+canvas#canvas {
+	border: 1px solid #666;
+}
+
+p#pheadertext {
+	font-weight: bold;
+	font-size: 14px;
+	color: #ffffff;
+}
+
+h2 {
+	margin: 20px;
+}
+
+body {
+	padding: 0;
+	margin: 0;
+	font-size: 11pt;
+	font-family: arial;
+	text-align: center;
+}
+
+#outerbody {
+	margin-left: auto;
+	margin-right: auto;
+	width: 960px;
+	text-align: left;
+	background-color: #fdfdfd;
+	border: 2px solid #dddddd;
+	border-top: none;
+}

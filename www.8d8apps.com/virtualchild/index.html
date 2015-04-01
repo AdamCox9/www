@@ -1,0 +1,227 @@
+<html>
+
+	<head>
+		<title>Virtual Child</title>
+		<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+		<!-- Public Libraries Used -->
+		<script type="text/javascript" src="libs/glMatrix-0.9.5.min.js"></script>
+		<script type="text/javascript" src="libs/webgl-utils.js"></script>
+
+		<!-- Our JavaScript Files -->
+		<script type="text/javascript" src="script.js"></script>	<!-- Some basic WebGL stuff and onload functions to get stuff started -->
+		<script type="text/javascript" src="controls.js"></script>	<!-- Move the objects around on the canvas based on user input -->
+		<script type="text/javascript" src="buffers.js"></script>	<!-- Allocate the variables and memory -->
+		<script type="text/javascript" src="textures.js"></script>	<!-- Load the graphics that are wrapped around the objects on the canvas -->
+		<script type="text/javascript" src="shaders.js"></script>	<!-- WebGL stuff to set-up the browsers shading programs -->
+		<script type="text/javascript" src="draw.js"></script>		<!-- Initially draw stuff on the screen and redraw every x ms with potential new locations -->
+		<script type="text/javascript" src="audio.js"></script>		<!-- Audio related functions -->
+		<script type="text/javascript" src="logic.js"></script>		<!-- The main game logic is in here -->
+
+		<script type="text/javascript" src="level1.js"></script>	<!-- The game logic for Level 1 is in here -->
+		<script type="text/javascript" src="level2.js"></script>	<!-- The game logic for Level 2 is in here -->
+		<script type="text/javascript" src="level3.js"></script>	<!-- The game logic for Level 3 is in here -->
+
+		<link rel="stylesheet" type="text/css" href="style.css" />
+
+		<!--
+
+		    Variables of type attribute allow the communication of frequently changing values from the application 
+			to the vertex shader.
+
+			Variables of type varying are the output from a vertex shader and the input to a fragment shader.
+
+			Variables of type uniform allow the application to provide relatively infrequently changing values 
+			to both vertex shaders and fragment shaders.
+
+
+		-->
+
+		<!-- Fragment Shader -->
+		<script id="shader-fs" type="x-shader/x-fragment">
+
+			/*
+				Precisions
+			*/
+
+			precision mediump float;
+
+			/*
+				Varyings
+			*/
+
+			varying vec2 vTextureCoord;
+			varying vec3 vLightWeighting;
+
+			/*
+				Uniforms
+			*/
+
+			uniform sampler2D uSampler;
+
+			/*
+				This gets called by the shader program...
+				I don't know what it is doing...
+			*/
+
+			void main(void) {
+				vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+				gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a);
+			}
+		</script>
+
+		<!-- Vertex Shader -->
+		<script id="shader-vs" type="x-shader/x-vertex">
+
+			/*
+				Attributes
+			*/
+
+			//Floating point vectors for the GPU
+			attribute vec3 aVertexPosition;	//3D
+			attribute vec3 aVertexNormal;	//3D
+			attribute vec2 aTextureCoord;	//2D
+
+			/*
+				Uniforms
+			*/
+
+			//Floating point matrices
+			uniform mat4 uMVMatrix;	//4x4
+			uniform mat4 uPMatrix;	//4x4
+			uniform mat3 uNMatrix;	//3x3
+
+			/*
+				Varyings
+			*/
+
+			varying vec2 vTextureCoord;
+			varying vec3 vLightWeighting;
+
+			/*
+				This gets called by the shader program...
+				I don't know what it is doing...
+			*/
+
+			void main(void) {
+				gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+				vTextureCoord = aTextureCoord;
+				vLightWeighting = vec3(1.0, 1.0, 1.0);
+			}
+
+		</script>
+
+
+	</head>
+
+	<body onload="webGLStart();HideCookie();MakeAlive();">
+
+		<script>
+		  function startSearch() {
+			var word = document.getElementById('word').value;
+			if( word == 'head' )
+			{
+				SetArmsOnHead();
+			}
+			else if ( word == 'waist' )
+			{
+				SetArmsOnWaist();
+			}
+			else
+			{
+				alert( 'Unrecognized Command' );
+			}
+		  }
+		</script>
+
+		<canvas id="canvas" width="500" height="500"></canvas>
+
+		<div id="controls">
+
+			<div id='link_controls_box'>
+				<a id="show_cookie_with_verbal_command_link" class="img_link" href='#' onclick="StageOneInput('show_cookie_with_verbal_command');"><img alt="Show Cookie with Verbal Command" src="images/verbal-command-cookie.jpg"></a>
+				<a id="give_cookie_with_verbal_praise_link" class="img_link" href='#' onclick="StageOneInput('give_cookie_with_verbal_praise');"><img alt="Verbal Praise with Cookie" src="images/verbal-praise-cookie.jpg"></a>
+				<br/>
+				<br/>
+				<a id="verbal_command_link" class="img_link" href='#' onclick="StageOneInput('verbal_command');"><img alt="Verbal Command" src="images/verbal-command.jpg"></a>
+				<a id="verbal_praise_link" class="img_link" href='#' onclick="StageOneInput('verbal_praise');"><img alt="Verbal Praise" src="images/verbal-praise.jpg"></a>
+			</div>
+
+			<div id="ready_for_praise_message_box" class="message_box"><div class="x_out_in"><a href="#" onclick="hideBox('ready_for_praise_message_box')">X</a></div>Praise</div>
+			<div id="hidden_ready_for_praise_message_box" class="hidden_message_box">Praise <div class="x_out_in"><a href="#" onclick="showBox('ready_for_praise_message_box')">O</a></div></div>
+
+			<div id="timer_box">Time: 0</div>
+
+			<div id="main_message_box" class="message_box"><div class="x_out_in"><a href="#" onclick="hideBox('main_message_box')">X</a></div><div id="message_box">Hello, this is Ethan! Press start to begin.</div></div>
+			<div id="hidden_main_message_box" class="hidden_message_box">Message Box <div class="x_out_in"><a href="#" onclick="showBox('main_message_box')">O</a></div></div>
+
+			<div id="main_probability_message_box" class="message_box"><div class="x_out_in"><a href="#" onclick="hideBox('main_probability_message_box')">X</a></div><div id="probability_message_box">Probability of Eye Contact is 100%</div></div>
+			<div id="hidden_main_probability_message_box" class="hidden_message_box">Probability <div class="x_out_in"><a href="#" onclick="showBox('main_probability_message_box')">O</a></div></div>
+
+			<div id="main_progress_bar_message_box" class="message_box"><div class="x_out_in"><a href="#" onclick="hideBox('main_progress_bar_message_box', 'progress_box')">X</a></div><div id="progress_bar_message_box">STAGE Progress Bar (Stage 0)</div></div>
+			<div id="hidden_main_progress_bar_message_box" class="hidden_message_box">Stage Progress <div class="x_out_in"><a href="#" onclick="showBox('main_progress_bar_message_box', 'progress_box')">O</a></div></div>
+
+			<div id="progress_box">
+				<div id="progress_bar"></div>
+			</div>
+
+			<div id="main_level_progress_bar_message_box" class="message_box"><div class="x_out_in"><a href="#" onclick="hideBox('main_level_progress_bar_message_box', 'level_progress_box')">X</a></div><div id="level_progress_bar_message_box">LEVEL Progress Bar (Level 0)</div></div>
+			<div id="hidden_main_level_progress_bar_message_box" class="hidden_message_box">Level Progress <div class="x_out_in"><a href="#" onclick="showBox('main_level_progress_bar_message_box', 'level_progress_box')">O</a></div></div>
+
+			<div id="level_progress_box">
+				<div id="level_progress_bar"></div>
+			</div>
+
+			<div id="start_end_box"><a href='#' onclick="Begin();"><img src='images/start.jpg'/></a><a href='#' onclick="Finish();"><img src='images/end.jpg'/></a></div>
+
+		</div>
+
+		<div id="temp_text_controls">
+
+			<!--<div class='text_links'>
+				<a href='#' onclick="SetArmsOnHead();">Set Arms On Head</a> (<a href='#' onclick="UndoSetArmsOnHead();">undo</a>) | 
+				<a href='#' onclick="SetArmsOnWaist();">Set Arms On Waist</a> (<a href='#' onclick="UndoSetArmsOnWaist();">undo</a>)
+			</div>-->
+
+			
+			<!--<div class='text_links'>
+				Eye State: <a href='#' onclick="SetEyeState(1000);">1</a> | <a href='#' onclick="SetEyeState(2000);">2</a> | <a href='#' onclick="SetEyeState(3000);">3</a> | <a href='#' onclick="SetEyeState(4000);">4</a> | <a href='#' onclick="SetEyeState(5000);">5</a>
+				<br/>
+				<a href="#" onclick="StageOneInput('eye_state_interruption');">Eye State Interruption</a>
+			</div>
+			
+
+			<div class='text_links'>
+				Set Progress: <a href="#" onclick="DecrementProgress();">-</a> | <a href="#" onclick="IncrementProgress();">+</a>
+			</div>-->
+
+		</div>
+
+		<div style='clear: none;'/>
+
+<!--
+		<form>
+		  <input id='word' type="search" name="q" x-webkit-speech speech required onchange="startSearch();" size='50'>
+		</form> 
+-->
+
+<!--
+		<div style='float: left;padding: 25px;'>
+
+			<h2>Translate Eye</h2> 
+			X: <a href='#' onclick="MoveEyes(.1, 0, 0);">+</a> | <a href='#' onclick="MoveEyes(-.1, 0, 0);">-</a><br/>
+			Y: <a href='#' onclick="MoveEyes(0, .1, 0);">+</a> | <a href='#' onclick="MoveEyes(0, -.1, 0);">-</a><br/>
+			Z: <a href='#' onclick="MoveEyes(0, 0, .1);">+</a> | <a href='#' onclick="MoveEyes(0, 0, -.1);">-</a><br/>
+
+
+			<h2>Rotate Eye</h2> 
+			X: <a href='#' onclick="RotateEyes(.1, 0, 0);">+</a> | <a href='#' onclick="RotateEyes(-.1, 0, 0);">-</a><br/>
+			Y: <a href='#' onclick="RotateEyes(0, .1, 0);">+</a> | <a href='#' onclick="RotateEyes(0, -.1, 0);">-</a><br/>
+			Z: <a href='#' onclick="RotateEyes(0, 0, .1);">+</a> | <a href='#' onclick="RotateEyes(0, 0, -.1);">-</a><br/>
+
+		</div>
+-->
+
+	</body>
+
+</html>

@@ -1,0 +1,14 @@
+body { background: #a4c639;  word-wrap: break-word !important; }
+.inner-item {
+    text-align: center;
+}
+div.rapbeatsbox {
+	width: 375px;
+	float: right;
+	border: 1px solid #EEEEEE;
+	margin-top: 10px;
+}
+div.bottom {
+	font-size:9pt;
+	text-align:center;
+}

@@ -1,0 +1,3 @@
+-Let's allow a user to search all the API's. 
+-Save these searches.
+-Allow the results to be indexed by the search engine.

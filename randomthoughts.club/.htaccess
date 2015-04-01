@@ -1,0 +1,4 @@
+RewriteEngine On
+RewriteCond %{HTTP_HOST}  www.randomthoughts.club [nocase]
+RewriteRule ^(.*)         http://randomthoughts.club/$1 [last,redirect=301]
+RedirectMatch 404 /\.git

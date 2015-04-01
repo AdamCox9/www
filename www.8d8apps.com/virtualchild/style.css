@@ -1,0 +1,152 @@
+/* default font is terrible! */
+body { 
+	font-family: arial;
+}
+
+/* unvisited link */
+a:link {
+	text-decoration: none;
+	color:#666666;
+}
+
+/* visited link */
+a:visited {
+	color:#666666;
+}
+
+/* mouse over link */
+a:hover {
+	color:#666666;
+}
+
+/* selected link */
+a:active {
+	color:#666666;
+}
+
+div#start_end_box {
+	background: black;
+	color: yellow;
+	width: 288px;
+	border: 1px solid yellow;
+	border-bottom: none;
+	border-right: none;
+	border-top: none;
+}
+
+div#timer_box {
+	background: black;
+	color: yellow;
+	border: 1px solid yellow;
+	border-top: none;
+	border-right: none;
+	border-bottom: none;
+	padding: 10px;
+	width: 268px;
+}
+
+div#link_controls_box {
+	background: black;
+	color: yellow;
+	border: 1px solid yellow;
+	border-top: none;
+	border-right: none;
+	border-bottom: none;
+	padding: 10px;
+	padding-top: 0px;
+	width: 268px;
+}
+
+div#progress_box {
+	background: black;
+	border: 1px solid yellow;
+	border-top: none;
+	border-right: none;
+	padding: 10px;
+	width: 268px;
+}
+
+div#progress_bar {
+	background: blue;
+	width: 0px;
+	height: 10px;
+}
+
+div#level_progress_box {
+	background: black;
+	border: 1px solid yellow;
+	border-top: none;
+	border-right: none;
+	padding: 10px;
+	width: 268px;
+}
+
+div#level_progress_bar {
+	background: green;
+	width: 0px;
+	height: 10px;
+}
+
+div.message_box {
+	border: 1px solid yellow;
+	border-bottom: none;
+	border-right: none;
+	background: black;
+	color: yellow;
+	padding: 10px;
+	width: 268px;
+}
+
+.hidden_message_box {
+	border-left: 1px solid yellow;
+	background: black;
+	color: yellow;
+	padding-left: 10px;
+	padding-right: 10px;
+	width: 268px;
+	height: 25px;
+	display: none;
+	
+}
+
+div#ready_for_praise_message_box {
+	border: 1px solid yellow;
+	border-bottom: none;
+	border-right: none;
+	background: red;
+	color: yellow;
+	padding: 10px;
+	width: 268px;
+}
+
+canvas#canvas {
+	border: none;
+	border-left: 1px solid yellow;
+	float: left;
+}
+
+div#controls {
+	border: none;
+	float: left;
+	background: black;
+	width: 501px;
+}
+
+div#temp_text_controls {
+	border: none; 
+	float: left;
+}
+
+div.text_links {
+	padding-bottom: 10px;
+}
+
+.img_link {
+	padding-right: 25px;
+}
+
+.x_out_in {
+	font-weight: bold;
+	border: 2px dashed orange;
+	float: right;
+}
