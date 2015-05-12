@@ -15,7 +15,7 @@
 
 	$EntryID = isset( $_GET['video'] ) ? $_GET['video'] : 'pxxh25UBxkc';
 
-	if( $EntryID == 'M5QVAv_pdAE' || $EntryID == 'jB2K25meogw' || $EntryID == '34wx8235vVs' || $EntryID == '2Ksj6NsxjoM' || $EntryID == '4MBUoZCRtww' || $EntryID == 'DjfQWVeiO7M' || $EntryID == 'L-_GHnDyOlo' || $EntryID == 'K6YRlC5mhOw' || $EntryID == '_ZR6CtPklIk' || $EntryID == 'sVAx1dsEt9I' || $EntryID == 'SFY4TGB5O8g' || $EntryID == '29sDpAdHv-M' || $EntryID == 'kOuI_8jHlAg' || $EntryID == 'boTEt7n_-KE' ) {
+	if( $EntryID == 'sfX6L1vc4CI' || $EntryID == 'M5QVAv_pdAE' || $EntryID == 'jB2K25meogw' || $EntryID == '34wx8235vVs' || $EntryID == '2Ksj6NsxjoM' || $EntryID == '4MBUoZCRtww' || $EntryID == 'DjfQWVeiO7M' || $EntryID == 'L-_GHnDyOlo' || $EntryID == 'K6YRlC5mhOw' || $EntryID == '_ZR6CtPklIk' || $EntryID == 'sVAx1dsEt9I' || $EntryID == 'SFY4TGB5O8g' || $EntryID == '29sDpAdHv-M' || $EntryID == 'kOuI_8jHlAg' || $EntryID == 'boTEt7n_-KE' ) {
 		header("HTTP/1.0 404 Not Found");
 		exit;
 	}

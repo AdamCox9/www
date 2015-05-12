@@ -1,4 +1,8 @@
 <?PHP
+
+//	ini_set( 'display_errors', 'off' );
+	error_reporting( 0 );
+
 	chdir("..");
 	require_once 'local.php';
 

@@ -4,7 +4,7 @@
 
 	$head = "";
 
-	require '../local.php';
+	require 'local.php';
 	$MicroAmazonList = microSearchForItems('All','Android',1);
 
 	$content = <<<HTML

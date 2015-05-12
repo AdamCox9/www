@@ -322,7 +322,7 @@ CAROUSEL;
 		unset( $item->ParentASIN );
 	}
 	if($item->Accessories) {
-		$MiscellaneousTable .= "<tr><td>Accessories</td><td><a href='amazon_item.php?asin=".clone $item->Accessories->Accessory->ASIN."'>".clone $item->Accessories->Accessory->Title."</a></td></tr>";
+		$MiscellaneousTable .= "<tr><td>Accessories</td><td><a href='aws/itemPage.php?item=".clone $item->Accessories->Accessory->ASIN."'>".clone $item->Accessories->Accessory->Title."</a></td></tr>";
 		$labels .= " ".$item->Accessories->Accessory->Title;
 		unset( $item->Accessories );
 	}

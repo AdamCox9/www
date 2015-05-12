@@ -1,10 +1,5 @@
 <?PHP
 
-	ini_set( 'display_errors', 'on');
-	error_reporting( E_ALL);
-
-
-
 /*****
 	Return HTML to play video for a specific entry ID
  *****/

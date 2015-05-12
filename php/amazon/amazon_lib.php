@@ -29,27 +29,32 @@ function repeatGetItems($category,$keywords,$pagenum)
 	if( $items == null ) {
 		usleep(500000);
 		$keywords = explode(" ",$keywords);
-		if( sizeof( $keywords ) == 1 )
+		if( sizeof( $keywords ) <= 1 )
 			$escape = true;
-		$keywords = array_slice($keywords,0,sizeof($keywords)/2);
+		$keywords = array_slice($keywords,0,sizeof($keywords)/3);
 		$keywords = implode(" ",$keywords);
 		$items = requestSearch($category,$keywords,$pagenum);
 	}
 	if( ! $escape && $items == null ) {
 		usleep(500000);
 		$keywords = explode(" ",$keywords);
-		if( sizeof( $keywords ) == 1 )
+		if( sizeof( $keywords ) <= 1 )
 			$escape = true;
-		$keywords = array_slice($keywords,0,sizeof($keywords)/2);
+		$keywords = array_slice($keywords,0,sizeof($keywords)/3);
 		$keywords = implode(" ",$keywords);
 		$items = requestSearch($category,$keywords,$pagenum);
 	}
 	if( ! $escape && $items == null ) {
 		usleep(500000);
 		$keywords = explode(" ",$keywords);
-		$keywords = array_slice($keywords,0,sizeof($keywords)/2);
+		if( sizeof( $keywords ) <= 1 )
+			$escape = true;
+		$keywords = array_slice($keywords,0,sizeof($keywords)/3);
 		$keywords = implode(" ",$keywords);
 		$items = requestSearch($category,$keywords,$pagenum);
+	}
+	if( ! $escape && $items == null ) {
+		$items = requestSearch($category,"random thoughts",$pagenum);
 	}
 
 	return $items;
@@ -183,7 +188,11 @@ function requestSearch($category,$keywords,$pagenum)
 
 	$items = checkCache("amazon","search",$keywords,$pagenum,$category);
 	if( $items )
-		return $items;
+		if( $items->Request->Errors->Error )
+			return null;
+		else
+			return $items;
+
 
     $array = array('Operation' => 'ItemSearch',
                    'ItemPage' => $pagenum,
@@ -192,17 +201,21 @@ function requestSearch($category,$keywords,$pagenum)
                    'Keywords' => $keywords,
 				   'AssociateTag' => 'ezstbu-20');
 
-	$result = aws_signed_request("com", $array, TOKEN, SECRETKEY);
+	if( rand(0,3) === 1 ) {
+		error_log( 'fetching' );
+		$result = aws_signed_request("com", $array, TOKEN, SECRETKEY);
 
-//print_r( $result );
-
-	if( $result && ! $result->Items->Request->Errors->Error ) {
-		$items = $result->Items;
-        if($items && is_object($items)){
+		if( $result ) {
+			$items = $result->Items;
 			addToCache("amazon","search",$keywords,$pagenum,$category,$items->asXML());
-			return $items;
+			if( ! $items->Request->Errors->Error )
+				return $items;
+		} else {
+			//$e = new Exception();
+			error_log( "throttled by aws for search '$keywords' -- " );
 		}
 	}
+
 	return null;
 }
 
@@ -223,15 +236,18 @@ function getItem($item)
 	
 	$result = aws_signed_request("com", $array ,TOKEN,SECRETKEY);
 
-	if( $result && ! $result->Items->Request->Errors->Error ) {
-        $itemData = $result->Items->Item;
-        if( $itemData ){
-			addToCache("amazon","item",$item,"","",$itemData->asXML());
-			return $itemData;
+	if( ! $result ) {
+		error_log( "throttled by aws for item '$item'" );
+	} else {
+		if( ! $result->Items->Request->Errors->Error ) {
+			$itemData = $result->Items->Item;
+			if( $itemData ){
+				addToCache("amazon","item",$item,"","",$itemData->asXML());
+				return $itemData;
+			}
 		}
-    } else {
-		return null;
 	}
+
 	return null;
 }
 

@@ -1,0 +1,15 @@
+@import url(//fonts.googleapis.com/css?family=PT+Sans); 
+@import url(//fonts.googleapis.com/css?family=PT+Sans:700); 
+a:hover .zoom{
+	display: block;
+}
+a .zoom{
+	display: none;
+}
+
+.splash_txt1 {
+	letter-spacing: 1px;
+	font: bold 40px/44px "PT Sans", "PT Sans", Arial, "Helvetica Neue", Helvetica, sans-serif;
+}
+
+h2, h2.v2{letter-spacing: 2px;}

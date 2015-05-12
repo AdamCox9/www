@@ -88,6 +88,10 @@ if ( has_nav_menu( 'primary' ) || has_nav_menu( 'social' ) || is_active_sidebar(
 						<a href="https://btcjam.com/?r=3285f685-6b63-4f80-b92c-64d8c69a3d0c&utm_source=referral_url&utm_campaign=user_referral"><img src="/img/btcjamlogo.jpg"></a>
 					</div>
 
+					<div style='padding-top:25px;'>
+						<a href="https://bitcoin.org/bitcoin.pdf">Bitcoin PDF</a>
+					</div>
+
 				</aside>
 			</div><!-- .widget-area -->
 		<?php endif; ?>

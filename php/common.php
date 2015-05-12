@@ -1,8 +1,5 @@
 <?php
 
-//ini_set( 'display_errors', 'off' );
-error_reporting( 0 );
-
 $title = 'Random Thoughts';
 
 session_start();

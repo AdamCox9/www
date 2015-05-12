@@ -16,9 +16,18 @@ function GetWikipediaSearch($SearchTerm)
 
 
 	$xml = checkCache("wikipedia","search",$SearchTerm);
+
 	if( ! $xml ) {
-		$xml = simplexml_load_file('http://en.wikipedia.org/w/api.php?action=opensearch&search='.urlencode($SearchTerm).'&format=xml&callback=spellcheck');
-		addToCache("wikipedia","search",$SearchTerm,'','',$xml->asXML());
+		if( rand(0,2) === 1 ) {
+			error_log( 'trying wikipedia' );
+			$xml = simplexml_load_file('http://en.wikipedia.org/w/api.php?action=opensearch&search='.urlencode($SearchTerm).'&format=xml&callback=spellcheck');
+			if( ! $xml ) {
+				error_log( "throttled by wikipedia '$SearchTerm'" );
+				addToCache("wikipedia","search",$SearchTerm,'','',"<nilnull/>");
+			}
+			else
+				addToCache("wikipedia","search",$SearchTerm,'','',$xml->asXML());
+		}
 	}
 
 	$content = NULL;
