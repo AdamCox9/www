@@ -30,10 +30,18 @@
 	                    <div class="span12">
 	                    	<h2 class="v3">About</h2>
 
-	                    	<h4>Lorem ipsum dolor sit amet, consectetuer adipiscing elit</h4>
-	                    	<p>Aumennec in velit veaugun erase diam lor innia esroin dictum elemum velit terdpibus sceleue vitaepeecon. Eracinia fermentonec vel ipsum auctorulv inaroin ullamcorper et feum iaculis lacinia est. Proin dictum elemenelitusce euismod consequat antrem ipsm dolor sitmet consectetuer adipiscing elit. Pellesque sed dolor. Aliquam congue fermentum nisl. Mauris accumsan nulla vel diam. Sed in lacus ut enim adipiscing aliquet. Nulla venenatis. In pede mi aliquet sit amet euismod in auctor ut ligula. Aliquam dapibus tincidunt metus. Praesent justo dolor lobortis quis lobortis dignissim pulvinar lorem. Vestibulum sed ante. Donec sagittis euismod purus. Sed uperspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium totam rem aperiam eaque ipsa quae abillo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.<br><br><a href="#"  class="link3">privacy@demolink.org</a></p>
-	                    </div>
+	                    	<h4>DSC Construction</h4>
+	                    	<p>We are a construction company servicing the Haverhill, MA and surrounding areas such as Groveland, North Andover, Andover, Lawrence, Groveland, Georgetown, West Newbury, Newburyport and other nearby areas. Contact us for general maintenance and services such as replacing doors, windows, siding, roofing. We also take on other projects such as trash removal or transportation. Contact us for a free quote and we will assist you as soon as possible!</p>
 
+							<div class="address">
+								<h4 class="v2">Haverhill, MA</h4>
+								<span style="width:250px;" class="phones_part">
+									Telephone: +1 978 420 9259<br>
+									E-mail: <a href="mailto:bltobandit@yahoo.com" class="link3">bltobandit@yahoo.com</a>
+								</span>
+							</div>
+
+						</div>
 
 	                </div>
 				</div>

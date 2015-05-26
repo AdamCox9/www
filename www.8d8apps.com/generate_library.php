@@ -6,34 +6,34 @@
 
 */
 
+
 	function CleanGeneratedMp3($entry)
 	{
-		global $conn;
+		global $db;
 
-		$entry = mysql_real_escape_string($entry,$conn);
+		$entry = $db->getConn()->real_escape_string($entry);
 
 		//0 is new, 1 is published, 2 is rejected...
 		$Date = time() - 7*24*60*60;
 		$query = "SELECT id, time, cnt FROM `generatedmp3s` WHERE `filename` = 'wavs/$entry' AND `cnt` < 5 AND `time` < $Date;";
 		echo $query . "\n";
-		$result = mysql_query($query,$conn);
-		if ( !( $result ) ) {
-			echo "CleanEntryIfNotValid (select): there was a problem with the Database!.<br/>";
-			echo mysql_error();
-		}
+		$result = mysqli_query($db->getConn(),$query);
+		if ( ! $result  ) {
+			error_log( "generate_library.php:CleanGeneratedMp3" . mysql_error(), 0 );
+		} else {
+			if ( $mp3 = mysqli_fetch_assoc($result) ) {
+				print_r( $mp3 );
+				echo "\n";
+				$query = "DELETE FROM `generatedmp3s` WHERE `id` = {$mp3['id']};";
+				$result = mysqli_query($db->getConn(),$query);
+				if ( !( $result ) ) {
+					echo "CleanEntryIfNotValid (delete): there was a problem with the Database!.<br/>";
+					echo mysql_error();
+				}
 
-		if ( $mp3 = mysql_fetch_assoc($result) ) {
-			print_r( $mp3 );
-			echo "\n";
-			$query = "DELETE FROM `generatedmp3s` WHERE `id` = {$mp3['id']};";
-			$result = mysql_query($query,$conn);
-			if ( !( $result ) ) {
-				echo "CleanEntryIfNotValid (delete): there was a problem with the Database!.<br/>";
-				echo mysql_error();
+				//Delete this bad file:
+				exec("rm wavs/$entry" );
 			}
-
-			//Delete this bad file:
-			exec("rm wavs/$entry" );
 		}
 	}
 

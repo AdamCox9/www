@@ -1,12 +1,12 @@
 <?PHP
 
-	//ini_set( 'display_errors', 1 );
-	//error_reporting( E_ALL );
+	ini_set( 'display_errors', 1 );
+	error_reporting( E_ALL );
 
-	require 'library.php';
+	require 'local.php';
 
-	set_db_vars();
-	$conn = open_db_conn();
+	if( ! $db )
+		$db = new DatabaseConnection();
 
 	$MDP = "http://www.8d8apps.com/downloadrapbeatsapp.php";
 
@@ -68,7 +68,7 @@
 
 	}
 
-	close_db_conn();
+
 
 /*
 

@@ -129,7 +129,7 @@
 				<div class="container">
 	    			<div class="row">
                 		<div class="span7">
-							<p style='font-size:28pt;' class="splash_txt1"><span class="color1">Reliable service</span> for your house</p>
+							<p style='font-size:28pt;' class="splash_txt1"><span class="color1">Reliable service</span> <br/>for your home or business</p>
 						</div>
 						<div class="span5">
 							<div class="pull-right">
@@ -157,20 +157,20 @@
 				<div class="navbar">
 			  		<div class="navbar-inner">
 						<ul class="sf-menu">
-                			<li><a href="about.php"><div class="base_text">about</div></a>
+                			<li><a href="about.php"><div class="base_text">about</div></a><!--
                                 <ul class="subMenu">
                                     <li><a href="about.php">about us</a>
-                                        <!--<ul class="subMenu2">
+                                        <ul class="subMenu2">
                                             <li><a href="index-5.html">archive</a></li>
                                             <li><a href="index-65.html">fresh</a></li>
-                                        </ul>-->
+                                        </ul>
                                     </li>
                                     <li><a href="services.php">services</a></li>
                                     <li><a href="portfolio.php">portfolio</a></li>
                                     <li><a href="testimonials.php">testimonials</a></li>
                                     <li><a href="careers.php">careers</a></li>
                                 </ul>
-                            </li>
+                            --></li>
                             <li><a href="services.php"><div class="base_text">what we do</div></a></li>
                             <li><a href="contact.php"><div class="base_text">contact</div></a></li>
                 		</ul>

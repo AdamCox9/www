@@ -3,24 +3,21 @@
 	ini_set( 'display_errors', 1 );
 	error_reporting( E_ALL );
 
-	require 'library.php';
-	require( 'generate_library.php' );
+	require_once 'generate_library.php';
+	require 'local.php';
 
-	set_db_vars();
-	$conn = open_db_conn();
+	if( ! $db )
+		$db = new DatabaseConnection();
 
 	//List all files in 'files' directory:
 
 	if ($handle = opendir('wavs')) {
-		while (false !== ($entry = readdir($handle))) {
-			if ($entry != "." && $entry != "..") {
+		while (false !== ($entry = readdir($handle)))
+			if ($entry != "." && $entry != "..")
 				CleanGeneratedMp3($entry);
-			}
-		}
 		closedir($handle);
 	}
 
-	close_db_conn();
 
 	echo "OK";
 

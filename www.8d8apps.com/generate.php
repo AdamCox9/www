@@ -1,13 +1,15 @@
 <?PHP
 
-ini_set( "error_reporting", "on" );
-error_reporting( E_ALL );
+//ini_set( "error_reporting", "on" );
+//error_reporting( E_ALL );
 
 require 'library.php';
 require 'generate_library.php';
 
-set_db_vars();
-$conn = open_db_conn();
+require 'local.php';
+
+if( ! $db )
+	$db = new DatabaseConnection();
 
 $timestamp = time();
 
@@ -68,6 +70,6 @@ if( $_FILES['uploadedfile']['error'] == 0 ) {
 	echo "UPLOAD FAILURE";
 }
 
-close_db_conn();
+
 
 ?>

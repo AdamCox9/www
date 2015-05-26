@@ -1,5 +1,5 @@
 <?php
 
-	require '../php/common.php';
+	require_once '../php/common.php';
 
 ?>

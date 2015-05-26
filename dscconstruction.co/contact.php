@@ -28,7 +28,7 @@
 	                <div class="row">
 
 	                    <div class="span8">
-	                    	<h2 class="v3">stay in touch</h2>
+	                    	<h2 class="v3">contact us</h2>
 	                    	<figure class="g_map">
 							<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d46852.187385099314!2d-71.09038399999997!3d42.78281690000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89e3022cbba67eef%3A0xb3350b93f7fb0d23!2sHaverhill%2C+MA!5e0!3m2!1sen!2sus!4v1431379968540" width="600" height="450" frameborder="0" style="border:0"></iframe>
 							<!--<iframe src="http://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=Haverhill,+MA,+United+States&amp;aq=0&amp;sll=37.0625,-95.677068&amp;sspn=61.282355,146.513672&amp;ie=UTF8&amp;hq=&amp;hnear=Brooklyn,+Kings,+New+York&amp;ll=40.649974,-73.950005&amp;spn=0.01628,0.025663&amp;z=14&amp;iwloc=A&amp;output=embed"></iframe>-->
@@ -36,14 +36,14 @@
 
 	                    	<div class="address">
 	                    		<h4 class="v2">Haverhill, MA</h4>
-                                <span class="phones_part">
-                                    Telephone: <span class="pull-right">+1 978 420 9259</span><br>
-                                    E-mail: <a href="mailto:bltobandit@yahoo.com" class="link3"><!--email_off-->bltobandit@yahoo.com<!--/email_off--></a>
+                                <span style="width:250px;" class="phones_part">
+                                    Telephone: +1 978 420 9259<br>
+                                    E-mail: <a href="mailto:bltobandit@yahoo.com" class="link3">bltobandit@yahoo.com</a>
                                 </span>
                             </div>
 	                    </div>
 
-	                    <div class="span4">
+	                    <!--<div class="span4">
 	                    	<h2 class="v3">feedback</h2>
 	                    	<form id="form1">
                                 <div class="success"> 
@@ -57,7 +57,7 @@
                                         <span class="error">*This is not a valid name.</span> <span class="empty">*This field is required.</span> </label><br>
                                     <!-- <label class="phone">
                                         <input type="tel" value="Telephone:">
-                                        <span class="error">*This is not a valid phone number.</span> <span class="empty">*This field is required.</span> </label><br> -->
+                                        <span class="error">*This is not a valid phone number.</span> <span class="empty">*This field is required.</span> </label><br>
                                     <label class="email">
                                         <input type="email" value="E-mail:">
                                         <span class="error">*This is not a valid email address.</span> <span class="empty">*This field is required.</span> </label><br>
@@ -71,7 +71,7 @@
                                     </div>
                                 </fieldset>
                             </form>
-	                    </div>
+	                    </div>-->
 
 	                </div>
 				</div>
@@ -80,7 +80,7 @@
 	</div>
 	<script type="text/javascript" src="js/bootstrap.js"></script>
 	<script type="text/javascript">
-        jQuery('#form1').forms({ownerEmail:'#'})
+        jQuery('#form1').forms({ownerEmail:'adam.cox9@gmail.com'})
     </script>
 </body>
 </html>

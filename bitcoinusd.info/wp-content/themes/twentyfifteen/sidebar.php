@@ -77,17 +77,6 @@ if ( has_nav_menu( 'primary' ) || has_nav_menu( 'social' ) || is_active_sidebar(
 						<?php endforeach; ?>
 					</ul>
 
-					<div style="margin-top:25px;">
-						<a href="https://buytrezor.com?a=78f5cdb89334"><img src="/img/TrezorAffAd_250x250.jpg"></a>
-					</div>
-					<div style="margin-top:25px;">
-						<a href="http://scrypt.cc?ref=baiqD" title="Scrypt.CC | Scrypt Cloud Mining" target="_blank"><img src="http://scrypt.cc/banners.php?b=2&u=rxrkdVQWY9hMALCdMj9gMpo1dhr8TEws" width="240" height="234" border="0"></a>
-					</div>
-
-					<div style='padding-top:25px;'>
-						<a href="https://btcjam.com/?r=3285f685-6b63-4f80-b92c-64d8c69a3d0c&utm_source=referral_url&utm_campaign=user_referral"><img src="/img/btcjamlogo.jpg"></a>
-					</div>
-
 					<div style='padding-top:25px;'>
 						<a href="https://bitcoin.org/bitcoin.pdf">Bitcoin PDF</a>
 					</div>
