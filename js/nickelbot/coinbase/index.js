@@ -12,7 +12,8 @@ var authedClient = new CoinbaseExchange.AuthenticatedClient( key, b64secret, pas
 
 
 var bid = '',
-	ask = '';
+	ask = '',
+	spread = '';
 
 var callback = function(err, response, data) {
 	//console.log( JSON.stringify( data ) + "\n\n" );
@@ -25,21 +26,54 @@ var BuyLowSellHighCB = function(err, response, data) {
 
 		bid = data['bids'][0][0];
 		ask = data['asks'][0][0];
+		spread = ask - bid;
+	
+		//console.log( "\n\n******************************" );
+		//console.log( "Spread: " + spread );
+		//console.log( "Bid: " + bid );
+		//console.log( "Ask: " + ask );
+		//console.log( "***\n" );
 
-		//console.log( "Bid: " + bid + "\n\n" );
-		//console.log( "Ask: " + ask + "\n\n" );
+		if( spread < 0.02 ) {
+			bid = parseFloat(bid) - 0.05;
+			ask = parseFloat(ask) + 0.05;
 
-		// Buy 0.01 BTC @ 100 USD 
-		var buyParams = { 'price': bid, 'size': '0.01010101', 'product_id': 'BTC-USD', };
-		authedClient.buy(buyParams, callback);
-		 
-		// Sell 0.01 BTC @ 300 USD 
-		var sellParams = { 'price': ask, 'size': '0.01010101', 'product_id': 'BTC-USD', };
-		authedClient.sell(sellParams, callback);
+			var buyParams = { 'price': bid, 'size': '0.01', 'product_id': 'BTC-USD', };
+			authedClient.buy(buyParams, callback);
+			 
+			var sellParams = { 'price': ask, 'size': '0.01', 'product_id': 'BTC-USD', };
+			authedClient.sell(sellParams, callback);
+		} else {
 
-		//console.log( "placed bid for " + bid + "\n" );
-		//console.log( "placed ask for " + ask + "\n\n" );
-		//console.log( "***\n\n" );
+			var buyParams = { 'price': bid, 'size': '0.01', 'product_id': 'BTC-USD', };
+			authedClient.buy(buyParams, callback);
+			 
+			var sellParams = { 'price': ask, 'size': '0.01', 'product_id': 'BTC-USD', };
+			authedClient.sell(sellParams, callback);
+		}
+
+		if( spread > 0.1 ) {
+			bid = parseFloat(bid) + 0.01;
+			ask = parseFloat(ask) - 0.01;
+
+			var buyParams = { 'price': bid, 'size': '0.02', 'product_id': 'BTC-USD', };
+			authedClient.buy(buyParams, callback);
+			 
+			var sellParams = { 'price': ask, 'size': '0.02', 'product_id': 'BTC-USD', };
+			authedClient.sell(sellParams, callback);
+
+			//console.log( "\n***" );
+			//console.log( "placed bid for " + (bid + 0.01) );
+			//console.log( "placed ask for " + (ask - 0.01) );
+			//console.log( "***\n" );
+		
+		}
+
+		//console.log( "\n***" );
+		//console.log( "placed bid for " + bid );
+		//console.log( "placed ask for " + ask );
+		//console.log( "******************************\n" );
+
 
 	}
 
@@ -50,4 +84,4 @@ var RunAll = function(err, response, data) {
 	publicClient.getProductOrderBook(BuyLowSellHighCB);
 };
 
-setInterval(RunAll, 15000);
+setInterval(RunAll, 10000);

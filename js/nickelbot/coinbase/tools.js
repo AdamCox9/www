@@ -10,6 +10,9 @@ var CoinbaseExchange = require( 'coinbase-exchange' );
 var publicClient = new CoinbaseExchange.PublicClient();
 var authedClient = new CoinbaseExchange.AuthenticatedClient( key, b64secret, passphrase );
 
+var callback = function(err, response, data) {
+	//console.log( JSON.stringify( data ) + "\n\n" );
+};
 
 /***** Public Client Samples *****/
 
