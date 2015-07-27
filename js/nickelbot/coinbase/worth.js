@@ -19,24 +19,77 @@ var publicClient = new CoinbaseExchange.PublicClient();
 var authedClient = new CoinbaseExchange.AuthenticatedClient( key, b64secret, passphrase );
 
 var callback = function(err, response, data) {
-	console.log( JSON.stringify( data ) + "\n\n" );
+	console.log( JSON.stringify( data ) + "\n" );
 };
 
-var cbGetProductOrderBook = function(err, response, data) {
-	//console.log( JSON.stringify( data ) + "\n\n" );
+var GetProductHistoricRates = function(err, response, data) {
+	console.log( JSON.stringify( data ) + "\n" );
+
+	publicClient.getProductOrderBook({'level': 2},cbLevel2GetProductOrderBook);
+
+}
+
+var cbLevel3GetProductOrderBook = function(err, response, data) {
+	console.log( JSON.stringify( data ) + "\n" );
+
+	publicClient.getProductOrderBook({'level': 2},cbLevel2GetProductOrderBook);
+
+}
+
+var cbLevel2GetProductOrderBook = function(err, response, data) {
+	//console.log( JSON.stringify( data ) + "\n" );
 
 	bid = data['bids'][0][0];
+	bidVolume = data['bids'][0][1];
 	ask = data['asks'][0][0];
+	askVolume = data['asks'][0][1];
 	spread = ask - bid;
 	BTCPrice = ( parseFloat(ask) + parseFloat(bid) ) / 2;
+	TotalBid = 0;
+	TotalBidVolume = 0;
+	TotalAsk = 0;
+	TotalAskVolume = 0;
 
-	authedClient.getAccounts(cbGetAccounts);
+	data['bids'].sort(function(a, b){
+		return b[1]-a[1];
+	});
+
+	data['asks'].sort(function(a, b){
+		return b[1]-a[1];
+	});
+
+	for( i = 0; i < data['bids'].length; i++ ){
+		//console.log( "bid: " + data['bids'][i][0] + " size " + data['bids'][i][1] + " count " + data['bids'][i][2] );
+		TotalBid = parseFloat(TotalBid) + parseFloat(data['bids'][i][1]);
+		TotalBidVolume = parseFloat(TotalBidVolume) + parseFloat(data['bids'][i][2]);
+	}
+
+	for( i = 0; i < data['asks'].length; i++ ){
+		//console.log( "ask: " + data['asks'][i][0] + " size " + data['asks'][i][1] + " count " + data['bids'][i][2] );
+		TotalAsk = parseFloat(TotalAsk) + parseFloat(data['asks'][i][1]);
+		TotalAskVolume = parseFloat(TotalAskVolume) + parseFloat(data['asks'][i][2]);
+	}
+
+	console.log( "Avg Price " + BTCPrice );
+	console.log( "Total Bid: " + TotalBid + " Vol: " + TotalBidVolume + " Val: " + TotalBid * TotalBidVolume );
+	console.log( "Total Ask: " + TotalAsk + " Vol: " + TotalAskVolume + " Val: " + TotalAsk * TotalAskVolume );
+
+	console.log( "Biggest Bid: " + data['bids'][0][0] + " Size: " + data['bids'][0][1] );
+	console.log( "Biggest Ask: " + data['asks'][0][0] + " Size: " + data['asks'][0][1] );
+	console.log( "Second Biggest Bid: " + data['bids'][1][0] + " Size: " + data['bids'][1][1] );
+	console.log( "Second Biggest Ask: " + data['asks'][1][0] + " Size: " + data['asks'][1][1] );
+
+	console.log( "Bid: " + bid + " vol: " + bidVolume );
+	console.log( "Ask: " + ask + " vol: " + askVolume );
+	console.log( "Spread: " + spread );
+	console.log( "Time " + getDateTime() + "\n");
+
+	publicClient.getProduct24HrStats(cbGetProduct24HrStats);
 
 };
-publicClient.getProductOrderBook(cbGetProductOrderBook);
 
 var cbGetAccounts = function(err, response, data) {
-	//console.log( JSON.stringify( data ) + "\n\n" );
+	//console.log( JSON.stringify( data ) + "\n" );
 
 	if( data[0]['currency'] === 'USD' ) {
 		BTCData = data[1];
@@ -57,8 +110,6 @@ var cbGetAccounts = function(err, response, data) {
 	USDWorth = parseFloat(USDBalance) + parseFloat(BTCBalance) * BTCPrice;
 	BTCWorth = parseFloat(BTCBalance) + parseFloat(USDBalance) / BTCPrice;
 
-	console.log( "BTC Price " + BTCPrice + "\n" );
-	
 	console.log( "USD Balance " + USDBalance );
 	console.log( "USD Hold " + USDHold );
 	console.log( "USD Available " + USDAvailable );
@@ -69,10 +120,48 @@ var cbGetAccounts = function(err, response, data) {
 	console.log( "BTC Hold " + BTCHold );
 	console.log( "BTC Available " + BTCAvailable );
 	console.log( "BTC Worth " + BTCWorth );
-	console.log( "BTC Worth in USD " + BTCWorth * BTCPrice );
-	
+	console.log( "BTC Worth in USD " + BTCWorth * BTCPrice + "\n" );
 
 };
+
+var cbGetProduct24HrStats = function(err, response, data) {
+	//console.log( JSON.stringify( data ) + "\n" );
+
+	console.log( "Open: " + data['open'] );
+	console.log( "High: " + data['high'] );
+	console.log( "Low: " + data['low'] );
+	console.log( "Volume: " + data['volume'] + "\n" );
+
+	authedClient.getAccounts(cbGetAccounts);
+
+};
+
+function getDateTime() {
+
+    var date = new Date();
+
+    var hour = date.getHours();
+    hour = (hour < 10 ? "0" : "") + hour;
+
+    var min  = date.getMinutes();
+    min = (min < 10 ? "0" : "") + min;
+
+    var sec  = date.getSeconds();
+    sec = (sec < 10 ? "0" : "") + sec;
+
+    var year = date.getFullYear();
+
+    var month = date.getMonth() + 1;
+    month = (month < 10 ? "0" : "") + month;
+
+    var day  = date.getDate();
+    day = (day < 10 ? "0" : "") + day;
+
+    return year + ":" + month + ":" + day + ":" + hour + ":" + min + ":" + sec;
+
+}
+
+publicClient.getProductHistoricRates({'granularity': 100}, GetProductHistoricRates);
 
 //authedClient.getAccount(accountBTC, callback);
 //authedClient.getAccountHistory(accountUSD, callback);
