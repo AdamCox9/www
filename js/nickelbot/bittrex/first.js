@@ -9,7 +9,24 @@ bittrex.options({
     'cleartext' : false 
 });
 
-//_____Make minimum buy orders:
+//_____Make minimum possible buy orders:
+bittrex.getmarketsummaries( function( data ) {
+	//console.log( data );
+    for( var i in data.result ) {
+		console.log( "placing order for " + data.result[i].MarketName + " at rate " + data.result[i].Ask + " with quantity " + (0.0005/data.result[i].Ask) );
+
+		config = { 'market'		: data.result[i].MarketName,
+				   'quantity'	: '50000',
+				   'rate'		: '0.00000002' };
+
+		bittrex.buylimit( config, function( data ) {
+			console.log( data );
+		});
+	
+	}
+});
+
+//_____Make minimum listed buy orders:
 /*bittrex.getmarketsummaries( function( data ) {
 	//console.log( data );
     for( var i in data.result ) {

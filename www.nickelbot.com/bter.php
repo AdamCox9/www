@@ -25,23 +25,25 @@
 
 				if( $buyingWith === "btc" ) {
 					$min_amount = "0.0001";
-					continue;
 				} else if( $buyingWith === "ltc" ) {
 					$min_amount = "0.1";
+					continue;
 				} else if( $buyingWith === "cny" ) {
 					$min_amount = "0.5";
+					continue;
 				} else if( $buyingWith === "usd" ) {
 					continue;
 				} else if( $buyingWith === "nxt" ) {
 					$min_amount = "10";
+					continue;
 				} else {
 					echo "Unrecognized currency to buy with $buyingWith";
 					continue;
 				}
 
 				$decimal_places = 32;//$value->decimal_places;
-				$rate = bcmul(get_top_rate($pair, $type),"1.01",$decimal_places);
-				$amount = bcmul(bcdiv($min_amount,$rate,$decimal_places),"12",$decimal_places);
+				$rate = '0.00000008';//bcmul(get_top_rate($pair, $type),"1.01",$decimal_places);
+				$amount = '4000';//bcmul(bcdiv($min_amount,$rate,$decimal_places),"12",$decimal_places);
 
 				//$amount = 
 
@@ -69,6 +71,7 @@
 					if( $response['code'] == 20 ) {
 						echo "Increasing amount.\n";
 						$amount = $amount * 10;
+						$go = false;
 					}
 				}
 				//sleep(2);

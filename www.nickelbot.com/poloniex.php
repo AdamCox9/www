@@ -11,9 +11,18 @@
 
 	$trading_pairs = $Poloniex->get_ticker();
 
-	foreach( $trading_pairs as $key => $trading_pair ) {
+	//_____Make buy orders for highest bid placed:
+	/*foreach( $trading_pairs as $key => $trading_pair ) {
 		$rate = bcmul($trading_pair['highestBid'],0.05,32);
 		$amount = bcdiv(0.0009,$rate,32);
+		echo "buying $key for $rate with a total of $amount\n";
+		print_r( $Poloniex->buy($key,$rate,$amount) );
+	}*/
+
+	//_____Make buy orders for smallest bid possible:
+	foreach( $trading_pairs as $key => $trading_pair ) {
+		$rate = '0.00000003';
+		$amount = '25000';
 		echo "buying $key for $rate with a total of $amount\n";
 		print_r( $Poloniex->buy($key,$rate,$amount) );
 	}
