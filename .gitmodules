@@ -1,7 +1,0 @@
-[submodule "node.bittrex.api"]
-path = js/nickelbot/bittrex/node.bittrex.api
-url = https://github.com/n0mad01/node.bittrex.api.git	
-
-[submodule "node.bittrex.api"]
-path = python/CryptsyPythonV2
-url = https://github.com/ScriptProdigy/CryptsyPythonAPI.git
