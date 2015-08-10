@@ -10,36 +10,55 @@ bittrex.options({
 });
 
 //_____Make minimum possible buy orders:
+total_cost = 0;
 bittrex.getmarketsummaries( function( data ) {
 	//console.log( data );
     for( var i in data.result ) {
-		console.log( "placing order for " + data.result[i].MarketName + " at rate " + data.result[i].Ask + " with quantity " + (0.0005/data.result[i].Ask) );
+		rate = '0.00000080';
+		quantity = '1625';
+		amount = rate * quantity;
+		total_cost = total_cost + amount;
+		console.log( "placing order for " + data.result[i].MarketName + " at rate " + rate + " with quantity " + quantity + " totaling " + amount );
 
 		config = { 'market'		: data.result[i].MarketName,
-				   'quantity'	: '50000',
-				   'rate'		: '0.00000002' };
+				   'quantity'	: quantity,
+				   'rate'		: rate };
+
+		console.log( " total cost " + total_cost );
 
 		bittrex.buylimit( config, function( data ) {
 			console.log( data );
 		});
-	
+
 	}
 });
 
 //_____Make minimum listed buy orders:
-/*bittrex.getmarketsummaries( function( data ) {
+/*total_cost = 0;
+bittrex.getmarketsummaries( function( data ) {
 	//console.log( data );
     for( var i in data.result ) {
-		console.log( "placing order for " + data.result[i].MarketName + " at rate " + data.result[i].Ask + " with quantity " + (0.0005/data.result[i].Ask) );
+		x = 100;
+		while( x > 82 ) {
+			quantity = (101-x)*0.0005/data.result[i].Bid;
+			rate = data.result[i].Bid * 0.01 * x;
+			amount = rate * quantity;
+			if( rate > 0 ) {
+				total_cost = total_cost + amount;
+				config = { 'market'		: data.result[i].MarketName,
+						   'quantity'	: quantity,
+						   'rate'		: rate };
 
-		config = { 'market'		: data.result[i].MarketName,
-				   'quantity'	: 0.0005/data.result[i].Bid,
-				   'rate'		: data.result[i].Bid };
+				console.log( "placing order for " + data.result[i].MarketName + " at rate " + rate + " with quantity " + quantity + " totaling " + amount );
+				bittrex.buylimit( config, function( data ) {
+					console.log( data );
+				});
+			}
+			x = x - 6;
 
-		bittrex.buylimit( config, function( data ) {
-			console.log( data );
-		});
-	
+			console.log( " total cost " + total_cost );
+		
+		}
 	}
 });*/
 

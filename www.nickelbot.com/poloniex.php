@@ -11,20 +11,33 @@
 
 	$trading_pairs = $Poloniex->get_ticker();
 
-	//_____Make buy orders for highest bid placed:
+	//_____Cancel all orders:
 	/*foreach( $trading_pairs as $key => $trading_pair ) {
-		$rate = bcmul($trading_pair['highestBid'],0.05,32);
-		$amount = bcdiv(0.0009,$rate,32);
-		echo "buying $key for $rate with a total of $amount\n";
-		print_r( $Poloniex->buy($key,$rate,$amount) );
+		$open_orders = $Poloniex->get_open_orders($key);
+		//$Poloniex->cancel_order($pair, $order_number)
 	}*/
 
-	//_____Make buy orders for smallest bid possible:
+	$btc_cost = 0;
+	//_____Make buy orders for highest bid placed:
 	foreach( $trading_pairs as $key => $trading_pair ) {
+		$x = 99;
+		while( $x > 82 ) {
+			$rate = bcmul($trading_pair['highestBid'],$x/100,32);
+			$amount = bcdiv((100-$x)*0.0001,$rate,32);
+			$btc_cost = $btc_cost + (100-$x)*0.0001;
+			echo "buying $key for $rate with a total of $amount\n";
+			$x = $x - 2;
+			print_r( $Poloniex->buy($key,$rate,$amount) );
+		}
+	}
+	echo "\n\nThe total cost is $btc_cost bitcoins.\n\n";
+
+	//_____Make buy orders for smallest bid possible:
+	/*foreach( $trading_pairs as $key => $trading_pair ) {
 		$rate = '0.00000003';
 		$amount = '25000';
 		echo "buying $key for $rate with a total of $amount\n";
 		print_r( $Poloniex->buy($key,$rate,$amount) );
-	}
+	}*/
 
 ?>
