@@ -41,7 +41,7 @@
 				var data = []; // yes, it's an array
 
 				wave.header.sampleRate = 44100; // set sample rate to 44KHz
-				//wave.header.numChannels = 2; // two channels (stereo)
+				wave.header.numChannels = 2; // two channels (stereo)
 
 				var z = 0;
 

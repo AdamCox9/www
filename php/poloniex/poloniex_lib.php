@@ -51,15 +51,12 @@
 			// run the query
 			$res = curl_exec($ch);
 
-			if ($res === false) throw new Exception('Curl error: '.curl_error($ch));
-			//echo $res;
+			if ($res === false) 
+				throw new Exception('Curl error: '.curl_error($ch));
 			$dec = json_decode($res, true);
-			if (!$dec){
+			//if (!$dec)
 				//throw new Exception('Invalid data: '.$res);
-				return false;
-			}else{
-				return $dec;
-			}
+			return $dec;
 		}
 		
 		protected function retrieveJSON($URL) {
@@ -191,7 +188,8 @@
 				// convert coin balances to btc value
 				if($amount > 0){
 					if($coin != "BTC"){
-						$tot_btc += $amount * $prices[$pair];
+						if( isset( $prices[$pair] ) )
+							$tot_btc += $amount * $prices[$pair]['last'];
 					}else{
 						$tot_btc += $amount;
 					}
@@ -200,11 +198,13 @@
 				// process open orders as well
 				if($coin != "BTC"){
 					$open_orders = $this->get_open_orders($pair);
-					foreach($open_orders as $order){
-						if($order['type'] == 'buy'){
-							$tot_btc += $order['total'];
-						}elseif($order['type'] == 'sell'){
-							$tot_btc += $order['amount'] * $prices[$pair];
+					if( is_array( $open_orders ) && ! isset( $open_orders['error'] ) ) {
+						foreach($open_orders as $order){
+							if($order['type'] == 'buy'){
+								$tot_btc += $order['total'];
+							}elseif($order['type'] == 'sell'){
+								$tot_btc += $order['amount'] * $prices[$pair]['last'];
+							}
 						}
 					}
 				}

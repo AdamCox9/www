@@ -10,7 +10,7 @@ bittrex.options({
 });
 
 //_____Make minimum possible buy orders:
-total_cost = 0;
+/*total_cost = 0;
 bittrex.getmarketsummaries( function( data ) {
 	//console.log( data );
     for( var i in data.result ) {
@@ -30,6 +30,36 @@ bittrex.getmarketsummaries( function( data ) {
 			console.log( data );
 		});
 
+	}
+});*/
+
+//_____Make 3x high sell orders:
+total_cost = 0;
+bittrex.getmarketsummaries( function( markets ) {
+	//console.log( markets.result );
+	arr = [];
+	for( var i in markets.result ) {
+		marketname = markets.result[i].MarketName.split("-");
+		rate = markets.result[i].High * 3;
+		config = { 'currency' : marketname[1] };
+		arr[marketname[1]] = rate;
+		bittrex.getbalance( config, function( data ) {
+			this.rate = arr[data.result.Currency];
+			quantity = data.result.Available;
+			amount = rate * quantity;
+			total_cost = total_cost + amount;
+			thismarket = "BTC-" + data.result.Currency;
+			console.log( "placing order for " + thismarket  + " at rate " + rate + " with quantity " + quantity + " totaling " + amount );
+
+			config = { 'market'		: thismarket,
+					   'quantity'	: quantity,
+					   'rate'		: rate };
+
+			console.log( " total cost " + total_cost );
+			bittrex.selllimit( config, function( data ) {
+				console.log( data );
+			});
+		});
 	}
 });
 
