@@ -4,21 +4,20 @@
 		protected $api_key;
 		protected $api_secret;
 		protected $trading_url = "https://bter.com/api/";
+		protected $nonce;
 
 		public function __construct($api_key, $api_secret) {
 			$this->api_key = $api_key;
 			$this->api_secret = $api_secret;
+			$this->nonce = time();
 		}
 	
 	
 		private function query($path, array $req = array()) {
-			// API settings, add your Key and Secret at here
 			$key = $this->api_key;
 			$secret = $this->api_secret;
 		 
-			// generate a nonce to avoid problems with 32bits systems
-			$mt = explode(' ', microtime());
-			$req['nonce'] = $mt[1].substr($mt[0], 2, 6);
+			$req['nonce'] = $this->nonce++;
 		 
 			// generate the POST data string
 			$post_data = http_build_query($req, '', '&');
@@ -37,9 +36,7 @@
 			if (is_null($ch)) {
 				$ch = curl_init();
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-				curl_setopt($ch, CURLOPT_USERAGENT, 
-					'Mozilla/4.0 (compatible; Bter PHP bot; '.php_uname('a').'; PHP/'.phpversion().')'
-					);
+				curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible; Bter PHP bot; '.php_uname('a').'; PHP/'.phpversion().')');
 			}
 			curl_setopt($ch, CURLOPT_URL, $this->trading_url.$path);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
@@ -49,10 +46,13 @@
 			// run the query
 			$res = curl_exec($ch);
 
-			if ($res === false) throw new Exception('Curl error: '.curl_error($ch));
-			//echo $res;
+			if ($res === false) 
+				throw new Exception('Curl error: '.curl_error($ch));
+
 			$dec = json_decode($res, true);
-			if (!$dec) throw new Exception('Invalid data: '.$res);
+			if (!$dec) 
+				throw new Exception('Invalid data: '.$res);
+			
 			return $dec;
 		}
 

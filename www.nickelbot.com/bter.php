@@ -17,9 +17,9 @@
 
 	$Bter = new bter( $api_key, $api_secret );
 
-	$Bter->list_all_orders();
+	//$Bter->list_all_orders();
 
-	//$Bter->cancel_all_orders();
+	$Bter->cancel_all_orders();
 
 	//$Bter->make_buy_orders();
 	
