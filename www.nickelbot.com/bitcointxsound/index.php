@@ -80,7 +80,13 @@
 		</script>
 	</head>
 	<body>
+		<h1>NickelBot</h1>
 		<h2>What does a Bitcoin transaction sound like?</h2>  
+		<div>
+			<a href="/">Home</a> | <a href="/bitcointxsound/">What does a Bitcoin Transaction sound like?</a> | <a href="/supertrollbox.php">Super Trollbox</a><br>
+		</div>
+		<br><br>
+		<div style='clear:both;'></div>
 
 		<div>Watch the <a target="_blank" href="https://gappleto97.github.io/visualizer/">visualizations</a>!</div>
 		<br>

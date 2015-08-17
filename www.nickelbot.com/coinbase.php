@@ -1,44 +1,36 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Hello Coinbase</title>
-</head>
-<body>
-  <!-- ========= -->
-  <!-- Your HTML -->
-  <!-- ========= -->
+<?php
 
-  <h1>NickelBot - Bitcoin trading bot in the cloud.</h1>
-  <p>This is the home of NickelBot. NickelBot does stuff with Bitcoin such as trading and investing.</p>
-  <p>Check back sometime to see if there are tools that will be open to the public.</p>
-  <p>There will probably be be some Bitcoin bots living here in the cloud sometime soon that will be accessible to everyone.
-  <p>Contact <a href="mailto:adam.cox9@gmail.com">Adam.Cox9@gmail.com</a> with questions.</p>
+	error_reporting( E_ALL );
+	ini_set( 'display_errors', 'on' );
 
-  <div id="container">Loading...</div>
+	if( ! isset( $_SERVER['REMOTE_ADDR'] ) || $_SERVER['REMOTE_ADDR'] != '76.24.176.23' ) {
+		if( ! isset( $_SERVER['SSH_CONNECTION'] ) || $_SERVER['SSH_CONNECTION'] != '76.24.176.23 50058 104.130.212.109 22' ) {
+			header("HTTP/1.0 404 Not Found");
+			exit;
+		}
+	}
+		
+	require_once( "../php/coinbase/coinbase_lib.php" );
 
-  <!-- ========= -->
-  <!-- Libraries -->
-  <!-- ========= -->
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
-  
-  <!-- =============== -->
-  <!-- Javascript code -->
-  <!-- =============== -->
-  <script type="text/javascript">
+	$api_key = "";
+	$api_secret = "";
 
-	$.ajax({
-	  url: "data/coinbase.php",
-	  context: document.body
-	}).done(function(data) {
-	  console.log( JSON.stringify( data ) );
-	  $( 'div' ).html( "" );
-	  for( i = 0; i < data.length; i++ )
-		$( 'div' ).append( "<br>" + data[i] );
-	});
+	$Coinbase = new coinbase( $api_key, $api_secret );
 
-  </script>
-  
-</body>
-</html>
+
+	$result = $Coinbase->query("/order/cancel", array("order_id" => "390714463"));
+	
+	print_r( $result );
+
+	//$result = $Coinbase->query("/market/getopenorders");
+	//$result = $Coinbase->query("/public/getmarkets");
+	
+	//$result = $Coinbase->query("marketorders", array("marketid" => 26));
+
+	/*$result = $Coinbase->query("/market/getopenorders");
+
+	foreach( $result['result'] as $order ) {
+		$Coinbase->query("/market/cancel", array("uuid" => $order['OrderUuid'] ) );
+	}*/
+
+?> 

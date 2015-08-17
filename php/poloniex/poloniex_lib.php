@@ -7,22 +7,21 @@
 	class poloniex {
 		protected $api_key;
 		protected $api_secret;
+		protected $nonce;
 		protected $trading_url = "https://poloniex.com/tradingApi";
 		protected $public_url = "https://poloniex.com/public";
 		
 		public function __construct($api_key, $api_secret) {
 			$this->api_key = $api_key;
 			$this->api_secret = $api_secret;
+			$this->nonce = time();
 		}
 			
 		private function query(array $req = array()) {
 			// API settings
 			$key = $this->api_key;
 			$secret = $this->api_secret;
-		 
-			// generate a nonce to avoid problems with 32bit systems
-			$mt = explode(' ', microtime());
-			$req['nonce'] = $mt[1].substr($mt[0], 2, 6);
+			$req['nonce'] = $this->nonce++;
 		 
 			// generate the POST data string
 			$post_data = http_build_query($req, '', '&');

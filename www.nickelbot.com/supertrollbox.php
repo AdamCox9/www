@@ -1,6 +1,8 @@
 <html>
 	<head>
-		<title>Super Trollbox</title>
+	  <meta charset="UTF-8">
+	  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title>NickelBot | Super Trollbox</title>
 		<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 		<style>
 			div.trollbox_wrapper {
@@ -19,7 +21,13 @@
 		</style>
 	</head>
 	<body>
-		<h1>Super Trollbox</h1>
+		<h1>NickelBot</h1>
+		<h2>Super Trollbox</h2>
+		<div>
+			<a href="/">Home</a> | <a href="/bitcointxsound/">What does a Bitcoin Transaction sound like?</a> | <a href="/supertrollbox.php">Super Trollbox</a><br>
+		</div>
+		<br><br>
+		<div style='clear:both;'></div>
 
 		<div class='trollbox_wrapper'><a href="http://www.btc-e.com/">BTC-e</a><div class='trollbox' id="btc_e_box">Loading...</div></div>
 		<div class='trollbox_wrapper'><a href="http://www.cryptsy.com/">Cryptsy</a><div class='trollbox' id="cryptsy_box">Loading...</div></div>
