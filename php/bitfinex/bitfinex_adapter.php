@@ -34,12 +34,31 @@
 		}
 
 		public function make_buy_orders() {
+		
 		}
+		
 		public function make_sell_orders() {
+		
 		}
+		
 		public function unconfirmed_btc(){
+		
 		}
+
 		public function bitcoin_deposit_address(){
+
+		}
+
+		public function get_ticker($ticker="BTC-LTC") {
+
+		}
+
+		public function get_market_summary( $market = "BTC-LTC" ) {
+
+		}
+
+		public function get_market_summaries() {
+
 		}
 
 		//Unauthenticated

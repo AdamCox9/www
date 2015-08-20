@@ -45,13 +45,14 @@
 	$poloniex_api_key = "LWQRJN6Q-X3LS0IPC-42H0I72F-J8N624TD";
 	$poloniex_api_secret = "ca7bfe0e1f1f98b37a4f6eba8aba9ec69d663c01dca46cd3792fca9e53de545e2e25ee95fec0d35f91d0299bb7f83bbb0cd066c2b0fa5349876ae5d74fd44d4d";
 
-	$BitfinexAdapter =	new BitfinexAdapter(	new Bitfinex(	$bitfinex_api_key,	$bitfinex_api_secret ) );
-	$BitstampAdapter =	new BitstampAdapter(	new Bitstamp(	$bitstamp_api_key,	$bitstamp_api_secret, "779882" ) );
-	$BittrexAdapter =	new BittrexAdapter(		new bittrex(	$bittrex_api_key,	$bittrex_api_secret ) );
-	$BtceAdapter =		new BtceAdapter(		new btce(		$btce_api_key,		$btce_api_secret ) );
-	$BterAdapter =		new BterAdapter(		new bter(		$bter_api_key,		$bter_api_secret ) );
-	$CoinbaseAdapter =	new CoinbaseAdapter(	new coinbase(	$coinbase_api_key,	$coinbase_api_secret, $coinbase_api_passphrase ) );
-	$CryptsyAdapter =	new CryptsyAdapter(		new cryptsy(	$cryptsy_api_key,	$cryptsy_api_secret ) );
-	$PoloniexAdapter =	new PoloniexAdapter(	new poloniex(	$poloniex_api_key,	$poloniex_api_secret ) );
+	$Adapters = array();
+	$Adapters['Bitfinex'] =	new BitfinexAdapter(	new Bitfinex(	$bitfinex_api_key,	$bitfinex_api_secret ) );
+	$Adapters['Bitstamp'] =	new BitstampAdapter(	new Bitstamp(	$bitstamp_api_key,	$bitstamp_api_secret, "779882" ) );
+	$Adapters['Bittrex']  =	new BittrexAdapter(		new bittrex(	$bittrex_api_key,	$bittrex_api_secret ) );
+	$Adapters['Btce']     =	new BtceAdapter(		new btce(		$btce_api_key,		$btce_api_secret ) );
+	$Adapters['Bter']	  =	new BterAdapter(		new bter(		$bter_api_key,		$bter_api_secret ) );
+	$Adapters['Coinbase'] =	new CoinbaseAdapter(	new coinbase(	$coinbase_api_key,	$coinbase_api_secret, $coinbase_api_passphrase ) );
+	$Adapters['Cryptsy']  =	new CryptsyAdapter(		new cryptsy(	$cryptsy_api_key,	$cryptsy_api_secret ) );
+	$Adapters['Poloniex'] =	new PoloniexAdapter(	new poloniex(	$poloniex_api_key,	$poloniex_api_secret ) );
 
 ?>
