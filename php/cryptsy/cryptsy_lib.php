@@ -1,5 +1,7 @@
 <?PHP
 
+	//implements https://www.cryptsy.com/pages/apiv2
+
 	class cryptsy {
 		protected $api_key;
 		protected $api_secret;
@@ -51,5 +53,18 @@
 			return $dec;
 		}
 	 
+			//$result = $Cryptsy->query("getmarkets");
+			//$result = $Cryptsy->query("mytransactions");
+			//$result = $Cryptsy->query("markettrades", array("marketid" => 26));
+			//$result = $Cryptsy->query("marketorders", array("marketid" => 26));
+			//$result = $Cryptsy->query("mytrades", array("marketid" => 26, "limit" => 1000));
+			//$result = $Cryptsy->query("allmytrades");
+			//$result = $Cryptsy->query("myorders", array("marketid" => 26));
+			//$result = $Cryptsy->query("allmyorders");
+			//$result = $Cryptsy->query("cancelallorders");
+			//$result = $Cryptsy->query("createorder", array("marketid" => 26, "ordertype" => "Sell", "quantity" => 1000, "price" => 0.00031000));
+			//$result = $Cryptsy->query("cancelorder", array("orderid" => 139567));
+			//$result = $Cryptsy->query("calculatefees", array("ordertype" => 'Buy', 'quantity' => 1000, 'price' => '0.005'));
+
 	}
 ?>

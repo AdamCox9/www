@@ -34,7 +34,7 @@
 		<div class='trollbox_wrapper'><a href="http://www.poloniex.com/exchange">Poloniex</a><div class='trollbox' id="poloniex_box">Loading...</div></div>
 		<div class='trollbox_wrapper'><a href="http://www.c-cex.com/">C-CEX</a><div class='trollbox' id="c_cex_box">Loading...</div></div>
 		<div class='trollbox_wrapper'><a href="https://yobit.net/?bonus=DkmPL">YoBit</a><div class='trollbox' id="yobit_box">Loading...</div></div>
-
+		<div class='trollbox_wrapper'><a href="https://bitcointalk.org/">BitcoinTalk</a><div class='trollbox' id="bitcointalk_box">Loading...</div></div>
 
 		<!-- =============== -->
 		<!-- Javascript code -->
@@ -81,6 +81,14 @@
 				  $( "div#yobit_box" ).html( data );
 				  if( ! once )
 					  $( "div#yobit_box" ).scrollTop($( "div#yobit_box" )[0].scrollHeight);
+				});
+				$.ajax({
+				  url: "data/trollbox/bitcointalk.php",
+				  context: document.body
+				}).done(function(data) {
+				  $( "div#bitcointalk_box" ).html( data );
+				  if( ! once )
+					  $( "div#bitcointalk_box" ).scrollTop($( "div#bitcointalk_box" )[0].scrollHeight);
 				});
 			}
 			updateChats();

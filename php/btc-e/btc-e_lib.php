@@ -1,5 +1,7 @@
 <?PHP
 
+	//immplements https://btc-e.com/api/documentation
+
 	class btce {
 		protected $api_key;
 		protected $api_secret;
@@ -12,7 +14,7 @@
 			$this->x = 0;
 		}
 
-		public function query($method, array $req = array()) {
+		private function query($method, array $req = array()) {
 			// API settings
 			$key = $this->api_key;
 			$secret = $this->api_secret;
@@ -55,6 +57,22 @@
 			if (!$dec) 
 				throw new Exception('Invalid data: '.$res);
 			return $dec;
+		}
+
+		public function list_info() {
+			return $this->query('getInfo');
+		}
+
+		public function Trade() {
+			return $this->query('Trade', array('pair' => 'btc_usd', 'type' => 'buy', 'amount' => 1, 'rate' => 10)); //buy 1 BTC @ 10 USD
+		}
+		
+		public function TransHistory() {
+			return $this->query('TransHistory');
+		}
+
+		public function TradeHistory() {
+			return $this->query('TradeHistory');
 		}
 
 	}

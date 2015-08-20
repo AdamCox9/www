@@ -1,4 +1,6 @@
 <?php
+	
+	//implements https://www.bitfinex.com/pages/api
 
 	class bitfinex {
 		protected $api_key;
@@ -10,7 +12,7 @@
 			$this->api_secret = $api_secret;
 		}
 			
-		public function query($path, array $req = array()) {
+		private function query($path, array $req = array()) {
 			// API settings
 			$key = $this->api_key;
 			$secret = $this->api_secret;
@@ -66,145 +68,46 @@
 			return $json;
 		}
 
-		public function get_balances() {
-			return $this->query( 
-				array(
-					'command' => 'returnBalances'
-				)
-			);
-		}
-		
-		public function get_open_orders($pair) {		
-			return $this->query( 
-				array(
-					'command' => 'returnOpenOrders',
-					'currencyPair' => strtoupper($pair)
-				)
-			);
-		}
-		
-		public function get_my_trade_history($pair) {
-			return $this->query(
-				array(
-					'command' => 'returnTradeHistory',
-					'currencyPair' => strtoupper($pair)
-				)
-			);
-		}
-		
-		public function buy($pair, $rate, $amount) {
-			return $this->query( 
-				array(
-					'command' => 'buy',	
-					'currencyPair' => strtoupper($pair),
-					'rate' => $rate,
-					'amount' => $amount
-				)
-			);
-		}
-		
-		public function sell($pair, $rate, $amount) {
-			return $this->query( 
-				array(
-					'command' => 'sell',	
-					'currencyPair' => strtoupper($pair),
-					'rate' => $rate,
-					'amount' => $amount
-				)
-			);
-		}
-		
-		public function cancel_order($pair, $order_number) {
-			return $this->query( 
-				array(
-					'command' => 'cancelOrder',	
-					'currencyPair' => strtoupper($pair),
-					'orderNumber' => $order_number
-				)
-			);
-		}
-		
-		public function withdraw($currency, $amount, $address) {
-			return $this->query( 
-				array(
-					'command' => 'withdraw',	
-					'currency' => strtoupper($currency),				
-					'amount' => $amount,
-					'address' => $address
-				)
-			);
-		}
-		
-		public function get_trade_history($pair) {
-			$trades = $this->retrieveJSON($this->public_url.'?command=returnTradeHistory&currencyPair='.strtoupper($pair));
-			return $trades;
-		}
-		
-		public function get_order_book($pair) {
-			$orders = $this->retrieveJSON($this->public_url.'?command=returnOrderBook&currencyPair='.strtoupper($pair));
-			return $orders;
-		}
-		
-		public function get_volume() {
-			$volume = $this->retrieveJSON($this->public_url.'?command=return24hVolume');
-			return $volume;
-		}
-	
-		public function get_ticker($pair = "ALL") {
-			$pair = strtoupper($pair);
-			$prices = $this->retrieveJSON($this->public_url.'?command=returnTicker');
-			if($pair == "ALL"){
-				return $prices;
-			}else{
-				$pair = strtoupper($pair);
-				if(isset($prices[$pair])){
-					return $prices[$pair];
-				}else{
-					return array();
-				}
-			}
-		}
-		
-		public function get_trading_pairs() {
-			$tickers = $this->retrieveJSON($this->public_url.'?command=returnTicker');
-			return array_keys($tickers);
-		}
-		
-		public function get_total_btc_balance() {
-			$balances = $this->get_balances();
-			$prices = $this->get_ticker();
-			
-			$tot_btc = 0;
-			
-			foreach($balances as $coin => $amount){
-				$pair = "BTC_".strtoupper($coin);
-			
-				// convert coin balances to btc value
-				if($amount > 0){
-					if($coin != "BTC"){
-						if( isset( $prices[$pair] ) )
-							$tot_btc += $amount * $prices[$pair]['last'];
-					}else{
-						$tot_btc += $amount;
-					}
-				}
+		//Unauthenticated Calls
 
-				// process open orders as well
-				if($coin != "BTC"){
-					$open_orders = $this->get_open_orders($pair);
-					if( is_array( $open_orders ) && ! isset( $open_orders['error'] ) ) {
-						foreach($open_orders as $order){
-							if($order['type'] == 'buy'){
-								$tot_btc += $order['total'];
-							}elseif($order['type'] == 'sell'){
-								$tot_btc += $order['amount'] * $prices[$pair]['last'];
-							}
-						}
-					}
-				}
-			}
-
-			return $tot_btc;
+		public function get_pubticker($symbol="btcusd") {
+			return file_get_contents( $this->trading_url . "/pubticker/" . $symbol );
 		}
+		public function get_stats($symbol="btcusd") {
+			return file_get_contents( $this->trading_url . "/stats/" . $symbol );
+		}
+		public function get_lendbook($currency="btc") {
+			return file_get_contents( $this->trading_url . "/lendbook/" . $currency );
+		}
+		public function get_book($symbol="btcusd") {
+			return file_get_contents( $this->trading_url . "/book/" . $symbol );
+		}
+		public function get_trades($symbol="btcusd") {
+			return file_get_contents( $this->trading_url . "/trades/" . $symbol );
+		}
+		public function get_lends($currency="btc") {
+			return file_get_contents( $this->trading_url . "/lends/" . $currency );
+		}
+		public function get_symbols() {
+			return file_get_contents( $this->trading_url . "/symbols" );
+		}
+		public function get_symbols_details() {
+			return file_get_contents( $this->trading_url . "/symbols_details" );
+		}
+
+		//Authenticated Calls
+
+		public function deposit_new($method="bitcoin",$wallet_name="exchange",$renew=0) {
+			return $this->query( "/deposit/new", array( "method" => $method, "wallet_name" => $wallet_name, "renew" => $renew ) );
+		}
+		public function order_new($symbol="ltcbtc",$amount="0.1",$price="0.01",$exchange="bitfinex",$side="buy",$type="limit",$is_hidden=true) {
+			return $this->query( "/order/new", array( "symbol" => $symbol, "amount" => $amount, "price" => $price, "exchange" => $exchange, "side" => $side, "type" => $type, "is_hidden" => $is_hidden ) );
+		}
+		public function order_new_multi( $orders = array( array( 'symbol'=>"ltcbtc",'amount'=>"0.1",'price'=>"0.01",'exchange'=>"bitfinex",'side'=>"buy",'type'=>"limit",'is_hidden'=>true) ) ) {
+			return $this->query( "/order/new/multi", array( 'orders' => $orders ) );
+		}
+
+
+
 	}
 ?>

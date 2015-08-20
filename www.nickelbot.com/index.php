@@ -19,7 +19,6 @@
 		<p>Check back sometime to see if there are tools that will be open to the public.</p>
 		<p>There will probably be be some Bitcoin bots living here in the cloud sometime soon that will be accessible to everyone.
 		<p>Contact <a href="mailto:adam.cox9@gmail.com">Adam.Cox9@gmail.com</a> with questions.</p>
-		contact <a href='mailto:adam.cox9@gmail.com'>Adam.Cox9@gmail.com</a> with questions<br>
 
 		<div id="container">Loading...</div>
 
@@ -33,7 +32,7 @@
 				  console.log( JSON.stringify( data ) );
 				  $( 'div#container' ).html( "" );
 				  for( i = 0; i < data.length; i++ )
-					$( 'div#container' ).append( "<br>" + data[i] );
+					//$( 'div#container' ).append( "<br>" + data[i] );
 				});
 		</script>
 	</body>

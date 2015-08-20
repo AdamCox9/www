@@ -1,5 +1,7 @@
 <?PHP
 
+	//immplements https://bittrex.com/Home/Api
+
 	class bittrex {
 		protected $api_key;
 		protected $api_secret;
@@ -12,7 +14,7 @@
 			$this->nonce = time();
 		}
 	
-		public function query($method, array $req = array()) {
+		private function query($path, array $req = array()) {
 			$key = $this->api_key;
 			$secret = $this->api_secret;
 
@@ -20,7 +22,7 @@
 			$req['nonce'] = $this->nonce++;
 			
 			$queryString = http_build_query($req, '', '&');
-			$requestUrl = $this->trading_url . $method . '?' . $queryString;	
+			$requestUrl = $this->trading_url . $path . '?' . $queryString;	
 			$sign = hash_hmac('sha512', $requestUrl, $secret);
 			
 			static $ch = null;
@@ -47,6 +49,26 @@
 			
 			return $dec;
 		}
-	 
+		public function get_markets() {
+			return $this->query("/public/getmarkets");
+		}
+		public function get_currencies() {
+			return $this->query("/public/getcurrencies");
+		}
+		public function get_ticker( $arr=array("market"=>"BTC-LTC") ) {
+			return $this->query("/public/getticker",$arr);
+		}
+		public function get_market_summaries() {
+			return $this->query("/public/getmarketsummaries");
+		}
+		public function get_market_summary( $arr=array("market"=>"BTC-LTC") ) {
+			return $this->query("/public/getmarketsummary",$arr);
+		}
+		public function get_open_orders() {
+			return $this->query("/market/getopenorders");
+		}
+		public function cancel_order($arr = array("uuid" => '123' )) {
+			return $this->query("/market/cancel", $arr);
+		}
 	}
 ?>
