@@ -66,6 +66,22 @@
 
 		}
 
+		public function get_detailed_info() {
+
+		}
+
+		public function get_lendbook() {
+
+		}
+
+		public function get_book() {
+
+		}
+
+		public function get_lends() {
+
+		}
+
 		public function make_buy_orders()
 		{
 			try {

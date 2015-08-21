@@ -8,13 +8,15 @@
 		public function get_markets();
 		public function get_currencies();
 		public function get_open_orders();
-		public function make_buy_orders();
-		public function make_sell_orders();
 		public function bitcoin_deposit_address();
 		public function unconfirmed_btc();
 		public function get_ticker($ticker="BTC-LTC");
 		public function get_market_summary( $market="BTC-LTC" );
 		public function get_market_summaries();
+		public function get_detailed_info();
+		public function get_lendbook();
+		public function get_book();
+		public function get_lends();
 		
 	}
 ?>

@@ -53,18 +53,53 @@
 			return $dec;
 		}
 	 
-			//$result = $Cryptsy->query("getmarkets");
-			//$result = $Cryptsy->query("mytransactions");
-			//$result = $Cryptsy->query("markettrades", array("marketid" => 26));
-			//$result = $Cryptsy->query("marketorders", array("marketid" => 26));
-			//$result = $Cryptsy->query("mytrades", array("marketid" => 26, "limit" => 1000));
-			//$result = $Cryptsy->query("allmytrades");
-			//$result = $Cryptsy->query("myorders", array("marketid" => 26));
-			//$result = $Cryptsy->query("allmyorders");
-			//$result = $Cryptsy->query("cancelallorders");
-			//$result = $Cryptsy->query("createorder", array("marketid" => 26, "ordertype" => "Sell", "quantity" => 1000, "price" => 0.00031000));
-			//$result = $Cryptsy->query("cancelorder", array("orderid" => 139567));
-			//$result = $Cryptsy->query("calculatefees", array("ordertype" => 'Buy', 'quantity' => 1000, 'price' => '0.005'));
+		public function getmarkets() {
+			return $this->query("getmarkets");
+		}
+
+		public function mytransactions() {
+			return $this->query("mytransactions");
+		}
+
+		public function markettrades() {
+			return $this->query("markettrades", array("marketid" => 26));
+		}
+
+		public function marketorders() {
+			return $this->query("marketorders", array("marketid" => 26));
+		}
+
+		public function mytrades() {
+			return $this->query("mytrades", array("marketid" => 26, "limit" => 1000));
+		}
+
+		public function allmytrades() {
+			return $this->query("allmytrades");
+		}
+
+		public function myorders() {
+			return $this->query("myorders", array("marketid" => 26));
+		}
+
+		public function allmyorders() {
+			return $this->query("allmyorders");
+		}
+
+		public function cancelallorders() {
+			return $this->query("cancelallorders");
+		}
+
+		public function createorder() {
+			return $this->query("createorder", array("marketid" => 26, "ordertype" => "Sell", "quantity" => 1000, "price" => 0.00031000));
+		}
+
+		public function cancelorder() {
+			return $this->query("cancelorder", array("orderid" => 139567));
+		}
+
+		public function calculatefees() {
+			return $this->query("calculatefees", array("ordertype" => 'Buy', 'quantity' => 1000, 'price' => '0.005'));
+		}
 
 	}
 ?>

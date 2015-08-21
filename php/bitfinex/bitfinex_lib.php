@@ -54,60 +54,138 @@
 				throw new Exception('Invalid data: '.$res);
 			return $dec;
 		}
-		
-		protected function retrieveJSON($URL) {
-			$opts = array('http' =>
-				array(
-					'method'  => 'GET',
-					'timeout' => 10 
-				)
-			);
-			$context = stream_context_create($opts);
-			$feed = file_get_contents($URL, false, $context);
-			$json = json_decode($feed, true);
-			return $json;
-		}
 
-		//Unauthenticated Calls
-
-		public function get_pubticker($symbol="btcusd") {
+		public function pubticker($symbol="btcusd") {
 			return file_get_contents( $this->trading_url . "/pubticker/" . $symbol );
 		}
-		public function get_stats($symbol="btcusd") {
+		
+		public function stats($symbol="btcusd") {
 			return file_get_contents( $this->trading_url . "/stats/" . $symbol );
 		}
-		public function get_lendbook($currency="btc") {
+		
+		public function lendbook($currency="btc") {
 			return file_get_contents( $this->trading_url . "/lendbook/" . $currency );
 		}
-		public function get_book($symbol="btcusd") {
+		
+		public function book($symbol="btcusd") {
 			return file_get_contents( $this->trading_url . "/book/" . $symbol );
 		}
-		public function get_trades($symbol="btcusd") {
+		
+		public function trades($symbol="btcusd") {
 			return file_get_contents( $this->trading_url . "/trades/" . $symbol );
 		}
-		public function get_lends($currency="btc") {
+		
+		public function lends($currency="btc") {
 			return file_get_contents( $this->trading_url . "/lends/" . $currency );
 		}
-		public function get_symbols() {
+		
+		public function symbols() {
 			return file_get_contents( $this->trading_url . "/symbols" );
 		}
-		public function get_symbols_details() {
+		
+		public function symbols_details() {
 			return file_get_contents( $this->trading_url . "/symbols_details" );
 		}
-
-		//Authenticated Calls
 
 		public function deposit_new($method="bitcoin",$wallet_name="exchange",$renew=0) {
 			return $this->query( "/deposit/new", array( "method" => $method, "wallet_name" => $wallet_name, "renew" => $renew ) );
 		}
+
 		public function order_new($symbol="ltcbtc",$amount="0.1",$price="0.01",$exchange="bitfinex",$side="buy",$type="limit",$is_hidden=true) {
 			return $this->query( "/order/new", array( "symbol" => $symbol, "amount" => $amount, "price" => $price, "exchange" => $exchange, "side" => $side, "type" => $type, "is_hidden" => $is_hidden ) );
 		}
+		
 		public function order_new_multi( $orders = array( array( 'symbol'=>"ltcbtc",'amount'=>"0.1",'price'=>"0.01",'exchange'=>"bitfinex",'side'=>"buy",'type'=>"limit",'is_hidden'=>true) ) ) {
 			return $this->query( "/order/new/multi", array( 'orders' => $orders ) );
 		}
 
+		public function order_cancel($order_id ) {
+			return $this->query( "/order/cancel", array( 'order_id' => $order_id ) );
+		}
 
+		public function order_cancel_multi() {
+			return array('error'=>'NOT_IMPLEMENTED');
+		}
+
+		public function order_cancel_all() {
+			return $this->query( "/order/cancel/all" );
+		}
+
+		public function order_cancel_replace() {
+			return array('error'=>'NOT_IMPLEMENTED');
+		}
+
+		public function order_status($order_id ) {
+			return $this->query( "/order/cancel", array( 'order_id' => $order_id ) );
+		}
+
+		public function orders() {
+			return $this->query( "/orders" );
+		}
+
+		public function positions() {
+			return $this->query( "/positions" );
+		}
+
+		public function position_claim() {
+			return array('error'=>'NOT_IMPLEMENTED');
+		}
+
+		public function history() {
+			return $this->query( "/history" );
+		}
+
+		public function history_movements() {
+			return $this->query( "/history/movements" );
+		}
+
+		public function mytrades() {
+			return $this->query( "/mytrades" );
+		}
+
+		public function offer_new() {
+			return array('error'=>'NOT_IMPLEMENTED');
+		}
+
+		public function cancel_offer() {
+			return array('error'=>'NOT_IMPLEMENTED');
+		}
+
+		public function offer_status() {
+			return array('error'=>'NOT_IMPLEMENTED');
+		}
+
+		public function offers() {
+			return array('error'=>'NOT_IMPLEMENTED');
+		}
+
+		public function credits() {
+			return array('error'=>'NOT_IMPLEMENTED');
+		}
+
+		public function taken_swaps() {
+			return array('error'=>'NOT_IMPLEMENTED');
+		}
+
+		public function total_taken_swaps() {
+			return array('error'=>'NOT_IMPLEMENTED');
+		}
+
+		public function close_swap() {
+			return array('error'=>'NOT_IMPLEMENTED');
+		}
+
+		public function balances() {
+			return $this->query( "/balances" );
+		}
+
+		public function account_infos() {
+			return $this->query( "/account_infos" );
+		}
+
+		public function margin_infos() {
+			return $this->query( "/margin_infos" );
+		}
 
 	}
 ?>

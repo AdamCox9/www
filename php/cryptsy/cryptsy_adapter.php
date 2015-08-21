@@ -46,14 +46,6 @@
 		
 		}
 		
-		public function make_buy_orders() {
-		
-		}
-		
-		public function make_sell_orders() {
-		
-		}
-		
 		public function unconfirmed_btc(){
 		
 		}
@@ -73,5 +65,22 @@
 		public function get_market_summaries() {
 
 		}
+
+		public function get_detailed_info() {
+
+		}
+
+		public function get_lendbook() {
+
+		}
+
+		public function get_book() {
+
+		}
+
+		public function get_lends() {
+
+		}
+
 	}
 ?>

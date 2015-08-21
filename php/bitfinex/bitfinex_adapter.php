@@ -26,19 +26,11 @@
 		}
 
 		public function get_markets() {
-			return $this->exch->get_markets();
+			return $this->exch->get_symbols();
 		}
 
 		public function get_currencies() {
-			return $this->exch->get_currencies();
-		}
-
-		public function make_buy_orders() {
-		
-		}
-		
-		public function make_sell_orders() {
-		
+			return $this->exch->get_symbols_details();
 		}
 		
 		public function unconfirmed_btc(){
@@ -46,7 +38,7 @@
 		}
 
 		public function bitcoin_deposit_address(){
-
+			return $this->exch->deposit_new();
 		}
 
 		public function get_ticker($ticker="BTC-LTC") {
@@ -54,31 +46,28 @@
 		}
 
 		public function get_market_summary( $market = "BTC-LTC" ) {
-
+			return $this->get_trades();
 		}
 
 		public function get_market_summaries() {
-
+			return $this->exch->get_stats();
 		}
 
-		//Unauthenticated
-		//$result = $Bitfinex->get_pubticker();
-		//$result = $Bitfinex->get_stats();
-		//$result = $Bitfinex->get_lendbook();
-		//$result = $Bitfinex->get_book();
-		//$result = $Bitfinex->get_trades();
-		//$result = $Bitfinex->get_lends();
-		//$result = $Bitfinex->get_symbols();
-		//$result = $Bitfinex->get_symbols_details();
+		public function get_detailed_info() {
+			return $this->exch->get_pubticker();
+		}
 
-		//Authenticated
-		
-		//$result = $Bitfinex->deposit_new();
+		public function get_lendbook() {
+			$result = $this->exch->get_lendbook();
+		}
 
-		//$result = $Bitfinex->order_new_multi();
+		public function get_book() {
+			$result = $this->exch->get_book();
+		}
 
-		//print_r( $result );
-
+		public function get_lends() {
+			$result = $this->exch->get_lends();
+		}
 
 	}
 ?>
