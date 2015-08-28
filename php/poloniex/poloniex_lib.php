@@ -67,8 +67,40 @@
 			$json = json_decode($feed, true);
 			return $json;
 		}
+
+		//Public Methods
+
+		public function returnTicker() {
+			return $this->retrieveJSON($this->public_url.'?command=returnTicker');
+		}
 		
-		public function get_balances() {
+		public function return24hVolume() {
+			return $this->retrieveJSON($this->public_url.'?command=return24hVolume');
+		}
+		
+		public function returnOrderBook($pair) {
+			return $this->retrieveJSON($this->public_url.'?command=returnOrderBook&currencyPair='.strtoupper($pair));
+		}
+		
+		public function returnPublicTradeHistory($pair) {
+			return $this->retrieveJSON($this->public_url.'?command=returnTradeHistory&currencyPair='.strtoupper($pair));
+		}
+		
+		public function returnChartData($pair) {
+			return $this->retrieveJSON($this->public_url.'?command=returnChartData&currencyPair='.strtoupper($pair));
+		}
+		
+		public function returnCurrencies() {
+			return $this->retrieveJSON($this->public_url.'?command=returnCurrencies');
+		}
+
+		public function returnLoanOrders() {
+			return $this->retrieveJSON($this->public_url.'?command=returnLoanOrders');
+		}
+
+		//Authenticated Methods
+
+		public function returnBalances() {
 			if( ! isset( $this->balances ) )
 				$this->balances = $this->query( 
 					array(
@@ -77,52 +109,91 @@
 				);
 			return $this->balances;
 		}
+
+		public function returnCompleteBalances() {
+			if( ! isset( $this->completeBalances ) )
+				$this->completeBalances = $this->query( 
+					array(
+						'command' => 'returnCompleteBalances'
+					)
+				);
+			return $this->completeBalances;
+		}
+
+		public function returnDepositAddresses() {
+			if( ! isset( $this->depositAddresses ) )
+				$this->depositAddresses = $this->query( 
+					array(
+						'command' => 'returnDepositAddresses'
+					)
+				);
+			return $this->depositAddresses;
+		}
+
+		public function generateNewAddress($currency) {		
+			return $this->query( 
+				array(
+					'command' => 'generateNewAddress',
+					'currency' => strtoupper($currency)
+				)
+			);
+		}
+
+		public function returnDepositsWithdrawals() {		
+			return $this->query( 
+				array(
+					'command' => 'returnDepositsWithdrawals',
+					'start' => 0,
+					'end' => time()
+				)
+			);
+		}
 		
-		public function get_open_orders($pair) {		
+		public function returnOpenOrders($currencyPair) {		
 			return $this->query( 
 				array(
 					'command' => 'returnOpenOrders',
-					'currencyPair' => strtoupper($pair)
+					'currencyPair' => strtoupper($currencyPair)
 				)
 			);
 		}
 		
-		public function get_my_trade_history($pair) {
+		public function returnTradeHistory($currencyPair) {
 			return $this->query(
 				array(
 					'command' => 'returnTradeHistory',
-					'currencyPair' => strtoupper($pair)
+					'currencyPair' => strtoupper($currencyPair)
 				)
 			);
 		}
 		
-		public function buy($pair, $rate, $amount) {
+		public function buy($currencyPair, $rate, $amount) {
 			return $this->query( 
 				array(
 					'command' => 'buy',	
-					'currencyPair' => strtoupper($pair),
+					'currencyPair' => strtoupper($currencyPair),
 					'rate' => $rate,
 					'amount' => $amount
 				)
 			);
 		}
 		
-		public function sell($pair, $rate, $amount) {
+		public function sell($currencyPair, $rate, $amount) {
 			return $this->query( 
 				array(
 					'command' => 'sell',	
-					'currencyPair' => strtoupper($pair),
+					'currencyPair' => strtoupper($currencyPair),
 					'rate' => $rate,
 					'amount' => $amount
 				)
 			);
 		}
 		
-		public function cancel_order($pair, $order_number) {
+		public function cancelOrder($currencyPair, $order_number) {
 			return $this->query( 
 				array(
 					'command' => 'cancelOrder',	
-					'currencyPair' => strtoupper($pair),
+					'currencyPair' => strtoupper($currencyPair),
 					'orderNumber' => $order_number
 				)
 			);
@@ -138,42 +209,123 @@
 				)
 			);
 		}
-		
-		public function get_trade_history($pair) {
-			$trades = $this->retrieveJSON($this->public_url.'?command=returnTradeHistory&currencyPair='.strtoupper($pair));
-			return $trades;
+
+		public function returnAvailableAccountBalances() {
+			return $this->query( 
+				array(
+					'command' => 'returnAvailableAccountBalances'
+				)
+			);
+		}
+
+		public function returnTradableBalances() {
+			return $this->query( 
+				array(
+					'command' => 'returnTradableBalances'
+				)
+			);
+		}
+
+		public function transferBalance($currency, $amount, $fromAccount, $toAccount) {
+			return $this->query( 
+				array(
+					'command' => 'withdraw',	
+					'currency' => strtoupper($currency),				
+					'amount' => $amount,
+					'address' => $address
+				)
+			);
+		}
+
+		public function marginBuy($currencyPair, $rate, $amount) {
+			return $this->query( 
+				array(
+					'command' => 'marginBuy',	
+					'currencyPair' => strtoupper($currencyPair),
+					'rate' => $rate,
+					'amount' => $amount
+				)
+			);
 		}
 		
-		public function get_order_book($pair) {
-			$orders = $this->retrieveJSON($this->public_url.'?command=returnOrderBook&currencyPair='.strtoupper($pair));
-			return $orders;
+		public function marginSell($currencyPair, $rate, $amount) {
+			return $this->query( 
+				array(
+					'command' => 'marginSell',	
+					'currencyPair' => strtoupper($currencyPair),
+					'rate' => $rate,
+					'amount' => $amount
+				)
+			);
 		}
-		
-		public function get_volume() {
-			$volume = $this->retrieveJSON($this->public_url.'?command=return24hVolume');
-			return $volume;
+
+		public function getMarginPosition($currencyPair) {
+			return $this->query( 
+				array(
+					'command' => 'getMarginPosition',
+					'currencyPair' => strtoupper($currencyPair)
+				)
+			);
 		}
-	
-		public function get_ticker($pair = "ALL") {
-			$pair = strtoupper($pair);
-			$prices = $this->retrieveJSON($this->public_url.'?command=returnTicker');
-			if($pair == "ALL"){
-				return $prices;
-			}else{
-				$pair = strtoupper($pair);
-				if(isset($prices[$pair])){
-					return $prices[$pair];
-				}else{
-					return array();
-				}
-			}
+
+		public function closeMarginPosition($currencyPair) {
+			return $this->query( 
+				array(
+					'command' => 'closeMarginPosition',
+					'currencyPair' => strtoupper($currencyPair)
+				)
+			);
 		}
-		
-		public function get_trading_pairs() {
-			$tickers = $this->retrieveJSON($this->public_url.'?command=returnTicker');
-			return array_keys($tickers);
+
+		public function createLoanOffer($currency, $amount, $duration, $autoRenew, $lendingRate) {
+			return $this->query( 
+				array(
+					'command' => 'createLoanOffer',
+					'currency' => strtoupper($currency),
+					'amount' => strtoupper($amount),
+					'duration' => strtoupper($duration),
+					'autoRenew' => strtoupper($autoRenew),
+					'lendingRate' => strtoupper($lendingRate)
+				)
+			);
 		}
-		
+
+		public function cancelLoanOffer($orderNumber) {
+			return $this->query( 
+				array(
+					'command' => 'cancelLoanOffer',
+					'orderNumber' => strtoupper($orderNumber)
+				)
+			);
+		}
+
+		public function returnOpenLoanOffers() {
+			return $this->query( 
+				array(
+					'command' => 'returnOpenLoanOffers'
+				)
+			);
+		}
+
+		public function returnActiveLoans() {
+			return $this->query( 
+				array(
+					'command' => 'returnActiveLoans'
+				)
+			);
+		}
+
+		public function toggleAutoRenew($orderNumber) {
+			return $this->query( 
+				array(
+					'command' => 'toggleAutoRenew',
+					'orderNumber' => strtoupper($orderNumber)
+				)
+			);
+		}
+
+
+				
 	}
 
 ?>

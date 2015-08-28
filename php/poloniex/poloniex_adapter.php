@@ -6,79 +6,77 @@
 			$this->exch = $Exch;
 		}
 
-		//$poloniex_ticker = $Poloniex->get_ticker();
-		//$poloniex_balances = $Poloniex->get_balances();
-		//$poloniex_total_btc_balance = $Poloniex->get_total_btc_balance();
-
-		//print_r( $poloniex_ticker );
-		//print_r( $poloniex_balances );
-		//print_r( $poloniex_total_btc_balance );
-
-		//echo "\nPoloniex Total Bitcoin Balance " . $poloniex_total_btc_balance . "\n";
-		//echo "Poloniex Available Bitcoin Balance " . $poloniex_balances['BTC'] . "\n";
-
-		//$Poloniex->list_detailed_info();
-		//$Poloniex->cancel_all_orders();
-		//$Poloniex->make_buy_orders();
-		//$Poloniex->make_sell_orders();
-
-
-		public function cancel($orderid="1") {
-		
+		public function cancel( $orderid="1", $opts = array() ) {
+			return $this->exch->cancelOrder( $opts['pair'], $orderid );
 		}
 		
 		public function buy($pair='BTC_LTC',$amount="1",$price="0.01",$type="LIMIT",$opts=array()) {
-		
+			return $this->exch->buy('btc_ltc','0.01','1');
 		}
 		
-		public function sell($pair='BTC_LTC',$amount="0.01",$price="500",$type="LIMIT",$opts=array()) {
-		
-		}
-
-		public function get_open_orders() {
-		
+		public function sell($pair='BTC_LTC',$amount="1",$price="0.02",$type="LIMIT",$opts=array()) {
+			return $this->exch->sell('btc_ltc','0.02','1');
 		}
 
+		public function get_open_orders( $pair = 'All' ) {
+			return $this->exch->returnOpenOrders( $pair );
+		}
+
+		//BTC_USD, BTC_LTC, LTC_USD, etc...
 		public function get_markets() {
-		
+			$markets = array_map( 'strtoupper', array_keys( $this->exch->returnTicker() ) );
+			return str_replace('_', '-', $markets );
 		}
 
+		//BTC, LTC, USD, etc...
 		public function get_currencies() {
-		
+			return array_map( 'strtoupper', array_keys( $this->exch->returnCurrencies() ) );
 		}
 		
 		public function unconfirmed_btc(){
-		
+			return [];
 		}
 		
 		public function bitcoin_deposit_address(){
-
+			return [];
 		}
 
-		public function get_ticker($ticker="BTC-LTC") {
-
+		public function get_ticker($pair = "ALL") {
 		}
-
+		
 		public function get_market_summary( $market = "BTC-LTC" ) {
-
+			$pair = strtoupper($pair);
+			$prices = $this->exch->returnTicker();
+			if(isset($prices[$pair]))
+				return $prices[$pair];
+			else
+				return array();
 		}
 
 		public function get_market_summaries() {
-
+			$markets = $this->exch->returnTicker();
+			$response = [];
+			foreach( $markets as $key => $market ) {
+				$market_summary = [];
+				$market_summary['pair'] = $key;
+				$market_summary = array_merge( $market_summary, $market );
+				array_push( $response, $market_summary );
+			}
+			return $response;
 		}
 
 		public function get_lendbook() {
-
+			return [];
 		}
 
 		public function get_book() {
-
+			return [];
 		}
 
 		public function get_lends() {
-
+			return [];
 		}
-		
+
 		public function get_total_btc_balance() {
 			$balances = $this->get_balances();
 			$prices = $this->get_ticker();
@@ -173,20 +171,19 @@
 		//_____Cancel all orders:
 		function cancel_all()
 		{
-			$get_ticker = $this->exch->get_ticker();
-
+			$get_ticker = $this->get_ticker();
+			$results = [];
 			foreach( $get_ticker as $key => $ticker ) {
 				$get_open_orders = $this->get_open_orders($key);
 				if( is_array( $get_open_orders ) ) {
 					foreach( $get_open_orders as $open_order ) {
-						$orderNumber = $open_order['orderNumber'];
-						if( ! is_null( $orderNumber ) ) {
-							echo "Cancelling order number $orderNumber with pair $key\n";
-							$this->exch->cancel_order($key, $orderNumber);
+						if( isset( $open_order['orderNumber'] ) ) {
+							array_push($results, $this->cancel($open_order['orderNumber'], array( 'pair' => $key ) ) );
 						}
 					}
 				}
 			}
+			return $results;
 		}
 
 		//_____Make decreasing buy orders from highest bid placed:
@@ -221,7 +218,7 @@
 						if( $total > 0.0001 ) {
 							echo "buying $key for $rate with a total of $amount\n";
 							$btc_cost = $btc_cost + $total;
-							print_r( $this->buy($key,$rate,$amount) );
+							print_r( $this->exch->buy($key,$rate,$amount) );
 						}
 					}
 					$x = $x - 3;
@@ -280,7 +277,7 @@
 								continue;
 							}
 							echo "selling $key for $rate with an amount of $amount and total $total \n";
-							print_r( $this->sell($key,$rate,$amount) );
+							print_r( $this->exch->sell($key,$rate,$amount) );
 						}
 					}
 					$x = $x + 4;

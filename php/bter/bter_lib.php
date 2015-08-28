@@ -13,8 +13,7 @@
 			$this->api_secret = $api_secret;
 			$this->nonce = time();
 		}
-	
-	
+
 		private function query($path, array $req = array()) {
 			$key = $this->api_key;
 			$secret = $this->api_secret;
@@ -30,8 +29,6 @@
 				'KEY: '.$key,
 				'SIGN: '.$sign,
 			);
-
-			//!!! please set Content-Type to application/x-www-form-urlencoded if it's not the default value
 
 			// curl handle (initialize if required)
 			static $ch = null;
@@ -58,59 +55,63 @@
 			return $dec;
 		}
 
-		 public function get_top_rate($pair, $type='BUY') {
-			$rate = 0;
-
-			// our curl handle (initialize if required)
-			static $ch = null;
-			if (is_null($ch)) {
-				$ch = curl_init();
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-				curl_setopt($ch, CURLOPT_USERAGENT, 
-					'Mozilla/4.0 (compatible; Bter PHP bot; '.php_uname('a').'; PHP/'.phpversion().')'
-					);
-			}
-			curl_setopt($ch, CURLOPT_URL, 'https://bter.com/api/1/depth/'.$pair);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-
-			// run the query
-			$res = curl_exec($ch);
-			if ($res === false) throw new Exception('Could not get reply: '.curl_error($ch));
-			//echo $res;
-			$dec = json_decode($res, true);
-			if (!$dec) throw new Exception('Invalid data: '.$res);
-			
-			if (strtoupper($type) == 'BUY') {
-				$r =  $dec['bids'][0];
-				$rate = $r[0];
-			} else  {
-				$r = end($dec['asks']);
-				$rate = $r[0];
-			}
-
-			return $rate;
+		//Public Functions:
+	
+		public function pairs() {
+			return json_decode( file_get_contents( $this->trading_url . '1/pairs' ), true );
 		}
 
-		public function orderlist()
-		{
-			return $this->query('1/private/orderlist');
+		public function marketinfo() {
+			return json_decode( file_get_contents( $this->trading_url . '1/marketinfo' ), true );
 		}
 
-		public function getorder($orderid)
-		{
-			return $this->query('1/private/getorder', array('order_id' => $orderid));
+		public function marketlist() {
+			return json_decode( file_get_contents( $this->trading_url . '1/marketlist' ), true );
 		}
 
-		public function cancelorder($orderid)
-		{
-			return $this->query('1/private/cancelorder', array('order_id' => $orderid));
+		public function tickers() {
+			return json_decode( file_get_contents( $this->trading_url . '1/tickers' ), true );
 		}
 
-		public function get_funds()
-		{
-			return $this->query('1/private/getfunds');
+		public function ticker( $curr_a = "BTC", $curr_b = "USD" ) {
+			return json_decode( file_get_contents( $this->trading_url . '1/ticker/'.$curr_a.'_'.$curr_b ), true );
 		}
 
+		public function depth( $curr_a = "BTC", $curr_b = "USD" ) {
+			return json_decode( file_get_contents( $this->trading_url . '1/depth/'.$curr_a.'_'.$curr_b ), true );
+		}
+
+		public function trade_history( $curr_a = "BTC", $curr_b = "USD" ) {
+			return json_decode( file_get_contents( $this->trading_url . '1/trade/'.$curr_a.'_'.$curr_b ), true );
+		}
+
+		//Private Functions:
+
+		public function getfunds() {
+			return $this->query( '1/private/getfunds' );
+		}
+
+		//array('pair' => 'BTC_USD', 'type' => 'BUY', 'rate' => '0.01', 'amount' => '0.01' )
+		public function placeorder( $arr = array() ) {
+			return $this->query( '1/private/placeorder', $arr );
+		}
+
+		//array( 'order_id' => '123' )
+		public function cancelorder( $arr = array() ) {
+			return $this->query( '1/private/cancelorder', $arr );
+		}
+
+		public function getorder( $arr = array( 'order_id' => '123' ) ) {
+			return $this->query( '1/private/getorder', $arr );
+		}
+
+		public function orderlist() {
+			return $this->query( '1/private/orderlist' );
+		}
+
+		public function mytrades( $arr = array( 'pair' => 'BTC_USD' ) ) {
+			return $this->query( '1/private/mytrades', $arr );
+		}
 
 	}
 ?>

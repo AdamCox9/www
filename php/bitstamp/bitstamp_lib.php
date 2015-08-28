@@ -64,8 +64,44 @@
 			return $this->query('ticker', array(), 'get');
 		}
 		
+		public function ticker_hour() {
+			return $this->query('ticker_hour', array(), 'get');
+		}
+		
+		function order_book($group=1){
+			return $this->query('order_book', array('group' => $group), 'get');
+		}
+
+		public function transactions($time='hour'){
+			return $this->query('transactions', array('time' => $time), 'get');
+		}
+
 		public function eur_usd() {
 			return $this->query('eur_usd', array(), 'get');
+		}
+
+		public function balance(){
+			return $this->query('balance');
+		}
+
+		public function user_transactions($time='hour'){
+			return $this->query('transactions', array('time' => $time), 'post');
+		}
+
+		public function open_orders(){
+			return $this->query('open_orders');
+		}
+
+		public function order_status(){
+			return $this->query('open_orders', array(), 'post');
+		}
+
+		public function cancel_order($id='0'){
+			return $this->query('cancel_order', array('id' => $id));
+		}
+
+		public function cancel_all_orders(){
+			return $this->query('cancel_all_orders', array(), 'post');
 		}
 
 		public function buy($amount="0.01", $price="0.01"){
@@ -76,32 +112,32 @@
 			return $this->query('sell', array('amount' => $amount, 'price' => $price));
 		}
 
-		public function transactions($time='hour'){
-			return $this->query('transactions', array('time' => $time), 'get');
+		public function withdrawal_requests(){
+			return $this->query('withdrawal_requests', array(), 'post');
 		}
-
-		function order_book($group=1){
-			return $this->query('order_book', array('group' => $group), 'get');
+		
+		public function bitcoin_withdrawal(){
+			return $this->query('bitcoin_withdrawal', array(), 'post');
 		}
-
-		public function open_orders(){
-			return $this->query('open_orders');
-		}
-
-		public function cancel_order($id='0'){
-			return $this->query('cancel_order', array('id' => $id));
-		}
-
-		public function balance(){
-			return $this->query('balance');
+		
+		public function bitcoin_deposit_address(){
+			return $this->query('bitcoin_deposit_address');
 		}
 
 		public function unconfirmed_btc(){
 			return $this->query('unconfirmed_btc');
 		}
 		
-		public function bitcoin_deposit_address(){
-			return $this->query('bitcoin_deposit_address');
+		public function ripple_withdrawal(){
+			return $this->query('ripple_withdrawal', array(), 'post');
 		}
+
+		public function ripple_deposit_address(){
+			return $this->query('ripple_deposit_address');
+		}
+
+		
+
+
 
 	}

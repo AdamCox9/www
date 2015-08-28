@@ -50,42 +50,45 @@
 			if ($res === false) 
 				throw new Exception('Curl error: '.curl_error($ch));
 			$dec = json_decode($res, true);
-			if (!$dec)
-				throw new Exception('Invalid data: '.$res);
+
 			return $dec;
 		}
 
+		//Public Functions:
+
 		public function pubticker($symbol="btcusd") {
-			return file_get_contents( $this->trading_url . "/pubticker/" . $symbol );
+			return json_decode( file_get_contents( $this->trading_url . "/pubticker/" . $symbol ), true );
 		}
 		
 		public function stats($symbol="btcusd") {
-			return file_get_contents( $this->trading_url . "/stats/" . $symbol );
+			return json_decode( file_get_contents( $this->trading_url . "/stats/" . $symbol ), true );
 		}
 		
 		public function lendbook($currency="btc") {
-			return file_get_contents( $this->trading_url . "/lendbook/" . $currency );
+			return json_decode( file_get_contents( $this->trading_url . "/lendbook/" . $currency ), true );
 		}
 		
 		public function book($symbol="btcusd") {
-			return file_get_contents( $this->trading_url . "/book/" . $symbol );
+			return json_decode( file_get_contents( $this->trading_url . "/book/" . $symbol ), true );
 		}
 		
 		public function trades($symbol="btcusd") {
-			return file_get_contents( $this->trading_url . "/trades/" . $symbol );
+			return json_decode( file_get_contents( $this->trading_url . "/trades/" . $symbol ), true );
 		}
 		
 		public function lends($currency="btc") {
-			return file_get_contents( $this->trading_url . "/lends/" . $currency );
+			return json_decode( file_get_contents( $this->trading_url . "/lends/" . $currency ), true );
 		}
 		
 		public function symbols() {
-			return file_get_contents( $this->trading_url . "/symbols" );
+			return json_decode( file_get_contents( $this->trading_url . "/symbols" ), true );
 		}
 		
 		public function symbols_details() {
-			return file_get_contents( $this->trading_url . "/symbols_details" );
+			return json_decode( file_get_contents( $this->trading_url . "/symbols_details" ), true );
 		}
+
+		//Authenticated Functions:
 
 		public function deposit_new($method="bitcoin",$wallet_name="exchange",$renew=0) {
 			return $this->query( "/deposit/new", array( "method" => $method, "wallet_name" => $wallet_name, "renew" => $renew ) );

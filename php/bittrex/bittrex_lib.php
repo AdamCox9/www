@@ -1,6 +1,6 @@
 <?PHP
 
-	//immplements https://bittrex.com/Home/Api
+	//implements https://bittrex.com/Home/Api
 
 	class bittrex {
 		protected $api_key;
@@ -20,11 +20,11 @@
 
 			$req['apikey'] = $key;
 			$req['nonce'] = $this->nonce++;
-			
+
 			$queryString = http_build_query($req, '', '&');
 			$requestUrl = $this->trading_url . $path . '?' . $queryString;	
 			$sign = hash_hmac('sha512', $requestUrl, $secret);
-			
+
 			static $ch = null;
 			
 			if (is_null($ch)) {
@@ -49,26 +49,73 @@
 			
 			return $dec;
 		}
-		public function get_markets() {
+		public function getmarkets() {
 			return $this->query("/public/getmarkets");
 		}
-		public function get_currencies() {
+		public function getcurrencies() {
 			return $this->query("/public/getcurrencies");
 		}
-		public function get_ticker( $arr=array("market"=>"BTC-LTC") ) {
+		public function getticker( $arr=array("market"=>"BTC-LTC") ) {
 			return $this->query("/public/getticker",$arr);
 		}
-		public function get_market_summaries() {
+		public function getmarketsummaries() {
 			return $this->query("/public/getmarketsummaries");
 		}
-		public function get_market_summary( $arr=array("market"=>"BTC-LTC") ) {
+		public function getmarketsummary( $arr=array("market"=>"BTC-LTC") ) {
 			return $this->query("/public/getmarketsummary",$arr);
 		}
-		public function get_open_orders() {
-			return $this->query("/market/getopenorders");
+		public function getorderbook( $arr = array( 'market' => 'BTC-LTC', 'type' => 'both', 'depth' => 20 ) ) {
+			return $this->query("/public/getorderbook", $arr);
 		}
-		public function cancel_order($arr = array("uuid" => '123' )) {
+		public function getmarkethistoy( $arr = array( 'market' => 'BTC-LTC', 'count' => 20 ) ) {
+			return $this->query("/public/getmarkethistory", $arr);
+		}
+		//$arr = array( 'market' => 'BTC-LTC', 'quantity' => '1', 'rate' => 1 )
+		public function market_buylimit( $arr = array() ) {
+			return $this->query( "/market/buylimit", $arr );
+		}
+		//$arr = array( 'market' => 'BTC-LTC', 'quantity' => '1', 'rate' => 1 )
+		public function market_buymarket( $arr ) {
+			return $this->query( "/market/buymarket", $arr );
+		}
+		//$arr = array( 'market' => 'BTC-LTC', 'quantity' => '1', 'rate' => 500 )
+		public function market_selllimit( $arr = array() ) {
+			return $this->query( "/market/selllimit", $arr );
+		}
+		//$arr = array( 'market' => 'BTC-LTC', 'quantity' => '1', 'rate' => 500 )
+		public function market_sellmarket( $arr = array() ) {
+			return $this->query( "/market/sellmarket", $arr );
+		}
+		public function market_cancel($arr = array("uuid" => '123' )) {
 			return $this->query("/market/cancel", $arr);
+		}
+		//$arr = array( 'market' => 'BTC-LTC' )
+		public function market_getopenorders( $arr = array() ) {
+			return $this->query( "/market/getopenorders", $arr );
+		}
+		public function account_getbalances() {
+			return $this->query("/account/getbalances");
+		}
+		public function account_getbalance( $arr = array( 'currency' => 'BTC' ) ) {
+			return $this->query("/account/getbalance",$arr);
+		}
+		public function account_getdepositaddress( $arr = array( 'currency' => 'BTC' ) ) {
+			return $this->query("/account/getdepositaddress",$arr);
+		}
+		public function account_withdraw( $arr = array( 'currency' => 'BTC' ) ) {
+			return $this->query("/account/withdraw",$arr);
+		}
+		public function account_getorder( $arr = array( 'uuid' => '123' ) ) {
+			return $this->query("/account/getorder",$arr);
+		}
+		public function account_getorderhistory( $arr = array( 'market' => 'BTC-LTC', 'count' => 10 ) ) {
+			return $this->query("/account/getorderhistory",$arr);
+		}
+		public function account_getwithdrawalhistory( $arr = array( 'market' => 'BTC-LTC', 'count' => 10 ) ) {
+			return $this->query("/account/getwithdrawalhistory",$arr);
+		}
+		public function account_getdeposithistory( $arr = array( 'market' => 'BTC-LTC', 'count' => 10 ) ) {
+			return $this->query("/account/getdeposithistory",$arr);
 		}
 	}
 ?>

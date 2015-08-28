@@ -6,83 +6,112 @@
 			$this->exch = $Exch;
 		}
 
-		public function cancel($orderid="1") {
-			$this->exch->cancelorder($orderid);
+		public function cancel( $orderid="1", $opts = array() ) {
+			return $this->exch->cancelorder( array( 'order_id' => $orderid ) );
 		}
 		
 		public function cancel_all() {
-			$json = $this->exch->orderlist();
+			$json = $this->get_open_orders();
 			$results = array();
 			foreach( $json['orders'] as $order ) {
-				$order['detailedInfo'] = $this->exch->cancel($order['id']);
+				$order['detailedInfo'] = $this->exch->cancelorder( array( 'order_id' => $order['id'] ) );
 				array_push($results,$order);
 			}
 			return $results;
 		}
 
 		public function buy($pair='BTC_LTC',$amount="1",$price="0.01",$type="LIMIT",$opts=array()) {
+			if( $pair == 'btcusd' ) {
+				$pair = 'ltc_btc';
+				$amount = '1';
+				$price = '0.01';
+			}
+			return $this->exch->placeorder( array('pair' => $pair, 'type' => 'BUY', 'rate' => $price, 'amount' => $amount ) );
 		}
 		
 		public function sell($pair='BTC_LTC',$amount="0.01",$price="500",$type="LIMIT",$opts=array()) {
+			if( $pair == 'btcusd' ) {
+				$pair = 'ltc_btc';
+				$amount = '1';
+				$price = '0.02';
+			}
+			return $this->exch->placeorder( array('pair' => $pair, 'type' => 'SELL', 'rate' => $price, 'amount' => $amount ) );
 		}
 
-		public function get_open_orders()
+		public function get_open_orders( $pair = 'btc_usd' )
 		{
 			$json = $this->exch->orderlist();
 
-			$orders = array();
+			/*$orders = array();
 			foreach( $json['orders'] as $order ) {
 				$order['detailedInfo'] = $this->exch->getorder($order['id']);
 				array_push($orders,$order);
-			}
-			return $orders;
+			}*/
+
+			return $json;
 		}
 
 		public function get_markets() {
-		
+			$markets = $this->exch->pairs();
+			$markets = str_replace('_', '-', $markets );
+			return array_map( 'strtoupper', $markets );
 		}
 
 		public function get_currencies() {
-		
+			$currencies = $this->exch->marketlist();
+			$response = [];
+			foreach( $currencies['data'] as $currency ) {
+				array_push( $response, $currency['symbol'] );
+			}
+			return array_map('strtoupper',$response);
 		}
 
 		public function unconfirmed_btc(){
-		
+			return [];
 		}
 		
 		public function bitcoin_deposit_address(){
-
+			return [];
 		}
 
 		public function get_ticker($ticker="BTC-LTC") {
-
+			return [];
 		}
 
 		public function get_market_summary( $market = "BTC-LTC" ) {
-
+			$market = explode( "-", strtolower( $market ) );
+			return $this->exch->ticker( $market[0], $market[1] );;
 		}
 
 		public function get_market_summaries() {
-
+			$tickers = $this->exch->tickers();
+			$response = [];
+			foreach( $tickers as $key => $ticker ) {
+				$market_summary = [];
+				$market_summary['pair'] = $key;
+				$market_summary = array_merge( $market_summary, $ticker );
+				array_push( $response, $market_summary );
+			}
+			return $response;
 		}
 
 		public function get_detailed_info() {
-
+			return [];
 		}
 
 		public function get_lendbook() {
-
+			return [];
 		}
 
 		public function get_book() {
-
+			return [];
 		}
 
 		public function get_lends() {
-
+			return [];
 		}
 
-		public function make_buy_orders()
+		/*public function make_buy_orders()
 		{
 			try {
 
@@ -205,8 +234,7 @@
 			} catch (Exception $e) {
 				echo "Error:".$e->getMessage();
 			}
-		}
-
+		}*/
 
 	}
 ?>
