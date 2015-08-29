@@ -86,10 +86,43 @@
 		public function get_market_summaries() {
 			$tickers = $this->exch->tickers();
 			$response = [];
-			foreach( $tickers as $key => $ticker ) {
-				$market_summary = [];
+			foreach( $tickers as $key => $market_summary ) {
 				$market_summary['pair'] = $key;
-				$market_summary = array_merge( $market_summary, $ticker );
+				$market_summary['exchange'] = "bter";
+
+				//TODO test these
+				$market_summary['mid'] = $market_summary['avg'];
+				unset( $market_summary['avg'] );
+				$market_summary['bid'] = $market_summary['buy'];
+				unset( $market_summary['buy'] );
+				$market_summary['ask'] = $market_summary['sell'];
+				unset( $market_summary['sell'] );
+				$market_summary['last_price'] = $market_summary['last'];
+				unset( $market_summary['last'] );
+
+				//TODO find these
+				$market_summary['volume'] = null;
+				$market_summary['base_volume'] = null;
+				$market_summary['vwap'] = null;
+
+				//TODO translate and/or add these
+				unset( $market_summary['result'] );
+				unset( $market_summary['rate_change_percentage'] );
+
+				//TODO won't these change?
+				unset( $market_summary['vol_dice'] );
+				unset( $market_summary['vol_nxt'] );
+
+				//TODO generate these
+				$market_summary['expiration'] = null;
+				$market_summary['initial_margin'] = null;
+				$market_summary['maximum_order_size'] = null;
+				$market_summary['minimum_margin'] = null;
+				$market_summary['minimum_order_size'] = null;
+				$market_summary['price_precision'] = null;
+				$market_summary['timestamp'] = null;
+				$market_summary['vwap'] = null;
+
 				array_push( $response, $market_summary );
 			}
 			return $response;

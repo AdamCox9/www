@@ -70,15 +70,50 @@
 		}
 
 		public function get_market_summary( $market = "BTC-LTC" ) {
-			$market = $this->exch->market( $market );
-			$market = $market['data'];
-			return $market;
+			$market_summary = $this->exch->market( $market );
+			$market_summary = $market_summary['data'];
+			return $market_summary;
 		}
 
 		public function get_market_summaries() {
-			$markets = $this->exch->markets();
-			$markets = $markets['data'];
-			return $markets;
+			$market_summaries = $this->exch->markets();
+			$market_summaries = $market_summaries['data'];
+			$response = [];
+			foreach( $market_summaries as $market_summary ) {
+
+				$market_summary['exchange'] = "cryptsy";
+
+				$market_summary['pair'] = $market_summary['label'];
+				$market_summary['volume'] = $market_summary['24hr']['volume'];
+				$market_summary['base_volume'] = $market_summary['24hr']['volume_btc'];
+				$market_summary['low'] = $market_summary['24hr']['price_low'];
+				$market_summary['high'] = $market_summary['24hr']['price_high'];
+				$market_summary['timestamp'] = $market_summary['last_trade']['timestamp'];
+				$market_summary['mid'] = $market_summary['last_trade']['price'];
+				$market_summary['bid'] = $market_summary['last_trade']['price'];
+				$market_summary['ask'] = $market_summary['last_trade']['price'];
+				$market_summary['last_price'] = $market_summary['last_trade']['price'];
+
+				unset( $market_summary['24hr'] );
+				unset( $market_summary['label'] );
+				unset( $market_summary['last_trade'] );
+				unset( $market_summary['maintenance_mode'] );
+				unset( $market_summary['verifiedonly'] );
+				unset( $market_summary['id'] );
+				unset( $market_summary['market_currency_id'] );
+				unset( $market_summary['coin_currency_id'] );
+
+				$market_summary['expiration'] = null;
+				$market_summary['initial_margin'] = null;
+				$market_summary['minimum_margin'] = null;
+				$market_summary['vwap'] = null;
+				$market_summary['price_precision'] = null;
+				$market_summary['maximum_order_size'] = null;
+				$market_summary['minimum_order_size'] = null;
+
+				array_push( $response, $market_summary );
+			}
+			return $response;
 		}
 
 		public function get_detailed_info() {

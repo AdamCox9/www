@@ -54,12 +54,39 @@
 		}
 
 		public function get_market_summaries() {
-			$markets = $this->exch->returnTicker();
+			$market_summaries = $this->exch->returnTicker();
 			$response = [];
-			foreach( $markets as $key => $market ) {
-				$market_summary = [];
+			foreach( $market_summaries as $key => $market_summary ) {
 				$market_summary['pair'] = $key;
-				$market_summary = array_merge( $market_summary, $market );
+				$market_summary['exchange'] = "poloniex";
+				$market_summary['last_price'] = $market_summary['last'];
+				$market_summary['ask'] = $market_summary['lowestAsk'];
+				$market_summary['bid'] = $market_summary['highestBid'];
+				$market_summary['base_volume'] = $market_summary['baseVolume'];
+				$market_summary['volume'] = $market_summary['quoteVolume'];
+				$market_summary['low'] = $market_summary['low24hr'];
+				$market_summary['high'] = $market_summary['high24hr'];
+
+				unset( $market_summary['last'] );
+				unset( $market_summary['lowestAsk'] );
+				unset( $market_summary['highestBid'] );
+				unset( $market_summary['baseVolume'] );
+				unset( $market_summary['quoteVolume'] );
+				unset( $market_summary['low24hr'] );
+				unset( $market_summary['high24hr'] );
+				unset( $market_summary['percentChange'] );
+				unset( $market_summary['isFrozen'] );
+
+				$market_summary['expiration'] = null;
+				$market_summary['initial_margin'] = null;
+				$market_summary['maximum_order_size'] = null;
+				$market_summary['mid'] = null;
+				$market_summary['minimum_margin'] = null;
+				$market_summary['minimum_order_size'] = null;
+				$market_summary['price_precision'] = null;
+				$market_summary['timestamp'] = null;
+				$market_summary['vwap'] = null;
+
 				array_push( $response, $market_summary );
 			}
 			return $response;

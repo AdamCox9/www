@@ -51,9 +51,29 @@
 		}
 
 		public function get_market_summary( $market = "BTC-LTC" ) {
-			$ticker = $this->exch->ticker();
-			$ticker['exchange'] = 'bitstamp';
-			return array( $ticker );
+
+			$market_summary = $this->exch->ticker();
+
+			//Set variables:
+			$market_summary['pair'] = $market;
+			$market_summary['exchange'] = 'bitstamp';
+
+			//TODO test these:
+			$market_summary['last_price'] = $market_summary['last'];
+			unset( $market_summary['last'] );
+
+			//TODO generate these:
+			$market_summary['expiration'] = null;
+			$market_summary['initial_margin'] = null;
+			$market_summary['maximum_order_size'] = null;
+			$market_summary['mid'] = null;
+			$market_summary['minimum_margin'] = null;
+			$market_summary['minimum_order_size'] = null;
+			$market_summary['price_precision'] = null;
+			$market_summary['vwap'] = null;
+			$market_summary['base_volume'] = null;
+
+			return array( $market_summary );
 		}
 
 		public function get_market_summaries() {

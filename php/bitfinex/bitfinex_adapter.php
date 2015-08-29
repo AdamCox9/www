@@ -80,6 +80,45 @@
 				LastPrice
 				Expiration
 				Timestamp
+
+
+Array
+(
+    [0] => ask
+    [1] => bid
+    [2] => exchange
+    [3] => expiration
+    [4] => high
+    [5] => initial_margin
+    [6] => last_price
+    [7] => low
+    [8] => maximum_order_size
+    [9] => mid
+    [10] => minimum_margin
+    [11] => minimum_order_size
+    [12] => pair
+    [13] => price_precision
+    [14] => timestamp
+    [15] => volume
+    [16] => vwap
+)
+
+*******BitstampAdapter******
+Array
+(
+    [0] => ask
+    [1] => bid
+    [2] => exchange
+    [3] => high
+    [4] => last
+    [5] => last_price
+    [6] => low
+    [7] => timestamp
+    [8] => volume
+    [9] => vwap
+)
+
+
 			*/
 		}
 
@@ -91,7 +130,13 @@
 			$response = array();
 			foreach( $market_summaries as $market_summary ) {
 				$pubticker = $this->exch->pubticker( $market_summary['pair'] );
+				$pubticker['pair'] = $market_summary['pair'];
 				$pubticker['exchange'] = 'bitfinex';
+
+				//TODO generate these somehow:
+				$pubticker['vwap'] = null;
+				$market_summary['base_volume'] = null;
+
 				array_push( $response, array_merge( $market_summary, $pubticker ) );
 			}
 			return $response;

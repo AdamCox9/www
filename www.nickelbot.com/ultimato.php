@@ -23,8 +23,22 @@
 			$currencies = array_merge( $currencies, $Adapter->get_currencies() );
 			$markets = array_merge( $markets, $Adapter->get_markets() );
 			$market_summaries = array_merge( $market_summaries, $Adapter->get_market_summaries() );
-	
-			print_r( array_keys( $market_summaries[sizeof($market_summaries)-1] ) );
+			$keys = array_keys( $market_summaries[sizeof($market_summaries)-1] );
+			if( ! isset( $prev_keys ) )
+				$prev_keys = $keys;
+
+			print_r( array_diff( $keys, $prev_keys ) );
+			print_r( array_diff( $prev_keys, $keys ) );
+
+			if( sizeof( array_diff( $keys, $prev_keys ) ) != sizeof( array() ) || sizeof( array_diff( $prev_keys, $keys ) ) != sizeof( array() ) ) {
+				sort( $keys );
+				print_r( $keys );
+				die( "\n\nArrays have different keys!\n\n" );
+			}
+			sort( $keys );
+			print_r( $keys );
+			$prev_keys = $keys;
+
 
 			//foreach( $markets as $market ) {
 				//$market_summary = $Adapter->get_market_summary( $market );
