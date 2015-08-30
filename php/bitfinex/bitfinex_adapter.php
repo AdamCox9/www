@@ -14,11 +14,16 @@
 			return $this->exch->order_cancel_all();
 		}
 
-		public function buy($pair='ltcbtc',$amount="1",$price="0.01",$type="LIMIT",$opts=array()) {
+		public function buy($pair='LTC-BTC',$amount=0,$price=0,$type="LIMIT",$opts=array()) {
+			$pair = strtolower( $pair );
+			$pair = str_replace( "-", "", $pair );
+			echo $pair;
 			return $this->exch->order_new($pair,$amount,$price,"bitfinex","buy",$type,true);
 		}
 		
-		public function sell($pair='ltcbtc',$amount="1",$price="100",$type="LIMIT",$opts=array()) {
+		public function sell($pair='LTC-BTC',$amount=0,$price=0,$type="LIMIT",$opts=array()) {
+			$pair = strtolower( $pair );
+			$pair = str_replace( "-", "", $pair );
 			return $this->exch->order_new($pair,$amount,$price,"bitfinex","sell",$type,true);
 		}
 
@@ -60,66 +65,6 @@
 						return $market_summary;
 			$this->get_market_summaries();
 			return $this->get_market_summary( $market );
-
-			/*
-				Pair
-				Cur1
-				Cur2
-				24HourVolume
-				24HourHigh
-				24HourLow
-				24HourChange
-				MinOrderSize
-				MaxOrderSize
-				PricePrecision
-				InitialMargin
-				MinimumMargin
-				Mid
-				Bid
-				Ask
-				LastPrice
-				Expiration
-				Timestamp
-
-
-Array
-(
-    [0] => ask
-    [1] => bid
-    [2] => exchange
-    [3] => expiration
-    [4] => high
-    [5] => initial_margin
-    [6] => last_price
-    [7] => low
-    [8] => maximum_order_size
-    [9] => mid
-    [10] => minimum_margin
-    [11] => minimum_order_size
-    [12] => pair
-    [13] => price_precision
-    [14] => timestamp
-    [15] => volume
-    [16] => vwap
-)
-
-*******BitstampAdapter******
-Array
-(
-    [0] => ask
-    [1] => bid
-    [2] => exchange
-    [3] => high
-    [4] => last
-    [5] => last_price
-    [6] => low
-    [7] => timestamp
-    [8] => volume
-    [9] => vwap
-)
-
-
-			*/
 		}
 
 		public function get_market_summaries() {
@@ -129,21 +74,28 @@ Array
 			$market_summaries = $this->exch->symbols_details();
 			$response = array();
 			foreach( $market_summaries as $market_summary ) {
-				$pubticker = $this->exch->pubticker( $market_summary['pair'] );
-				$pubticker['pair'] = $market_summary['pair'];
-				$pubticker['exchange'] = 'bitfinex';
-
-				//TODO generate these somehow:
-				$pubticker['vwap'] = null;
+				$market_summary = array_merge( $market_summary, $this->exch->pubticker( $market_summary['pair'] ) );
+				$market_summary['exchange'] = 'bitfinex';
+				$market_summary['pair'] = strtoupper( $market_summary['pair'] );
+				$market_summary['pair'] = substr_replace($market_summary['pair'], '-', 3, 0);
+				$market_summary['display_name'] = $market_summary['pair'];
+				//BUY ORDER: buy the base, sell the quote: BASE-QUOTE => BTC-USD=$232.32
+				//SELL ORDER: sell the base, buy the quote: BASE-QUOTE => BTC-USD=$232.32
+				$market_summary['minimum_order_size_quote'] = $market_summary['minimum_order_size'];
+				$market_summary['minimum_order_size'] = bcmul( $market_summary['minimum_order_size'], $market_summary['mid'], 8) + 0.05;
+				$market_summary['result'] = true;
+				$market_summary['created'] = null;
+				$market_summary['vwap'] = null;
 				$market_summary['base_volume'] = null;
+				$market_summary['frozen'] = null;
+				$market_summary['percent_change'] = null;
+				$market_summary['verified_only'] = null;
+				$market_summary['open_buy_orders'] = null;
+				$market_summary['open_sell_orders'] = null;
 
-				array_push( $response, array_merge( $market_summary, $pubticker ) );
+				array_push( $response, $market_summary );
 			}
 			return $response;
-		}
-
-		public function get_detailed_info() {
-			return [];
 		}
 
 		public function get_lendbook() {

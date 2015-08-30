@@ -80,52 +80,54 @@
 			$market_summaries = $market_summaries['result'];
 			$response = [];
 			foreach( $market_summaries as $market_summary ) {
-				
 				$market_summary['exchange'] = "bittrex";
-
-				//TODO test these:
 				$market_summary['pair'] = $market_summary['MarketName'];
-				unset( $market_summary['MarketName'] );
 				$market_summary['high'] = $market_summary['High'];
-				unset( $market_summary['High'] );
 				$market_summary['low'] = $market_summary['Low'];
-				unset( $market_summary['Low'] );
 				$market_summary['volume'] = $market_summary['Volume'];
-				unset( $market_summary['Volume'] );
 				$market_summary['last_price'] = $market_summary['Last'];
-				unset( $market_summary['Last'] );
 				$market_summary['base_volume'] = $market_summary['BaseVolume'];
-				unset( $market_summary['BaseVolume'] );
 				$market_summary['timestamp'] = $market_summary['TimeStamp'];
-				unset( $market_summary['TimeStamp'] );
 				$market_summary['bid'] = $market_summary['Bid'];
-				unset( $market_summary['Bid'] );
 				$market_summary['ask'] = $market_summary['Ask'];
-				unset( $market_summary['Ask'] );
-
-				//TODO add these:
-				unset( $market_summary['Created'] );
-				unset( $market_summary['PrevDay'] );
-				unset( $market_summary['OpenBuyOrders'] );
-				unset( $market_summary['OpenSellOrders'] );
-
-				//TODO calculate these:
+				$market_summary['display_name'] = $market_summary['MarketName'];
+				$market_summary['result'] = true;
+				$market_summary['created'] = $market_summary['Created'];
+				$market_summary['open_buy_orders'] = $market_summary['OpenBuyOrders'];
+				$market_summary['open_sell_orders'] = $market_summary['OpenSellOrders'];
+				$market_summary['percent_change'] = null;
+				$market_summary['frozen'] = null;
+				$market_summary['verified_only'] = null;
 				$market_summary['expiration'] = null;
 				$market_summary['initial_margin'] = null;
 				$market_summary['maximum_order_size'] = null;
 				$market_summary['mid'] = null;
 				$market_summary['minimum_margin'] = null;
-				$market_summary['minimum_order_size'] = null;
-				$market_summary['price_precision'] = null;
+				//BUY ORDER: buy the base, sell the quote: BASE-QUOTE => BTC-USD=$232.32
+				//SELL ORDER: sell the base, buy the quote: BASE-QUOTE => BTC-USD=$232.32
+				$market_summary['minimum_order_size'] = 0.00050000;
+				$market_summary['minimum_order_size_quote'] = null;
+				$market_summary['price_precision'] = 8;
 				$market_summary['vwap'] = null;
+
+				unset( $market_summary['OpenBuyOrders'] );
+				unset( $market_summary['OpenSellOrders'] );
+				unset( $market_summary['MarketName'] );
+				unset( $market_summary['High'] );
+				unset( $market_summary['Low'] );
+				unset( $market_summary['Volume'] );
+				unset( $market_summary['Last'] );
+				unset( $market_summary['BaseVolume'] );
+				unset( $market_summary['TimeStamp'] );
+				unset( $market_summary['Bid'] );
+				unset( $market_summary['Ask'] );
+				unset( $market_summary['Created'] );
+				unset( $market_summary['PrevDay'] );
+				
 				array_push( $response, $market_summary );
 			}
 
 			return $response;
-		}
-
-		public function get_detailed_info() {
-			return [];
 		}
 
 		public function get_lendbook() {

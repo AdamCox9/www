@@ -74,46 +74,48 @@
 				$market_summary['exchange'] = "coinbase";
 				$market_summary = array_merge( $market_summary, $this->exch->products_ticker( $market_summary['id'] ) );
 				$market_summary = array_merge( $market_summary, $this->exch->products_stats( $market_summary['id'] ) );
-
 				$market_summary['pair'] = $market_summary['id'];
-				unset( $market_summary['id'] );
-
+				//BUY ORDER: buy the base, sell the quote: BASE-QUOTE => BTC-USD=$232.32
+				//SELL ORDER: sell the base, buy the quote: BASE-QUOTE => BTC-USD=$232.32
+				$market_summary['minimum_order_size_quote'] = null;
 				$market_summary['minimum_order_size'] = $market_summary['base_min_size'];
-				unset( $market_summary['base_min_size'] );
 				$market_summary['maximum_order_size'] = $market_summary['base_max_size'];
-				unset( $market_summary['base_max_size'] );
 				$market_summary['timestamp'] = $market_summary['time'];
-				unset( $market_summary['time'] );
 				$market_summary['mid'] = $market_summary['price'];
 				$market_summary['last_price'] = $market_summary['price'];
 				$market_summary['ask'] = $market_summary['price'];
 				$market_summary['bid'] = $market_summary['price'];
-				unset( $market_summary['price'] );
 				$market_summary['price_precision'] = $market_summary['quote_increment'];
-				unset( $market_summary['quote_increment'] );
-
-				unset( $market_summary['base_currency'] );
-				unset( $market_summary['quote_currency'] );
-				unset( $market_summary['base_currency'] );
-				unset( $market_summary['display_name'] );
-				unset( $market_summary['open'] );
-				unset( $market_summary['size'] );
-				unset( $market_summary['open'] );
-				unset( $market_summary['trade_id'] );
-
+				$market_summary['result'] = true;
+				$market_summary['created'] = null;
+				$market_summary['percent_change'] = null;
+				$market_summary['frozen'] = null;
+				$market_summary['verified_only'] = null;
 				$market_summary['vwap'] = null;
 				$market_summary['base_volume'] = null;
 				$market_summary['expiration'] = null;
 				$market_summary['initial_margin'] = null;
 				$market_summary['minimum_margin'] = null;
+				$market_summary['open_buy_orders'] = null;
+				$market_summary['open_sell_orders'] = null;
+
+				unset( $market_summary['id'] );
+				unset( $market_summary['base_min_size'] );
+				unset( $market_summary['base_max_size'] );
+				unset( $market_summary['time'] );
+				unset( $market_summary['price'] );
+				unset( $market_summary['quote_increment'] );
+				unset( $market_summary['base_currency'] );
+				unset( $market_summary['quote_currency'] );
+				unset( $market_summary['base_currency'] );
+				unset( $market_summary['open'] );
+				unset( $market_summary['size'] );
+				unset( $market_summary['open'] );
+				unset( $market_summary['trade_id'] );
 
 				array_push( $response, $market_summary );
 			}
 			return $response;
-		}
-
-		public function get_detailed_info() {
-			return [];
 		}
 
 		public function get_lendbook() {

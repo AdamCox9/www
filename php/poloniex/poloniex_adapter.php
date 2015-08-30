@@ -10,12 +10,16 @@
 			return $this->exch->cancelOrder( $opts['pair'], $orderid );
 		}
 		
-		public function buy($pair='BTC_LTC',$amount="1",$price="0.01",$type="LIMIT",$opts=array()) {
-			return $this->exch->buy('btc_ltc','0.01','1');
+		public function buy($pair='BTC-LTC',$amount=0,$price=0,$type="LIMIT",$opts=array()) {
+			$pair = strtolower( $pair );
+			$pair = str_replace( "-", "_", $pair );
+			return $this->exch->buy($pair,$price,$amount);
 		}
 		
-		public function sell($pair='BTC_LTC',$amount="1",$price="0.02",$type="LIMIT",$opts=array()) {
-			return $this->exch->sell('btc_ltc','0.02','1');
+		public function sell($pair='BTC-LTC',$amount=0,$price=0,$type="LIMIT",$opts=array()) {
+			$pair = strtolower( $pair );
+			$pair = str_replace( "-", "_", $pair );
+			return $this->exch->sell($pair,$price,$amount);
 		}
 
 		public function get_open_orders( $pair = 'All' ) {
@@ -66,6 +70,32 @@
 				$market_summary['volume'] = $market_summary['quoteVolume'];
 				$market_summary['low'] = $market_summary['low24hr'];
 				$market_summary['high'] = $market_summary['high24hr'];
+				$market_summary['display_name'] = $market_summary['pair'];
+				$market_summary['percent_change'] = $market_summary['percentChange'];
+				$market_summary['frozen'] = $market_summary['isFrozen'];
+				$market_summary['result'] = true;
+				$market_summary['created'] = null;
+				$market_summary['verified_only'] = null;
+				$market_summary['expiration'] = null;
+				$market_summary['initial_margin'] = null;
+				$market_summary['maximum_order_size'] = null;
+				$market_summary['mid'] = null;
+				$market_summary['minimum_margin'] = null;
+				//BUY ORDER: buy the base, sell the quote: BASE-QUOTE => BTC-USD=$232.32
+				//SELL ORDER: sell the base, buy the quote: BASE-QUOTE => BTC-USD=$232.32
+				if( strpos( $market_summary['pair'], "XMR_" ) !== FALSE )
+					$market_summary['minimum_order_size'] = '0.01100000';
+				if( strpos( $market_summary['pair'], "USDT_" ) !== FALSE )
+					$market_summary['minimum_order_size'] = '0.01100000';
+				if( strpos( $market_summary['pair'], "BTC_" ) !== FALSE )
+					$market_summary['minimum_order_size'] = '0.00051000';
+
+				$market_summary['minimum_order_size_quote'] = null;
+				$market_summary['price_precision'] = null;
+				$market_summary['timestamp'] = null;
+				$market_summary['vwap'] = null;
+				$market_summary['open_buy_orders'] = null;
+				$market_summary['open_sell_orders'] = null;
 
 				unset( $market_summary['last'] );
 				unset( $market_summary['lowestAsk'] );
@@ -76,16 +106,6 @@
 				unset( $market_summary['high24hr'] );
 				unset( $market_summary['percentChange'] );
 				unset( $market_summary['isFrozen'] );
-
-				$market_summary['expiration'] = null;
-				$market_summary['initial_margin'] = null;
-				$market_summary['maximum_order_size'] = null;
-				$market_summary['mid'] = null;
-				$market_summary['minimum_margin'] = null;
-				$market_summary['minimum_order_size'] = null;
-				$market_summary['price_precision'] = null;
-				$market_summary['timestamp'] = null;
-				$market_summary['vwap'] = null;
 
 				array_push( $response, $market_summary );
 			}
@@ -141,69 +161,16 @@
 			return $tot_btc;
 		}
 
-		function get_detailed_info()
-		{
-			$total_volume = 0;
-
-			$tickers = $this->get_ticker();
-			$balances = $this->get_balances();
-
-			foreach( $tickers as $pair => $ticker ) {
-				$open_orders = $this->get_open_orders($pair);
-				print_r( $open_orders );
-
-				$my_trade_history = $this->get_my_trade_history($pair);
-				print_r( $my_trade_history );
-
-				$last = $ticker['last'];
-				$lowestAsk = $ticker['lowestAsk'];
-				$highestBid = $ticker['highestBid'];
-				$percentChange = $ticker['percentChange'];
-				$baseVolume = $ticker['baseVolume'];
-				$quoteVolume = $ticker['quoteVolume'];
-				$isFrozen = $ticker['isFrozen'];
-				$high24hr = $ticker['high24hr'];
-				$low24hr = $ticker['low24hr'];
-
-				$total_volume += $baseVolume;
-
-				$currency = explode("_", $pair);
-				$currency0 = $currency[0];
-				$currency1 = $currency[1];
-				$balance = $balances[$currency1];
-
-				echo "last $last\n";
-				echo "lowestAsk $lowestAsk\n";
-				echo "highestBid $highestBid\n";
-				echo "percentChange $percentChange\n";
-				echo "baseVolume $baseVolume\n";
-				echo "quoteVolume $quoteVolume\n";
-				echo "isFrozen $isFrozen\n";
-				echo "high24hr $high24hr\n";
-				echo "low24hr $low24hr\n";
-				echo "pair $pair\n";
-				echo "currency0 $currency0\n";
-				echo "currency1 $currency1\n";
-				echo "balance $balance\n";
-				echo "******************\n";
-
-			}
-
-			echo "******************\n";
-			echo "Poloniex Total BTC Volume $total_volume\n";
-			echo "\n\n";
-
-		}
-
 		//_____Cancel all orders:
 		function cancel_all()
 		{
-			$get_ticker = $this->get_ticker();
+			$pairs = $this->get_markets();
 			$results = [];
-			foreach( $get_ticker as $key => $ticker ) {
-				$get_open_orders = $this->get_open_orders($key);
-				if( is_array( $get_open_orders ) ) {
-					foreach( $get_open_orders as $open_order ) {
+			foreach( $pairs as $key ) {
+				$key = str_replace( "-", "_", $key );
+				$open_orders = $this->get_open_orders($key);
+				if( is_array( $open_orders ) ) {
+					foreach( $open_orders as $open_order ) {
 						if( isset( $open_order['orderNumber'] ) ) {
 							array_push($results, $this->cancel($open_order['orderNumber'], array( 'pair' => $key ) ) );
 						}
@@ -211,108 +178,6 @@
 				}
 			}
 			return $results;
-		}
-
-		//_____Make decreasing buy orders from highest bid placed:
-		function make_buy_orders()
-		{
-			$get_ticker = $this->get_ticker();
-			global $total_volume;
-
-			$btc_cost = 0;
-			foreach( $get_ticker as $key => $ticker ) {
-				$highestBid = $ticker['highestBid'];
-				$baseVolume = $ticker['baseVolume'];
-				$percentChange = $ticker['percentChange'];
-				$percentVolume = $baseVolume / $total_volume;
-
-				echo "\n\n$key has $percentVolume% $baseVolume/$total_volume\n";
-
-				$x = 100;
-				while( $x > 80 ) {
-					if( $highestBid > 0 ) {
-						$rate = bcmul($highestBid,$x/100,32);
-						$amount = bcdiv((100-$x)*0.0001,$rate,32);
-						if( $percentVolume > 0.01 ) {
-							$amount = bcmul($amount, $percentVolume, 32);
-							$amount = bcmul($amount, 150, 32);
-						}
-						echo "\n\n$percentChange**************\n\n";
-						if( $percentChange < -0.20 ) {
-							$amount = $amount * 10 * $percentChange * -1;
-						}
-						$total = $rate * $amount;
-						if( $total > 0.0001 ) {
-							echo "buying $key for $rate with a total of $amount\n";
-							$btc_cost = $btc_cost + $total;
-							print_r( $this->exch->buy($key,$rate,$amount) );
-						}
-					}
-					$x = $x - 3;
-				}
-				$rate = '0.00000001'; //maybe set to 1% or 5%?
-				$amount = '50000';
-				$total = bcmul( $rate, $amount, 32 );
-				$btc_cost = $btc_cost + $total;
-				echo "\nmin buy $key for $rate with an amount of $amount and total $total\n";
-				print_r( $this->buy($key,$rate,$amount) );
-
-			}
-			echo "\n\nThe total cost is $btc_cost bitcoins.\n\n";
-		}
-
-		//_____Make increasing sell orders from lowest ask placed:
-		public function make_sell_orders()
-		{
-			$get_ticker = $this->get_ticker();
-			$get_balances = $this->get_balances();
-
-			$btc_gain = 0;
-			$xmr_gain = 0;
-			$usdt_gain = 0;
-			foreach( $get_ticker as $key => $ticker ) {
-				$lowestAsk = $ticker['lowestAsk'];
-				$currency = explode("_", $key);
-				$balance = $get_balances[$currency[1]];
-				$percentChange = $ticker['percentChange'];
-
-				echo "Total Balance: $balance\n";
-
-				$potential_sale = 0;
-				$x = 1;
-				while( $x < 50 ) {
-					if( $lowestAsk > 0 ) {
-						$rate = bcmul($lowestAsk, 1+$x/100, 32);
-						$amount = bcmul($balance,$x/100,32);
-						$potential_sale = $potential_sale + $amount;
-						$total = bcmul( $rate, $amount, 32 );
-						if( $percentChange > 0.1 ) {
-							$amount = $amount * 10 * $percentChange;
-						}
-
-						if( $amount > 0 && $rate > 0 && $total > 0.0001 ) {
-							if( $currency[0] == 'BTC' )
-								$btc_gain = $btc_gain + $total;
-							if( $currency[0] == 'XMR' ) {
-								$xmr_gain = $xmr_gain + $total;
-								$x = $x + 2;
-								continue;
-							}
-							if( $currency[0] == 'USDT' ) {
-								$usdt_gain = $usdt_gain + $total;
-								$x = $x + 2;
-								continue;
-							}
-							echo "selling $key for $rate with an amount of $amount and total $total \n";
-							print_r( $this->exch->sell($key,$rate,$amount) );
-						}
-					}
-					$x = $x + 4;
-				}
-				echo "Potential Sale: $potential_sale\n";
-
-			}
-			echo "\n\nThe potential gain is $btc_gain bitcoin $xmr_gain monero $usdt_gain usdt.\n\n";
 		}
 
 	}

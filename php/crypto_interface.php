@@ -37,8 +37,6 @@
 		//Return array of each market summary:
 		public function get_market_summaries();
 		
-
-		public function get_detailed_info();
 		public function get_lendbook();
 		public function get_book();
 		public function get_lends();

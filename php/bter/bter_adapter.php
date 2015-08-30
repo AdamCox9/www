@@ -86,50 +86,63 @@
 		public function get_market_summaries() {
 			$tickers = $this->exch->tickers();
 			$response = [];
+
+			$market_info = $this->exch->marketinfo();
+			$market_info = $market_info['pairs'];
+			$markets = [];
+			foreach( $market_info as $market ) {
+				$key = array_keys( $market );
+				$key = $key[0];
+				$markets[$key] = $market[$key];
+			}
+
 			foreach( $tickers as $key => $market_summary ) {
 				$market_summary['pair'] = $key;
 				$market_summary['exchange'] = "bter";
-
-				//TODO test these
+				$market_summary = array_merge( $market_summary, $markets[$key] );
+				$curs = explode( "_", $key );
+				$cur1 = $curs[0];
+				$cur2 = $curs[1];
 				$market_summary['mid'] = $market_summary['avg'];
-				unset( $market_summary['avg'] );
 				$market_summary['bid'] = $market_summary['buy'];
-				unset( $market_summary['buy'] );
 				$market_summary['ask'] = $market_summary['sell'];
-				unset( $market_summary['sell'] );
 				$market_summary['last_price'] = $market_summary['last'];
-				unset( $market_summary['last'] );
-
-				//TODO find these
-				$market_summary['volume'] = null;
-				$market_summary['base_volume'] = null;
+				$market_summary['display_name'] = $market_summary['pair'];
+				$market_summary['percent_change'] = $market_summary['rate_change_percentage'];
+				$market_summary['volume'] = $market_summary['vol_'.$cur1];
+				$market_summary['base_volume'] = $market_summary['vol_'.$cur2];
+				$market_summary['created'] = null;
+				$market_summary['open_buy_orders'] = null;
+				$market_summary['open_sell_orders'] = null;
 				$market_summary['vwap'] = null;
-
-				//TODO translate and/or add these
-				unset( $market_summary['result'] );
-				unset( $market_summary['rate_change_percentage'] );
-
-				//TODO won't these change?
-				unset( $market_summary['vol_dice'] );
-				unset( $market_summary['vol_nxt'] );
-
-				//TODO generate these
+				$market_summary['frozen'] = null;
 				$market_summary['expiration'] = null;
+				$market_summary['verified_only'] = null;
 				$market_summary['initial_margin'] = null;
 				$market_summary['maximum_order_size'] = null;
 				$market_summary['minimum_margin'] = null;
-				$market_summary['minimum_order_size'] = null;
-				$market_summary['price_precision'] = null;
+				//BUY ORDER: buy the base, sell the quote: BASE-QUOTE => BTC-USD=$232.32
+				//SELL ORDER: sell the base, buy the quote: BASE-QUOTE => BTC-USD=$232.32
+				$market_summary['minimum_order_size_quote'] = null;
+				$market_summary['minimum_order_size'] = $market_summary['min_amount'];
+				$market_summary['price_precision'] = $market_summary['decimal_places'];
 				$market_summary['timestamp'] = null;
 				$market_summary['vwap'] = null;
+
+				unset( $market_summary['fee'] );
+				unset( $market_summary['min_amount'] );
+				unset( $market_summary['avg'] );
+				unset( $market_summary['decimal_places'] );
+				unset( $market_summary['buy'] );
+				unset( $market_summary['sell'] );
+				unset( $market_summary['last'] );
+				unset( $market_summary['rate_change_percentage'] );
+				unset( $market_summary['vol_'.$cur1] );
+				unset( $market_summary['vol_'.$cur2] );
 
 				array_push( $response, $market_summary );
 			}
 			return $response;
-		}
-
-		public function get_detailed_info() {
-			return [];
 		}
 
 		public function get_lendbook() {
@@ -143,131 +156,6 @@
 		public function get_lends() {
 			return [];
 		}
-
-		/*public function make_buy_orders()
-		{
-			try {
-
-				$json = file_get_contents('http://data.bter.com/api/1/marketinfo');
-				$json = json_decode( $json );
-				
-				foreach( $json->pairs as $pairs ) {
-					print_r( $pairs );
-					foreach( $pairs as $key => $value ) {
-						$pair = $key;
-						$key = explode("_",$key);
-						$buying = $key[0];
-						$buyingWith = $key[1];
-						$type = 'buy';
-						$min_amount = $value->min_amount;
-
-						if( $buyingWith === "btc" ) {
-							$min_amount = "0.0001";
-						} else if( $buyingWith === "ltc" ) {
-							$min_amount = "0.1";
-							continue;
-						} else if( $buyingWith === "cny" ) {
-							$min_amount = "0.5";
-							continue;
-						} else if( $buyingWith === "usd" ) {
-							continue;
-						} else if( $buyingWith === "nxt" ) {
-							$min_amount = "10";
-							continue;
-						} else {
-							echo "Unrecognized currency to buy with $buyingWith";
-							continue;
-						}
-
-						$decimal_places = 32;//$value->decimal_places;
-						$rate = '0.00000008';//bcmul(get_top_rate($pair, $type),"1.01",$decimal_places);
-						$amount = '4000';//bcmul(bcdiv($min_amount,$rate,$decimal_places),"12",$decimal_places);
-
-						//$amount = 
-
-						$go = true;
-						while( $go ) {
-							$total = bcmul($amount,$rate,$decimal_places);
-							echo "Buying $amount $buying with $buyingWith for $rate with total of $total.\n";
-							//_____make buy order
-							$response =	$this->query('1/private/placeorder', 
-														array(
-															'pair' => "$pair",
-															'type' => "$type",
-															'rate' => "$rate",
-															'amount' => "$amount",
-														)
-													);
-							print_r( $response );
-							if( $response['code'] == 21 || $response['code'] == 19 || $response['code'] == 12 ){
-								$go = false;
-							}
-							if( $response['code'] == 0 ) {
-								var_dump(query('1/private/getorder', array('order_id' => $response['order_id'])));
-								$go = false;
-							}
-							if( $response['code'] == 20 ) {
-								echo "Increasing amount.\n";
-								$amount = $amount * 10;
-								$go = false;
-							}
-						}
-						//sleep(2);
-
-					}
-				}
-
-			} catch (Exception $e) {
-				echo "Error:".$e->getMessage();
-			}
-		}
-
-		public function make_sell_orders()
-		{
-
-
-			try {
-
-				$funds = get_funds();
-				$funds = $funds['available_funds'];
-
-				$json = file_get_contents('http://data.bter.com/api/1/marketlist');
-				$json = json_decode( $json );
-				
-				foreach( $json->data as $pair ) {
-					$key = $pair->pair;
-					$key = explode("_",$key);
-					$selling = $key[0];
-					$sellingWith = $key[1];
-					$type = 'sell';
-					if( isset( $funds[strtoupper($selling)] ) )
-						$amount = $funds[strtoupper($selling)];
-					else
-						$amount = 0;
-
-					$decimal_places = 32;//$value->decimal_places;
-					$rate = 3 * $pair->rate;//bcmul(get_top_rate($pair, $type),"1.01",$decimal_places);
-
-					$total = bcmul($amount,$rate,$decimal_places);
-					if( $amount > 0 ) {
-						echo "Selling $amount $selling with $sellingWith for $rate with total of $total.\n";
-						
-						$response =	$this->query('1/private/placeorder', 
-													array(
-														'pair' => $pair->pair,
-														'type' => "$type",
-														'rate' => "$rate",
-														'amount' => "$amount",
-													)
-												);
-
-					}
-				}
-
-			} catch (Exception $e) {
-				echo "Error:".$e->getMessage();
-			}
-		}*/
 
 	}
 ?>

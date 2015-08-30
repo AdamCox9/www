@@ -50,38 +50,42 @@
 			return [];
 		}
 
-		public function get_market_summary( $market = "BTC-LTC" ) {
+		public function get_market_summary( $market = "BTC-USD" ) {
 
 			$market_summary = $this->exch->ticker();
 
 			//Set variables:
 			$market_summary['pair'] = $market;
 			$market_summary['exchange'] = 'bitstamp';
-
-			//TODO test these:
+			$market_summary['display_name'] = $market;
 			$market_summary['last_price'] = $market_summary['last'];
-			unset( $market_summary['last'] );
-
-			//TODO generate these:
+			$market_summary['mid'] = ( $market_summary['ask'] + $market_summary['bid'] ) / 2;
+			$market_summary['result'] = true;
+			$market_summary['created'] = null;
+			$market_summary['frozen'] = null;
+			$market_summary['percent_change'] = null;
+			$market_summary['verified_only'] = null;
 			$market_summary['expiration'] = null;
 			$market_summary['initial_margin'] = null;
 			$market_summary['maximum_order_size'] = null;
-			$market_summary['mid'] = null;
 			$market_summary['minimum_margin'] = null;
-			$market_summary['minimum_order_size'] = null;
-			$market_summary['price_precision'] = null;
+			//BUY ORDER: buy the base, sell the quote: BASE-QUOTE => BTC-USD=$232.32
+			//SELL ORDER: sell the base, buy the quote: BASE-QUOTE => BTC-USD=$232.32
+			$market_summary['minimum_order_size_quote'] = 2000; //minimum amount of quote currency
+			$market_summary['minimum_order_size'] = bcdiv( $market_summary['minimum_order_size_quote'], $market_summary['mid'], 8 );
+			$market_summary['price_precision'] = 2;
 			$market_summary['vwap'] = null;
 			$market_summary['base_volume'] = null;
+			$market_summary['open_buy_orders'] = null;
+			$market_summary['open_sell_orders'] = null;
+
+			unset( $market_summary['last'] );
 
 			return array( $market_summary );
 		}
 
 		public function get_market_summaries() {
-			return $this->get_market_summary( "BTC-LTC" );
-		}
-
-		public function get_detailed_info() {
-			return [];
+			return $this->get_market_summary( "BTC-USD" );
 		}
 
 		public function get_lendbook() {

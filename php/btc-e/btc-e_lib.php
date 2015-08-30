@@ -62,9 +62,22 @@
 
 		//Public Functions:
 
+		public function info($ticker) {
+			return json_decode( file_get_contents( 'https://btc-e.com/api/3/info/' . $ticker ), true );
+		}
+
 		public function ticker($ticker) {
 			return json_decode( file_get_contents( 'https://btc-e.com/api/3/ticker/' . $ticker ), true );
 		}
+
+		public function depth($ticker) {
+			return json_decode( file_get_contents( 'https://btc-e.com/api/3/depth/' . $ticker ), true );
+		}
+
+		public function trades($ticker) {
+			return json_decode( file_get_contents( 'https://btc-e.com/api/3/trades/' . $ticker ), true );
+		}
+
 
 		//Authenticated Functions:
 

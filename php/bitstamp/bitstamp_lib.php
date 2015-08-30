@@ -136,8 +136,4 @@
 			return $this->query('ripple_deposit_address');
 		}
 
-		
-
-
-
 	}

@@ -80,9 +80,7 @@
 			$market_summaries = $market_summaries['data'];
 			$response = [];
 			foreach( $market_summaries as $market_summary ) {
-
 				$market_summary['exchange'] = "cryptsy";
-
 				$market_summary['pair'] = $market_summary['label'];
 				$market_summary['volume'] = $market_summary['24hr']['volume'];
 				$market_summary['base_volume'] = $market_summary['24hr']['volume_btc'];
@@ -93,31 +91,37 @@
 				$market_summary['bid'] = $market_summary['last_trade']['price'];
 				$market_summary['ask'] = $market_summary['last_trade']['price'];
 				$market_summary['last_price'] = $market_summary['last_trade']['price'];
-
-				unset( $market_summary['24hr'] );
-				unset( $market_summary['label'] );
-				unset( $market_summary['last_trade'] );
-				unset( $market_summary['maintenance_mode'] );
-				unset( $market_summary['verifiedonly'] );
-				unset( $market_summary['id'] );
-				unset( $market_summary['market_currency_id'] );
-				unset( $market_summary['coin_currency_id'] );
-
+				$market_summary['frozen'] = $market_summary['maintenance_mode'];
+				$market_summary['verified_only'] = $market_summary['verifiedonly'];
+				$market_summary['display_name'] = $market_summary['label'];
+				$market_summary['result'] = true;
+				$market_summary['created'] = null;
+				$market_summary['percent_change'] = null;
 				$market_summary['expiration'] = null;
 				$market_summary['initial_margin'] = null;
 				$market_summary['minimum_margin'] = null;
 				$market_summary['vwap'] = null;
 				$market_summary['price_precision'] = null;
 				$market_summary['maximum_order_size'] = null;
-				$market_summary['minimum_order_size'] = null;
+				//BUY ORDER: buy the base, sell the quote: BASE-QUOTE => BTC-USD=$232.32
+				//SELL ORDER: sell the base, buy the quote: BASE-QUOTE => BTC-USD=$232.32
+				$market_summary['minimum_order_size'] = 0.00050000;
+				$market_summary['minimum_order_size_quote'] = null;
+				$market_summary['open_buy_orders'] = null;
+				$market_summary['open_sell_orders'] = null;
+
+				unset( $market_summary['24hr'] );
+				unset( $market_summary['label'] );
+				unset( $market_summary['last_trade'] );
+				unset( $market_summary['verifiedonly'] );
+				unset( $market_summary['maintenance_mode'] );
+				unset( $market_summary['id'] );
+				unset( $market_summary['market_currency_id'] );
+				unset( $market_summary['coin_currency_id'] );
 
 				array_push( $response, $market_summary );
 			}
 			return $response;
-		}
-
-		public function get_detailed_info() {
-			return [];
 		}
 
 		public function get_lendbook() {
