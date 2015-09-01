@@ -21,16 +21,16 @@
 			return $results;
 		}
 
-		public function buy($pair='BTC_USD',$amount="1",$price="0.01",$type="LIMIT",$opts=array()) {
-			if( strtolower($pair) == "BTCUSD" )
-				$pair = "BTC_USD";
-			return $this->exch->Trade( array( 'pair' => strtolower($pair), 'type' => 'buy', 'amount' => $amount, 'rate' => $price ) );
+		public function buy($pair='BTC-USD',$amount="0",$price="0",$type="LIMIT",$opts=array()) {
+			$pair = strtolower( $pair );
+			$pair = str_replace( "-", "_", $pair );
+			return $this->exch->Trade( array( 'pair' => $pair, 'type' => 'buy', 'amount' => $amount, 'rate' => (float)$price ) );
 		}
 		
-		public function sell($pair='BTC_USD',$amount="0.01",$price="500",$type="LIMIT",$opts=array()) {
-			if( strtolower($pair) == "BTCUSD" )
-				$pair = "BTC_USD";
-			return $this->exch->Trade( array( 'pair' => strtolower($pair), 'type' => 'sell', 'amount' => $amount, 'rate' => $price ) );
+		public function sell($pair='BTC-USD',$amount="0",$price="0",$type="LIMIT",$opts=array()) {
+			$pair = strtolower( $pair );
+			$pair = str_replace( "-", "_", $pair );
+			return $this->exch->Trade( array( 'pair' => $pair, 'type' => 'sell', 'amount' => $amount, 'rate' => (float)$price ) );
 		}
 
 		public function get_open_orders( $pair = 'All' ) {
@@ -101,11 +101,11 @@
 				$market_summary['timestamp'] = $info['server_time'];
 				$info = $info['pairs'][$key];
 				$market_summary = array_merge( $market_summary, $info );
-
-				$market_summary['volume'] = $market_summary['vol'];
-				$market_summary['mid'] = $market_summary['avg'];
-				$market_summary['bid'] = $market_summary['buy'];
 				$market_summary['ask'] = $market_summary['sell'];
+				$market_summary['bid'] = $market_summary['buy'];
+				$market_summary['quote_volume'] = $market_summary['vol'];
+				$market_summary['mid'] = $market_summary['avg'];
+				$market_summary['base_volume'] = bcdiv( $market_summary['quote_volume'], $market_summary['mid'], 32 );
 				$market_summary['last_price'] = $market_summary['last'];
 				$market_summary['display_name'] = $market_summary['pair'];
 				$market_summary['result'] = true;
@@ -115,18 +115,15 @@
 				$market_summary['percent_change'] = null;
 				$market_summary['frozen'] = $market_summary['hidden'];
 				$market_summary['verified_only'] = null;
-				$market_summary['ask'] = null;
-				$market_summary['base_volume'] = null;
 				$market_summary['initial_margin'] = null;
 				$market_summary['expiration'] = null;
 				$market_summary['maximum_order_size'] = null;
 				$market_summary['price_precision'] = $market_summary['decimal_places'];
-				//BUY ORDER: buy the base, sell the quote: BASE-QUOTE => BTC-USD=$232.32
-				//SELL ORDER: sell the base, buy the quote: BASE-QUOTE => BTC-USD=$232.32
 				$market_summary['minimum_order_size_quote'] = $market_summary['min_amount'] * 1.1;
-				$market_summary['minimum_order_size'] = bcmul( $market_summary['minimum_order_size_quote'], $market_summary['mid'], $market_summary['price_precision'] );
+				$market_summary['minimum_order_size_base'] = bcmul( $market_summary['minimum_order_size_quote'], $market_summary['mid'], 32 );
 				$market_summary['minimum_margin'] = null;
 				$market_summary['vwap'] = null;
+				$market_summary['market_id'] = null;
 
 				unset( $market_summary['vol'] );
 				unset( $market_summary['avg'] );
@@ -141,6 +138,8 @@
 				unset( $market_summary['max_price'] );
 				unset( $market_summary['min_amount'] );
 				unset( $market_summary['min_price'] );
+
+				ksort( $market_summary );
 
 				array_push( $response, $market_summary );
 			}

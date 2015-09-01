@@ -97,7 +97,6 @@
 			return $this->query('/accounts/'.$order_id.'/holds');
 		}
 
-		//array( 'side' => 'buy', 'product_id' => 'BTC', 'price' => '100', 'size' => '0.01' )
 		public function create_order( $arr = array() ) {
 			return $this->query('/orders', $arr, "POST");
 		}

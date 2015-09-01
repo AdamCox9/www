@@ -199,7 +199,6 @@
 
 		//Order /order/:id
 		
-		//array( 'marketid' => '1', 'ordertype' => 'buy', 'quantity' => '1000', 'price' => '0.0000001' );
 		public function create_order( $arr = array() ) {
 			return $this->query("order", $arr, "POST");
 		}

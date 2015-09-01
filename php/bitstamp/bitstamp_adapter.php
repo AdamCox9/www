@@ -15,11 +15,11 @@
 		}
 
 		public function buy($pair='BTC_LTC',$amount="1",$price="0.01",$type="LIMIT",$opts=array()) {
-			return $this->exch->buy($amount, $price);
+			return $this->exch->buy((float)$amount, (float)$price);
 		}
 		
 		public function sell($pair='BTC_LTC',$amount="0.01",$price="500",$type="LIMIT",$opts=array()) {
-			return $this->exch->sell($amount, $price);
+			return $this->exch->sell((float)$amount, (float)$price);
 		}
 
 		public function get_open_orders( $pair = 'All' ) {
@@ -72,14 +72,19 @@
 			//BUY ORDER: buy the base, sell the quote: BASE-QUOTE => BTC-USD=$232.32
 			//SELL ORDER: sell the base, buy the quote: BASE-QUOTE => BTC-USD=$232.32
 			$market_summary['minimum_order_size_quote'] = 2000; //minimum amount of quote currency
-			$market_summary['minimum_order_size'] = bcdiv( $market_summary['minimum_order_size_quote'], $market_summary['mid'], 8 );
-			$market_summary['price_precision'] = 2;
+			$market_summary['minimum_order_size_base'] = bcdiv( $market_summary['minimum_order_size_quote'], $market_summary['mid'], 4 );
+			$market_summary['price_precision'] = 4;
 			$market_summary['vwap'] = null;
-			$market_summary['base_volume'] = null;
+			$market_summary['base_volume'] = $market_summary['volume'];
+			$market_summary['quote_volume'] = bcmul( $market_summary['base_volume'], $market_summary['mid'], 32 );
 			$market_summary['open_buy_orders'] = null;
 			$market_summary['open_sell_orders'] = null;
+			$market_summary['market_id'] = null;
 
 			unset( $market_summary['last'] );
+			unset( $market_summary['volume'] );
+
+			ksort( $market_summary );
 
 			return array( $market_summary );
 		}

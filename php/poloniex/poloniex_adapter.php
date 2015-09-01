@@ -67,7 +67,7 @@
 				$market_summary['ask'] = $market_summary['lowestAsk'];
 				$market_summary['bid'] = $market_summary['highestBid'];
 				$market_summary['base_volume'] = $market_summary['baseVolume'];
-				$market_summary['volume'] = $market_summary['quoteVolume'];
+				$market_summary['quote_volume'] = $market_summary['quoteVolume'];
 				$market_summary['low'] = $market_summary['low24hr'];
 				$market_summary['high'] = $market_summary['high24hr'];
 				$market_summary['display_name'] = $market_summary['pair'];
@@ -84,18 +84,19 @@
 				//BUY ORDER: buy the base, sell the quote: BASE-QUOTE => BTC-USD=$232.32
 				//SELL ORDER: sell the base, buy the quote: BASE-QUOTE => BTC-USD=$232.32
 				if( strpos( $market_summary['pair'], "XMR_" ) !== FALSE )
-					$market_summary['minimum_order_size'] = '0.01100000';
+					$market_summary['minimum_order_size_base'] = '0.01000000';
 				if( strpos( $market_summary['pair'], "USDT_" ) !== FALSE )
-					$market_summary['minimum_order_size'] = '0.01100000';
+					$market_summary['minimum_order_size_base'] = '0.01000000';
 				if( strpos( $market_summary['pair'], "BTC_" ) !== FALSE )
-					$market_summary['minimum_order_size'] = '0.00051000';
+					$market_summary['minimum_order_size_base'] = '0.00050000';
 
-				$market_summary['minimum_order_size_quote'] = null;
-				$market_summary['price_precision'] = null;
+				$market_summary['minimum_order_size_quote'] = bcmul( $market_summary['minimum_order_size_base'], $market_summary['mid'], 32 );
+				$market_summary['price_precision'] = 8;
 				$market_summary['timestamp'] = null;
 				$market_summary['vwap'] = null;
 				$market_summary['open_buy_orders'] = null;
 				$market_summary['open_sell_orders'] = null;
+				$market_summary['market_id'] = null;
 
 				unset( $market_summary['last'] );
 				unset( $market_summary['lowestAsk'] );
@@ -106,6 +107,8 @@
 				unset( $market_summary['high24hr'] );
 				unset( $market_summary['percentChange'] );
 				unset( $market_summary['isFrozen'] );
+
+				ksort( $market_summary );
 
 				array_push( $response, $market_summary );
 			}

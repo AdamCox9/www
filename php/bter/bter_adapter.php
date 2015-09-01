@@ -109,7 +109,7 @@
 				$market_summary['last_price'] = $market_summary['last'];
 				$market_summary['display_name'] = $market_summary['pair'];
 				$market_summary['percent_change'] = $market_summary['rate_change_percentage'];
-				$market_summary['volume'] = $market_summary['vol_'.$cur1];
+				$market_summary['quote_volume'] = $market_summary['vol_'.$cur1];
 				$market_summary['base_volume'] = $market_summary['vol_'.$cur2];
 				$market_summary['created'] = null;
 				$market_summary['open_buy_orders'] = null;
@@ -123,11 +123,12 @@
 				$market_summary['minimum_margin'] = null;
 				//BUY ORDER: buy the base, sell the quote: BASE-QUOTE => BTC-USD=$232.32
 				//SELL ORDER: sell the base, buy the quote: BASE-QUOTE => BTC-USD=$232.32
-				$market_summary['minimum_order_size_quote'] = null;
-				$market_summary['minimum_order_size'] = $market_summary['min_amount'];
+				$market_summary['minimum_order_size_base'] = $market_summary['min_amount'];
+				$market_summary['minimum_order_size_quote'] = bcmul( $market_summary['minimum_order_size_base'], $market_summary['mid'], 32 );;
 				$market_summary['price_precision'] = $market_summary['decimal_places'];
 				$market_summary['timestamp'] = null;
 				$market_summary['vwap'] = null;
+				$market_summary['market_id'] = null;
 
 				unset( $market_summary['fee'] );
 				unset( $market_summary['min_amount'] );
@@ -139,6 +140,8 @@
 				unset( $market_summary['rate_change_percentage'] );
 				unset( $market_summary['vol_'.$cur1] );
 				unset( $market_summary['vol_'.$cur2] );
+
+				ksort( $market_summary );
 
 				array_push( $response, $market_summary );
 			}
