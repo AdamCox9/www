@@ -11,7 +11,6 @@
 		public function __construct($api_key, $api_secret) {
 			$this->api_key = $api_key;
 			$this->api_secret = $api_secret;
-			$this->nonce = time();
 		}
 	
 		private function query($path, array $req = array()) {
@@ -19,7 +18,8 @@
 			$secret = $this->api_secret;
 
 			$req['apikey'] = $key;
-			$req['nonce'] = $this->nonce++;
+			$mt = explode(' ', microtime());
+			$req['nonce'] = $mt[1] + $this->x++;
 
 			$queryString = http_build_query($req, '', '&');
 			$requestUrl = $this->trading_url . $path . '?' . $queryString;	
@@ -70,26 +70,21 @@
 		public function getmarkethistoy( $arr = array( 'market' => 'BTC-LTC', 'count' => 20 ) ) {
 			return $this->query("/public/getmarkethistory", $arr);
 		}
-		//$arr = array( 'market' => 'BTC-LTC', 'quantity' => '1', 'rate' => 1 )
 		public function market_buylimit( $arr = array() ) {
 			return $this->query( "/market/buylimit", $arr );
 		}
-		//$arr = array( 'market' => 'BTC-LTC', 'quantity' => '1', 'rate' => 1 )
 		public function market_buymarket( $arr ) {
 			return $this->query( "/market/buymarket", $arr );
 		}
-		//$arr = array( 'market' => 'BTC-LTC', 'quantity' => '1', 'rate' => 500 )
 		public function market_selllimit( $arr = array() ) {
 			return $this->query( "/market/selllimit", $arr );
 		}
-		//$arr = array( 'market' => 'BTC-LTC', 'quantity' => '1', 'rate' => 500 )
 		public function market_sellmarket( $arr = array() ) {
 			return $this->query( "/market/sellmarket", $arr );
 		}
 		public function market_cancel($arr = array("uuid" => '123' )) {
 			return $this->query("/market/cancel", $arr);
 		}
-		//$arr = array( 'market' => 'BTC-LTC' )
 		public function market_getopenorders( $arr = array() ) {
 			return $this->query( "/market/getopenorders", $arr );
 		}

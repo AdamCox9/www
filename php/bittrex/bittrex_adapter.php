@@ -59,16 +59,44 @@
 			return array_map( 'strtoupper', $response );
 		}
 
-		public function unconfirmed_btc(){
+		public function deposit_address($currency="BTC"){
 			return [];
 		}
 		
-		public function bitcoin_deposit_address(){
+		public function deposit_addresses(){
 			return [];
 		}
 
-		public function get_ticker($ticker="BTC-LTC") {
-			return $this->exch->getticker( array('market' => $ticker ) );
+		public function get_balances() {
+			$balances = $this->exch->account_getbalances();
+			if( $balances['success'] == 1 )
+				$balances = $balances['result'];
+			else
+				return [];
+
+			$results = [];
+			foreach( $balances as $balance ) {
+				$balance['type'] = "exchange";
+				$balance['currency'] = $balance['Currency'];
+				$balance['total'] = $balance['Balance'];
+				$balance['available'] = $balance['Available'];
+				$balance['pending'] = $balance['Pending'];
+				$balance['reserved'] = $balance['total'] - $balance['available'];
+				$balance['btc_value'] = 0;
+
+				unset( $balance['Currency'] );
+				unset( $balance['Balance'] );
+				unset( $balance['Available'] );
+				unset( $balance['Pending'] );
+				unset( $balance['CryptoAddress'] );
+
+				array_push( $results, $balance );
+			}
+			return $results;
+		}
+
+		public function get_balance($currency="BTC") {
+			return [];
 		}
 
 		public function get_market_summary($market="BTC-LTC") {

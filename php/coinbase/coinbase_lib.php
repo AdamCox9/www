@@ -5,14 +5,12 @@
 	class coinbase {
 		protected $api_key;
 		protected $api_secret;
-		protected $nonce;
 		protected $trading_url = "https://api.exchange.coinbase.com";
 		
 		public function __construct($api_key, $api_secret,$passphrase) {
 			$this->api_key = $api_key;
 			$this->api_secret = $api_secret;
 			$this->passphrase = $passphrase;
-			$this->nonce = time();
 		}
 			
 		public function query( $method, $params = array(), $type = "GET" ) {
@@ -126,27 +124,22 @@
 		}
 
 		public function products_book( $product_id ) {
-			//GET, pass $arr as parameter:
 			return $this->query('/products/'.$product_id.'/book');
 		}
 
 		public function products_ticker( $product_id ) {
-			//GET, pass $arr as parameter:
 			return $this->query('/products/'.$product_id.'/ticker');
 		}
 
 		public function products_trades( $product_id ) {
-			//GET, pass $arr as parameter:
 			return $this->query('/products/'.$product_id.'/trades');
 		}
 
 		public function products_candles( $product_id ) {
-			//GET, pass $arr as parameter:
 			return $this->query('/products/'.$product_id.'/candles');
 		}
 
 		public function products_stats( $product_id ) {
-			//GET, pass $arr as parameter:
 			return $this->query('/products/'.$product_id.'/stats');
 		}
 

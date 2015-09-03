@@ -20,21 +20,13 @@
 			return $results;
 		}
 
-		public function buy($pair='BTC_LTC',$amount="1",$price="0.01",$type="LIMIT",$opts=array()) {
-			if( $pair == 'btcusd' ) {
-				$pair = 'ltc_btc';
-				$amount = '1';
-				$price = '0.01';
-			}
+		public function buy($pair='BTC-LTC',$amount="1",$price="0.01",$type="LIMIT",$opts=array()) {
+			$pair = str_replace( "-", "_", strtolower( $pair ) );
 			return $this->exch->placeorder( array('pair' => $pair, 'type' => 'BUY', 'rate' => $price, 'amount' => $amount ) );
 		}
 		
-		public function sell($pair='BTC_LTC',$amount="0.01",$price="500",$type="LIMIT",$opts=array()) {
-			if( $pair == 'btcusd' ) {
-				$pair = 'ltc_btc';
-				$amount = '1';
-				$price = '0.02';
-			}
+		public function sell($pair='BTC-LTC',$amount="0.01",$price="500",$type="LIMIT",$opts=array()) {
+			$pair = str_replace( "-", "_", strtolower( $pair ) );
 			return $this->exch->placeorder( array('pair' => $pair, 'type' => 'SELL', 'rate' => $price, 'amount' => $amount ) );
 		}
 
@@ -66,15 +58,36 @@
 			return array_map('strtoupper',$response);
 		}
 
-		public function unconfirmed_btc(){
+		public function deposit_address($currency="BTC"){
 			return [];
 		}
 		
-		public function bitcoin_deposit_address(){
+		public function deposit_addresses(){
 			return [];
 		}
 
-		public function get_ticker($ticker="BTC-LTC") {
+		public function get_balances() {
+			$balances = $this->exch->getfunds();
+			$response = [];
+
+			$currencies = $this->get_currencies();
+
+			foreach( $currencies as $currency ) {
+				$balance = [];
+				$balance['type'] = "exchange";
+				$balance['currency'] = $currency;
+				$balance['available'] = isset( $balances['available_funds'][$currency] ) ? $balances['available_funds'][$currency] : 0;
+				$balance['reserved'] = isset( $balances['locked_funds'][$currency] ) ? $balances['locked_funds'][$currency] : 0;
+				$balance['total'] = $balance['available'] + $balance['reserved'];
+				$balance['pending'] = 0;
+				$balance['btc_value'] = 0;
+				array_push( $response, $balance );
+			}
+
+			return $response;
+		}
+
+		public function get_balance($currency="BTC") {
 			return [];
 		}
 
@@ -97,7 +110,7 @@
 			}
 
 			foreach( $tickers as $key => $market_summary ) {
-				$market_summary['pair'] = $key;
+				$market_summary['pair'] = strtoupper( str_replace( "_", "-", $key ) );
 				$market_summary['exchange'] = "bter";
 				$market_summary = array_merge( $market_summary, $markets[$key] );
 				$curs = explode( "_", $key );
@@ -121,8 +134,6 @@
 				$market_summary['initial_margin'] = null;
 				$market_summary['maximum_order_size'] = null;
 				$market_summary['minimum_margin'] = null;
-				//BUY ORDER: buy the base, sell the quote: BASE-QUOTE => BTC-USD=$232.32
-				//SELL ORDER: sell the base, buy the quote: BASE-QUOTE => BTC-USD=$232.32
 				$market_summary['minimum_order_size_base'] = $market_summary['min_amount'];
 				$market_summary['minimum_order_size_quote'] = bcmul( $market_summary['minimum_order_size_base'], $market_summary['mid'], 32 );;
 				$market_summary['price_precision'] = $market_summary['decimal_places'];

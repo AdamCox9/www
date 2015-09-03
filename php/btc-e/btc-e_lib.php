@@ -93,17 +93,14 @@
 			return $this->query( 'TradeHistory', $arr );
 		}
 
-		//$arr = array( 'pair' => 'btc_usd' )
 		public function ActiveOrders( $arr = array() ) {
 			return $this->query( 'ActiveOrders', $arr );
 		}
 
-		//$arr = array( 'pair' => 'btc_usd', 'type' => 'buy', 'amount' => 1, 'rate' => 10 )
 		public function Trade( $arr = array() ) {
 			return $this->query( 'Trade', $arr );
 		}
 		
-		//$arr = array( 'order_id' => '123' )
 		public function CancelOrder( $arr = array() ) {
 			return $this->query( 'CancelOrder', $arr );
 		}

@@ -1,6 +1,7 @@
 <?PHP
 
 	require_once( "../php/crypto_interface.php" );
+	require_once( "../php/crypto_adapter_tester.php" );
 
 	require_once( "../php/bitfinex/bitfinex_lib.php" );
 	require_once( "../php/bitstamp/bitstamp_lib.php" );
@@ -42,15 +43,15 @@
 	$cryptsy_api_key = "48d4648b4a93b38a292c41dcde74b6bdec185c83";
 	$cryptsy_api_secret = "4c8d67097d0243dcabe368a1db09cf1665966fe9abf2c2f4b1a21c52393582522d58ea6ffbbdfeb4";
 
-	$poloniex_api_key = "LWQRJN6Q-X3LS0IPC-42H0I72F-J8N624TD";
-	$poloniex_api_secret = "ca7bfe0e1f1f98b37a4f6eba8aba9ec69d663c01dca46cd3792fca9e53de545e2e25ee95fec0d35f91d0299bb7f83bbb0cd066c2b0fa5349876ae5d74fd44d4d";
+	$poloniex_api_key = "0LWESBZB-G42RZSC1-R1ODIXAS-D74LGT07";
+	$poloniex_api_secret = "876ef684bd13d3505d1c8c70179cc27b925e171bf6a4109f554f7472776d16a8331156ed9bc50acd977ef470120d36f9e742a4f7a0f57a415149d330aa7ab31d";
 
 	$Adapters = array();
 	$Adapters['Bitfinex'] = new BitfinexAdapter( new Bitfinex( $bitfinex_api_key, $bitfinex_api_secret ) );
 	$Adapters['Bitstamp'] = new BitstampAdapter( new Bitstamp( $bitstamp_api_key, $bitstamp_api_secret, "779882" ) );
-	$Adapters['Bittrex'] = new BittrexAdapter( new bittrex( $bittrex_api_key, $bittrex_api_secret ) );
+	//$Adapters['Bittrex'] = new BittrexAdapter( new bittrex( $bittrex_api_key, $bittrex_api_secret ) );
 	$Adapters['Btce'] = new BtceAdapter( new btce( $btce_api_key, $btce_api_secret ) );
-	$Adapters['Bter'] = new BterAdapter( new bter( $bter_api_key, $bter_api_secret ) );
+	//$Adapters['Bter'] = new BterAdapter( new bter( $bter_api_key, $bter_api_secret ) );
 	$Adapters['Coinbase'] = new CoinbaseAdapter( new coinbase( $coinbase_api_key, $coinbase_api_secret, $coinbase_api_passphrase ) );
 	$Adapters['Cryptsy'] = new CryptsyAdapter( new cryptsy( $cryptsy_api_key, $cryptsy_api_secret ) );
 	$Adapters['Poloniex'] = new PoloniexAdapter( new poloniex( $poloniex_api_key, $poloniex_api_secret ) );

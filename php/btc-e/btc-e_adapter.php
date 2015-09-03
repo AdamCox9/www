@@ -71,15 +71,55 @@
 							'PPC' );
 		}
 		
-		public function unconfirmed_BTC(){
+		public function deposit_address($currency="BTC"){
 			return [];
 		}
 		
-		public function bitcoin_deposit_address(){
+		public function deposit_addresses(){
 			return [];
 		}
 
-		public function get_ticker($ticker="BTC-LTC") {
+		public function get_balances() {
+			$balances = $this->exch->getInfo();
+			$balances = $balances['return']['funds'];
+			$open_orders = $this->get_open_orders();
+			$open_orders = $open_orders['return'];
+			$res_balances = [];
+
+			foreach( $open_orders as $open_order ) {
+				$curs = explode( "_", $open_order['pair'] );
+				$base_cur = $curs[0];
+				$quote_cur = $curs[1];
+
+				if( ! isset( $res_balances[$base_cur] ) )
+					$res_balances[$base_cur] = 0;
+				if( ! isset( $res_balances[$quote_cur] ) )
+					$res_balances[$quote_cur] = 0;
+
+				if( $open_order['type'] == "buy" )
+					$res_balances[$quote_cur] += $open_order['amount'] * $open_order['rate'];
+				if( $open_order['type'] == "sell" )
+					$res_balances[$base_cur] += $open_order['amount'];
+			}
+
+			$response = [];
+			foreach( $balances as $key => $avail ) {
+				$balance = [];
+				$balance['type'] = "exchange";
+				$balance['pending'] = 0;
+				$balance['currency'] = $key;
+				$balance['available'] = $avail;
+				$balance['btc_value'] = 0;
+				$balance['reserved'] = isset( $res_balances[$key] ) ? $res_balances[$key] : 0;
+				$balance['total'] = $balance['reserved'] + $balance['available'];
+
+				array_push( $response, $balance );
+			}
+
+			return $response;
+		}
+
+		public function get_balance($currency="BTC") {
 			return [];
 		}
 
@@ -95,7 +135,7 @@
 				$key = array_keys( $market_summary );
 				$key = $key[0];
 				$market_summary = $market_summary[$key];
-				$market_summary['pair'] = $key;
+				$market_summary['pair'] = strtoupper( str_replace( "_", "-", $key ) );
 				$market_summary['exchange'] = "btc-e";
 				$info = $this->exch->info( $market );
 				$market_summary['timestamp'] = $info['server_time'];

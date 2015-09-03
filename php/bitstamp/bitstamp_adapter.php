@@ -30,25 +30,50 @@
 			return array( 'BTC-USD' );
 		}
 
-		public function get_balance() {
-			return $this->exch->balance();
-		}
-
 		public function get_currencies() {
 			return array( 'BTC', 'USD' );
 		}
 		
-		public function unconfirmed_btc(){
-			return $this->exch->unconfirmed_btc();
-		}
-		
-		public function bitcoin_deposit_address(){
-			return $this->exch->bitcoin_deposit_address();
-		}
-
-		public function get_ticker($ticker="BTC-LTC") {
+		public function deposit_address($currency="BTC"){
 			return [];
 		}
+		
+		public function deposit_addresses(){
+			return [];
+		}
+
+		public function get_balances() {
+			$t_balance = $this->get_balance();
+
+			$balances = [];
+
+			$balance['type'] = "exchange";
+			$balance['currency'] = "btc";
+			$balance['available'] = $t_balance['btc_available'];
+			$balance['total'] = $t_balance['btc_balance'];
+			$balance['reserved'] = $t_balance['btc_reserved'];
+			$balance['pending'] = 0;
+			$balance['btc_value'] = 0;
+
+			array_push( $balances, $balance );
+
+			$balance['type'] = "exchange";
+			$balance['currency'] = "usd";
+			$balance['available'] = $t_balance['usd_available'];
+			$balance['total'] = $t_balance['usd_balance'];
+			$balance['reserved'] = $t_balance['usd_reserved'];
+			$balance['pending'] = 0;
+			$balance['btc_value'] = 0;
+
+			array_push( $balances, $balance );
+
+			return $balances;
+		}
+
+		public function get_balance( $currency="BTC" ) {
+			return $this->exch->balance();
+		}
+
 
 		public function get_market_summary( $market = "BTC-USD" ) {
 

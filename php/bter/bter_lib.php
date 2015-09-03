@@ -11,14 +11,14 @@
 		public function __construct($api_key, $api_secret) {
 			$this->api_key = $api_key;
 			$this->api_secret = $api_secret;
-			$this->nonce = time();
 		}
 
 		private function query($path, array $req = array()) {
 			$key = $this->api_key;
 			$secret = $this->api_secret;
 		 
-			$req['nonce'] = $this->nonce++;
+			$mt = explode(' ', microtime());
+			$req['nonce'] = $mt[1].substr($mt[0], 2, 6);
 		 
 			// generate the POST data string
 			$post_data = http_build_query($req, '', '&');

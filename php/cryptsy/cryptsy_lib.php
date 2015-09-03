@@ -10,13 +10,14 @@
 		public function __construct($api_key, $api_secret) {
 			$this->api_key = $api_key;
 			$this->api_secret = $api_secret;
-			$this->nonce = time();
 		}
 	
 		public function query( $method, array $req = array(), $type = "GET" ) {
 
 			$url = $this->trading_url . $method;
-			$req['nonce'] = $this->nonce++;
+
+			$mt = explode(' ', microtime());
+			$req['nonce'] = $mt[1].substr($mt[0], 2, 6);
 
 			$query = http_build_query($req);
 			$url .= '?'.$query;

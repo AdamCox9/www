@@ -16,6 +16,7 @@
 	$currencies = [];
 	$markets = [];
 	$market_summaries = [];
+	$balances = [];
 	foreach( $Adapters as $Adapter ) {
 		try{
 			echo "\n*******" . get_class( $Adapter ) . "******\n";
@@ -24,7 +25,14 @@
 			$markets = array_merge( $markets, $Adapter->get_markets() );
 			$new_market_summaries = $Adapter->get_market_summaries();
 			$market_summaries = array_merge( $market_summaries, $new_market_summaries );
+			$balances = array_merge( $balances, $Adapter->get_balances() );
 			//print_r( $Adapter->cancel_all() );
+
+			print_r( $balances );
+
+			test_balances( $balances );
+
+			sleep(2);
 
 			foreach( $new_market_summaries as $market_summary ) {
 				$keys = array_keys( $market_summary );
@@ -44,8 +52,6 @@
 
 				test_market_summary( $market_summary );
 
-				print_r( $market_summary );
-				
 				$price_precision = $market_summary['price_precision'];
 
 				if( $market_summary['bid'] < $market_summary['low'] )
@@ -75,22 +81,23 @@
 				$buy_price = number_format( $buy_price, 8, '.', '' );
 				$sell_price = number_format( $sell_price, 8, '.', '' );
 
+				$curs_bq = explode( "-", $market_summary['pair'] );
+				$base_cur = $curs_bq[0];
+				$quote_cur = $curs_bq[1];
+
 				if( $buy_price > 0 ) {
-					echo "buy_price $buy_price\n";
 					$buy_order_size = number_format( bcdiv( $minimum_order_size_base, $buy_price, 32 ), $price_precision, '.', '');
 					$total_buy_cost = number_format( bcmul( $buy_order_size, $buy_price, 32 ), $price_precision, '.', '');
-					echo "***Buying $buy_order_size of {$market_summary['pair']} at {$market_summary['exchange']} for $buy_price costing $total_buy_cost quote***\n";
+					echo "***Buying $buy_order_size $base_cur in market {$market_summary['pair']} at {$market_summary['exchange']} for total cost $total_buy_cost of $quote_cur at rate $buy_price of $quote_cur per $base_cur***\n";
 					print_r( $Adapter->buy( $market_summary['pair'], $buy_order_size, $buy_price, 'limit', array( 'market_id' => $market_summary['market_id'] ) ) );
 				}
 
 				if( $sell_price > 0 ) {
-					echo "sell_price $sell_price\n";
 					$sell_order_size = number_format( bcdiv( $minimum_order_size_base, $sell_price, 32 ), $price_precision, '.', '');
 					$total_sell_gain = number_format( bcmul( $sell_order_size, $sell_price, 32 ), $price_precision, '.', '');
-					echo "***Selling $sell_order_size of {$market_summary['pair']} at {$market_summary['exchange']} for $sell_price gaining $total_sell_gain quote***\n";
+					echo "***Selling $sell_order_size of $base_cur in market {$market_summary['pair']} at {$market_summary['exchange']} for total gain $total_sell_gain of $quote_cur at rate $sell_price of $quote_cur per $base_cur***\n";
 					print_r( $Adapter->sell( $market_summary['pair'], $sell_order_size, $sell_price, 'limit', array( 'market_id' => $market_summary['market_id'] ) ) );
 				}
-
 			}
 			unset( $prev_keys );
 
@@ -120,57 +127,6 @@
 	echo "\n\n***Markets(".sizeof($markets).")***\n";
 	foreach( $markets as $market) {
 		echo $market . ", ";
-	}
-
-	function test_market_summaries( $market_summaries ) {
-		foreach( $market_summaries as $market_summary ) {
-			test_market_summary( $market_summary );
-		}
-	}
-
-	function test_market_summary( $market_summary ) {
-		//Data:
-		$keys = array(	'ask', 'base_volume', 'bid', 'created', 'display_name', 'exchange', 
-						'expiration', 'frozen', 'high', 'initial_margin', 'last_price', 
-						'low', 'market_id', 'maximum_order_size', 'mid', 'minimum_margin', 
-						'minimum_order_size_base', 'minimum_order_size_quote', 'open_buy_orders',
-						'open_sell_orders', 'pair', 'percent_change', 'price_precision', 
-						'quote_volume', 'result', 'timestamp', 'verified_only', 'vwap' );
-
-		//Make sure all these and only these array keys:
-		if( sizeof( $keys ) != sizeof( $market_summary ) ) {
-			$broken_keys = array_keys( $market_summary );
-			print_r( array_diff( $keys, $broken_keys ) );
-			print_r( array_diff( $broken_keys, $keys ) );
-			print_r( $market_summary );
-			die( "\n\nMismatched Array Keys" );
-		}
-
-		$numbers = array( 'ask', 'base_volume', 'bid', 'high', 'last_price', 'low', 'minimum_order_size_base', 'minimum_order_size_quote', 'quote_volume' );
-		$strings = array( 'display_name', 'exchange' );
-		$above_zero = array( 'minimum_order_size_base' );
-		$not_null = array_merge( $numbers, $strings );
-
-		//Tests:
-		foreach( $numbers as $number ) {
-			if( ! isset( $market_summary[$number] ) || is_null( $market_summary[$number] ) || ! is_numeric( $market_summary[$number] ) /*|| ! $market_summary[$number] > 0*/ ) {
-				print_r( $market_summary );
-				die( "\n\nRequired Number ($number)\n\n" );
-			}
-		}
-		foreach( $not_null as $field ) {
-			if( is_null( $field ) ) {
-				print_r( $market_summary );
-				die( "\n\nRequired Not Null ($field)\n\n" );
-			}
-		}
-		foreach( $above_zero as $field ) {
-			if( is_nan( $market_summary[$field] ) || is_null( $market_summary[$field] ) || ! is_numeric( $market_summary[$field] ) || $market_summary[$field] <= 0 ) {
-				print_r( $market_summary );
-				die( "\n\nRequired Above Zero ($field)\n\n" );
-			}
-		}
-		return true;
 	}
 
 ?> 

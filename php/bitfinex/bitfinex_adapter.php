@@ -18,13 +18,13 @@
 			$pair = strtolower( $pair );
 			$pair = str_replace( "-", "", $pair );
 			echo $pair;
-			return $this->exch->order_new($pair,$amount,$price,"bitfinex","buy",$type,true);
+			return $this->exch->order_new($pair,$amount,$price,"bitfinex","buy","exchange limit",true);
 		}
 		
 		public function sell($pair='LTC-BTC',$amount=0,$price=0,$type="LIMIT",$opts=array()) {
 			$pair = strtolower( $pair );
 			$pair = str_replace( "-", "", $pair );
-			return $this->exch->order_new($pair,$amount,$price,"bitfinex","sell",$type,true);
+			return $this->exch->order_new($pair,$amount,$price,"bitfinex","sell","exchange limit",true);
 		}
 
 		public function get_open_orders( $pair = 'All' ) {
@@ -45,15 +45,31 @@
 			return array( 'USD', 'BTC', 'LTC', 'DRK' );
 		}
 		
-		public function unconfirmed_btc(){
+		public function deposit_address($currency="BTC"){
+			return [];
+		}
+		
+		public function deposit_addresses(){
 			return [];
 		}
 
-		public function bitcoin_deposit_address(){
-			return $this->exch->deposit_new();
+		public function get_balances() {
+			$balances = $this->exch->balances();
+			$response = [];
+
+			foreach( $balances as $balance ) {
+				$balance['total'] = $balance['amount'];
+				$balance['reserved'] = $balance['total'] - $balance['available'];
+				$balance['btc_value'] = 0;
+				$balance['pending'] = 0;
+				unset( $balance['amount'] );
+				array_push( $response, $balance );
+			}
+
+			return $response;
 		}
 
-		public function get_ticker($ticker="BTC-LTC") {
+		public function get_balance($currency="BTC") {
 			return [];
 		}
 

@@ -37,15 +37,37 @@
 			return array_map( 'strtoupper', array_keys( $this->exch->returnCurrencies() ) );
 		}
 		
-		public function unconfirmed_btc(){
+		public function deposit_address($currency="BTC"){
 			return [];
 		}
 		
-		public function bitcoin_deposit_address(){
+		public function deposit_addresses(){
 			return [];
 		}
 
-		public function get_ticker($pair = "ALL") {
+		public function get_balances() {
+			$balances = $this->exch->returnCompleteBalances();
+			$response = [];
+
+			foreach( $balances as $key => $balance ) {
+				$balance['type'] = 'exchange'; //Or, is it all accounts?
+				$balance['currency'] = $key;
+				$balance['reserved'] = isset( $balance['onOrders'] ) ? $balance['onOrders'] : 0;
+				$balance['total'] = $balance['available'] + $balance['reserved'];
+				$balance['btc_value'] = $balance['btcValue'];
+				$balance['pending'] = 0;
+
+				unset( $balance['onOrders'] );
+				unset( $balance['btcValue'] );
+
+				array_push( $response, $balance );
+			}
+
+			return $response;
+		}
+
+		public function get_balance($currency="BTC") {
+			return [];
 		}
 		
 		public function get_market_summary( $market = "BTC-LTC" ) {
@@ -61,7 +83,7 @@
 			$market_summaries = $this->exch->returnTicker();
 			$response = [];
 			foreach( $market_summaries as $key => $market_summary ) {
-				$market_summary['pair'] = $key;
+				$market_summary['pair'] = strtoupper( str_replace( "_", "-", $key ) );
 				$market_summary['exchange'] = "poloniex";
 				$market_summary['last_price'] = $market_summary['last'];
 				$market_summary['ask'] = $market_summary['lowestAsk'];
@@ -83,11 +105,11 @@
 				$market_summary['minimum_margin'] = null;
 				//BUY ORDER: buy the base, sell the quote: BASE-QUOTE => BTC-USD=$232.32
 				//SELL ORDER: sell the base, buy the quote: BASE-QUOTE => BTC-USD=$232.32
-				if( strpos( $market_summary['pair'], "XMR_" ) !== FALSE )
+				if( strpos( $market_summary['pair'], "XMR-" ) !== FALSE )
 					$market_summary['minimum_order_size_base'] = '0.01000000';
-				if( strpos( $market_summary['pair'], "USDT_" ) !== FALSE )
+				if( strpos( $market_summary['pair'], "USDT-" ) !== FALSE )
 					$market_summary['minimum_order_size_base'] = '0.01000000';
-				if( strpos( $market_summary['pair'], "BTC_" ) !== FALSE )
+				if( strpos( $market_summary['pair'], "BTC-" ) !== FALSE )
 					$market_summary['minimum_order_size_base'] = '0.00050000';
 
 				$market_summary['minimum_order_size_quote'] = bcmul( $market_summary['minimum_order_size_base'], $market_summary['mid'], 32 );
@@ -125,43 +147,6 @@
 
 		public function get_lends() {
 			return [];
-		}
-
-		public function get_total_btc_balance() {
-			$balances = $this->get_balances();
-			$prices = $this->get_ticker();
-			
-			$tot_btc = 0;
-			
-			foreach($balances as $coin => $amount){
-				$pair = "BTC_".strtoupper($coin);
-			
-				// convert coin balances to btc value
-				if($amount > 0){
-					if($coin != "BTC"){
-						if( isset( $prices[$pair] ) )
-							$tot_btc += $amount * $prices[$pair]['last'];
-					}else{
-						$tot_btc += $amount;
-					}
-				}
-
-				// process open orders as well
-				if($coin != "BTC"){
-					$open_orders = $this->get_open_orders($pair);
-					if( is_array( $open_orders ) && ! isset( $open_orders['error'] ) ) {
-						foreach($open_orders as $order){
-							if($order['type'] == 'buy'){
-								$tot_btc += $order['total'];
-							}elseif($order['type'] == 'sell'){
-								$tot_btc += $order['amount'] * $prices[$pair]['last'];
-							}
-						}
-					}
-				}
-			}
-
-			return $tot_btc;
 		}
 
 		//_____Cancel all orders:
