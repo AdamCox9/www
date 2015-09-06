@@ -17,18 +17,27 @@
 		public function buy($pair='LTC-BTC',$amount=0,$price=0,$type="LIMIT",$opts=array()) {
 			$pair = strtolower( $pair );
 			$pair = str_replace( "-", "", $pair );
-			echo $pair;
-			return $this->exch->order_new($pair,$amount,$price,"bitfinex","buy","exchange limit",true);
+			$buy = $this->exch->order_new($pair,$amount,$price,"bitfinex","buy","exchange limit",true);
+			if( isset( $sell['message'] ) )
+				print_r( $buy );
+			return $buy;
 		}
 		
 		public function sell($pair='LTC-BTC',$amount=0,$price=0,$type="LIMIT",$opts=array()) {
 			$pair = strtolower( $pair );
 			$pair = str_replace( "-", "", $pair );
-			return $this->exch->order_new($pair,$amount,$price,"bitfinex","sell","exchange limit",true);
+			$sell = $this->exch->order_new($pair,$amount,$price,"bitfinex","sell","exchange limit",true);
+			if( isset( $sell['message'] ) )
+				print_r( $sell );
+			return $sell;
 		}
 
 		public function get_open_orders( $pair = 'All' ) {
 			return $this->exch->orders();
+		}
+
+		public function get_completed_orders( $pair = 'All' ) {
+			return $this->exch->mytrades();
 		}
 
 		public function get_markets() {
@@ -62,6 +71,7 @@
 				$balance['reserved'] = $balance['total'] - $balance['available'];
 				$balance['btc_value'] = 0;
 				$balance['pending'] = 0;
+				$balance['currency'] = strtoupper( $balance['currency'] );
 				unset( $balance['amount'] );
 				array_push( $response, $balance );
 			}
@@ -71,6 +81,10 @@
 
 		public function get_balance($currency="BTC") {
 			return [];
+		}
+
+		public function get_worth() {
+			return Utilities::get_worth( $this->get_balances(), $this->get_market_summaries() );
 		}
 
 		public function get_market_summary( $market = "BTC-LTC" ) {
@@ -84,24 +98,25 @@
 		}
 
 		public function get_market_summaries() {
-			if( isset( $this->market_summaries ) ) {
+			if( isset( $this->market_summaries ) ) //cache
 				return $this->market_summaries;
-			}
+
 			$market_summaries = $this->exch->symbols_details();
-			$response = array();
+			$this->market_summaries = [];
 			foreach( $market_summaries as $market_summary ) {
 				$market_summary = array_merge( $market_summary, $this->exch->pubticker( $market_summary['pair'] ) );
 				$market_summary['exchange'] = 'bitfinex';
 				$market_summary['pair'] = strtoupper( $market_summary['pair'] );
 				$market_summary['pair'] = substr_replace($market_summary['pair'], '-', 3, 0);
 				$market_summary['display_name'] = $market_summary['pair'];
-				$market_summary['minimum_order_size_quote'] = $market_summary['minimum_order_size'];
-				$market_summary['minimum_order_size_base'] = bcmul( $market_summary['minimum_order_size'], $market_summary['mid'], $market_summary['price_precision']) + 0.05;
+				$market_summary['minimum_order_size_base'] = $market_summary['minimum_order_size'];
+				$market_summary['minimum_order_size_quote'] = null;
 				$market_summary['result'] = true;
 				$market_summary['created'] = null;
 				$market_summary['vwap'] = null;
 				$market_summary['base_volume'] = $market_summary['volume'];
-				$market_summary['quote_volume'] = bcmul( $market_summary['mid'], $market_summary['base_volume'], 32 );
+				$market_summary['quote_volume'] = bcmul( $market_summary['base_volume'], $market_summary['mid'], 32 );
+				$market_summary['btc_volume'] = null;
 				$market_summary['frozen'] = null;
 				$market_summary['percent_change'] = null;
 				$market_summary['verified_only'] = null;
@@ -114,9 +129,9 @@
 
 				ksort( $market_summary );
 
-				array_push( $response, $market_summary );
+				array_push( $this->market_summaries, $market_summary );
 			}
-			return $response;
+			return $this->market_summaries;
 		}
 
 		public function get_lendbook() {

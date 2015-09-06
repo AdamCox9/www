@@ -7,7 +7,6 @@
 		protected $api_key;
 		protected $api_secret;
 		protected $trading_url = "https://btc-e.com/tapi/";
-		protected $x;
 		
 		public function __construct($api_key, $api_secret) {
 			$this->api_key = $api_key;

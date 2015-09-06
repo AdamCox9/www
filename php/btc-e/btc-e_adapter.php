@@ -24,13 +24,19 @@
 		public function buy($pair='BTC-USD',$amount="0",$price="0",$type="LIMIT",$opts=array()) {
 			$pair = strtolower( $pair );
 			$pair = str_replace( "-", "_", $pair );
-			return $this->exch->Trade( array( 'pair' => $pair, 'type' => 'buy', 'amount' => $amount, 'rate' => (float)$price ) );
+			$buy = $this->exch->Trade( array( 'pair' => $pair, 'type' => 'buy', 'amount' => $amount, 'rate' => (float)$price ) );
+			if( isset( $buy['error'] ) )
+				print_r( $buy );
+			return $buy;
 		}
 		
 		public function sell($pair='BTC-USD',$amount="0",$price="0",$type="LIMIT",$opts=array()) {
 			$pair = strtolower( $pair );
 			$pair = str_replace( "-", "_", $pair );
-			return $this->exch->Trade( array( 'pair' => $pair, 'type' => 'sell', 'amount' => $amount, 'rate' => (float)$price ) );
+			$sell = $this->exch->Trade( array( 'pair' => $pair, 'type' => 'sell', 'amount' => $amount, 'rate' => (float)$price ) );
+			if( isset( $sell['error'] ) )
+				print_r( $sell );
+			return $sell;
 		}
 
 		public function get_open_orders( $pair = 'All' ) {
@@ -83,7 +89,10 @@
 			$balances = $this->exch->getInfo();
 			$balances = $balances['return']['funds'];
 			$open_orders = $this->get_open_orders();
-			$open_orders = $open_orders['return'];
+			if( isset( $open_orders['return'] ) )
+				$open_orders = $open_orders['return'];
+			else
+				$open_orders = [];
 			$res_balances = [];
 
 			foreach( $open_orders as $open_order ) {
@@ -107,7 +116,7 @@
 				$balance = [];
 				$balance['type'] = "exchange";
 				$balance['pending'] = 0;
-				$balance['currency'] = $key;
+				$balance['currency'] = strtoupper( $key );
 				$balance['available'] = $avail;
 				$balance['btc_value'] = 0;
 				$balance['reserved'] = isset( $res_balances[$key] ) ? $res_balances[$key] : 0;
@@ -123,13 +132,19 @@
 			return [];
 		}
 
+		public function get_worth() {
+			return Utilities::get_worth( $this->get_balances(), $this->get_market_summaries() );
+		}
+
 		public function get_market_summary( $market = "BTC-LTC" ) {
 			$market = strtolower( str_replace( "-", "_", $market ) );
 			return $this->exch->ticker( $market );
 		}
 
 		public function get_market_summaries() {
-			$response = [];
+			if( isset( $this->market_summaries ) ) //cache
+				return $this->market_summaries;
+			$this->market_summaries = [];
 			foreach( $this->get_markets() as $market ) {
 				$market_summary = $this->get_market_summary( $market );
 				$key = array_keys( $market_summary );
@@ -141,11 +156,12 @@
 				$market_summary['timestamp'] = $info['server_time'];
 				$info = $info['pairs'][$key];
 				$market_summary = array_merge( $market_summary, $info );
-				$market_summary['ask'] = $market_summary['sell'];
-				$market_summary['bid'] = $market_summary['buy'];
+				$market_summary['ask'] = is_null( $market_summary['sell'] ) ? 0 : $market_summary['sell'];
+				$market_summary['bid'] = is_null( $market_summary['buy'] ) ? 0 : $market_summary['buy'];
 				$market_summary['quote_volume'] = $market_summary['vol'];
 				$market_summary['mid'] = $market_summary['avg'];
 				$market_summary['base_volume'] = bcdiv( $market_summary['quote_volume'], $market_summary['mid'], 32 );
+				$market_summary['btc_volume'] = null;
 				$market_summary['last_price'] = $market_summary['last'];
 				$market_summary['display_name'] = $market_summary['pair'];
 				$market_summary['result'] = true;
@@ -159,8 +175,8 @@
 				$market_summary['expiration'] = null;
 				$market_summary['maximum_order_size'] = null;
 				$market_summary['price_precision'] = $market_summary['decimal_places'];
-				$market_summary['minimum_order_size_quote'] = $market_summary['min_amount'] * 1.1;
-				$market_summary['minimum_order_size_base'] = bcmul( $market_summary['minimum_order_size_quote'], $market_summary['mid'], 32 );
+				$market_summary['minimum_order_size_base'] = $market_summary['min_amount'];
+				$market_summary['minimum_order_size_quote'] = null;
 				$market_summary['minimum_margin'] = null;
 				$market_summary['vwap'] = null;
 				$market_summary['market_id'] = null;
@@ -181,9 +197,9 @@
 
 				ksort( $market_summary );
 
-				array_push( $response, $market_summary );
+				array_push( $this->market_summaries, $market_summary );
 			}
-			return $response;
+			return $this->market_summaries;
 		}
 		
 		public function get_lendbook() {

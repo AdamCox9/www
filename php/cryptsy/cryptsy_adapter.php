@@ -28,12 +28,18 @@
 
 		public function buy( $pair=null, $amount="0", $price="0", $type="LIMIT", $opts=array() ) {
 			$pair = str_replace( "-", "_", strtolower( $pair ) );
-			return $this->exch->create_order( array( 'marketid' => $opts['market_id'], 'ordertype' => 'buy', 'quantity' => (float) $amount, 'price' => (float) $price ) );
+			$buy = $this->exch->create_order( array( 'marketid' => $opts['market_id'], 'ordertype' => 'buy', 'quantity' => (float) $amount, 'price' => (float) $price ) );
+			if( isset( $buy['success'] ) && $buy['success'] === 1 )
+				print_r( $buy );
+			return $buy;
 		}
 		
 		public function sell( $pair=null, $amount="0", $price="0", $type="LIMIT", $opts=array() ) {
 			$pair = str_replace( "-", "_", strtolower( $pair ) );
-			return $this->exch->create_order( array( 'marketid' => $opts['market_id'], 'ordertype' => 'sell', 'quantity' => (float) $amount, 'price' => (float) $price ) );
+			$sell = $this->exch->create_order( array( 'marketid' => $opts['market_id'], 'ordertype' => 'sell', 'quantity' => (float) $amount, 'price' => (float) $price ) );
+			if( isset( $sell['success'] ) && $sell['success'] === 1 )
+				print_r( $sell );
+			return $sell;
 		}
 
 		public function get_open_orders( $arr = array( 'pair' => 'btc_usd' ) ) {
@@ -75,7 +81,7 @@
 			foreach( $currencies['data'] as $currency ) {
 				$id = $currency['id'];
 				$balance['type'] = "exchange";
-				$balance['currency'] = $currency['code'];
+				$balance['currency'] = strtoupper( $currency['code'] );
 				$balance['available'] = isset( $balances['available'][$id] ) ? $balances['available'][$id] : 0;
 				$balance['reserved'] = isset( $balances['held'][$id] ) ? $balances['held'][$id] : 0;
 				$balance['pending'] = 0;
@@ -88,6 +94,10 @@
 
 		public function get_balance($currency="BTC") {
 			return [];
+		}
+
+		public function get_worth() {
+			return Utilities::get_worth( $this->get_balances(), $this->get_market_summaries() );
 		}
 
 		public function get_market_summary( $market = "BTC-LTC" ) {
@@ -112,12 +122,15 @@
 				$market_summary['exchange'] = "cryptsy";
 				$market_summary = array_merge( $market_summary, $m_tickers[$market_summary['id']] );
 				$market_summary['pair'] = strtoupper( str_replace( "/", "-", $market_summary['label'] ) );
-				$market_summary['quote_volume'] = $market_summary['24hr']['volume'];
-				$market_summary['base_volume'] = $market_summary['24hr']['volume_btc'];
 				$market_summary['low'] = $market_summary['24hr']['price_low'];
 				$market_summary['high'] = $market_summary['24hr']['price_high'];
 				$market_summary['timestamp'] = $market_summary['last_trade']['timestamp'];
+				$market_summary['ask'] = isset( $market_summary['ask'] ) ? $market_summary['ask'] : 0;
+				$market_summary['bid'] = isset( $market_summary['bid'] ) ? $market_summary['bid'] : 0;
 				$market_summary['mid'] = ( $market_summary['ask'] + $market_summary['bid'] ) / 2;
+				$market_summary['base_volume'] = $market_summary['24hr']['volume'];
+				$market_summary['quote_volume'] = bcmul( $market_summary['base_volume'], $market_summary['mid'], 32);
+				$market_summary['btc_volume'] = $market_summary['24hr']['volume_btc'];
 				$market_summary['last_price'] = $market_summary['last_trade']['price'];
 				$market_summary['frozen'] = $market_summary['maintenance_mode'];
 				$market_summary['verified_only'] = $market_summary['verifiedonly'];
@@ -131,10 +144,8 @@
 				$market_summary['vwap'] = null;
 				$market_summary['price_precision'] = 8;
 				$market_summary['maximum_order_size'] = null;
-				//BUY ORDER: buy the base, sell the quote: BASE-QUOTE => BTC-USD=$232.32
-				//SELL ORDER: sell the base, buy the quote: BASE-QUOTE => BTC-USD=$232.32
-				$market_summary['minimum_order_size_base'] = 0.00050000;
-				$market_summary['minimum_order_size_quote'] = bcmul( $market_summary['minimum_order_size_base'], $market_summary['mid'], 32 );
+				$market_summary['minimum_order_size_quote'] = 0.00050000;
+				$market_summary['minimum_order_size_base'] = null;
 				$market_summary['open_buy_orders'] = null;
 				$market_summary['open_sell_orders'] = null;
 				$market_summary['market_id'] = $market_summary['id'];

@@ -5,7 +5,6 @@
 	class bittrex {
 		protected $api_key;
 		protected $api_secret;
-		protected $nonce;
 		protected $trading_url = "https://bittrex.com/api/v1.1";
 
 		public function __construct($api_key, $api_secret) {
@@ -19,7 +18,7 @@
 
 			$req['apikey'] = $key;
 			$mt = explode(' ', microtime());
-			$req['nonce'] = $mt[1] + $this->x++;
+			$req['nonce'] = $mt[1];
 
 			$queryString = http_build_query($req, '', '&');
 			$requestUrl = $this->trading_url . $path . '?' . $queryString;	
