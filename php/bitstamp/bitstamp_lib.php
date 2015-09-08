@@ -83,9 +83,8 @@
 		public function balance(){
 			return $this->query('balance');
 		}
-
-		public function user_transactions($time='hour'){
-			return $this->query('transactions', array('time' => $time), 'post');
+		public function user_transactions($arr){
+			return $this->query('user_transactions', $arr, 'post');
 		}
 
 		public function open_orders(){
@@ -132,8 +131,8 @@
 			return $this->query('ripple_withdrawal', array(), 'post');
 		}
 
-		public function ripple_deposit_address(){
-			return $this->query('ripple_deposit_address');
+		public function ripple_address(){
+			return $this->query('ripple_address');
 		}
 
 	}

@@ -29,21 +29,32 @@
 		public function buy( $pair=null, $amount="0", $price="0", $type="LIMIT", $opts=array() ) {
 			$pair = str_replace( "-", "_", strtolower( $pair ) );
 			$buy = $this->exch->create_order( array( 'marketid' => $opts['market_id'], 'ordertype' => 'buy', 'quantity' => (float) $amount, 'price' => (float) $price ) );
-			if( isset( $buy['success'] ) && $buy['success'] === 1 )
-				print_r( $buy );
 			return $buy;
 		}
 		
 		public function sell( $pair=null, $amount="0", $price="0", $type="LIMIT", $opts=array() ) {
 			$pair = str_replace( "-", "_", strtolower( $pair ) );
 			$sell = $this->exch->create_order( array( 'marketid' => $opts['market_id'], 'ordertype' => 'sell', 'quantity' => (float) $amount, 'price' => (float) $price ) );
-			if( isset( $sell['success'] ) && $sell['success'] === 1 )
-				print_r( $sell );
 			return $sell;
 		}
 
-		public function get_open_orders( $arr = array( 'pair' => 'btc_usd' ) ) {
-			return $this->exch->get_orders();
+		public function get_open_orders() {
+			if( isset( $this->open_orders ) )
+				return $this->open_orders;
+			$this->open_orders = [];
+			$orders = $this->exch->get_orders( array( 'type' => 'all' ) );
+			$this->open_orders = array_merge( $this->open_orders, $orders['data']['buyorders'] );
+			$this->open_orders = array_merge( $this->open_orders, $orders['data']['sellorders'] );
+			return $this->open_orders;
+		}
+
+		public function get_completed_orders() {
+			if( isset( $this->completed_orders ) )
+				return $this->completed_orders;
+			//TODO get 100 at a time and join them
+			$trades = $this->exch->tradehistory( array( 'limit' => 100, 'start' => 0, 'stop' => time() ) );
+			$this->completed_orders = $trades['data'];
+			return $this->completed_orders;
 		}
 
 		public function get_markets() {
@@ -66,11 +77,20 @@
 		}
 		
 		public function deposit_address($currency="BTC"){
-			return [];
+			//return $this->exch->address( $currency );
+			return array( 'error' => 'NOT_IMPLEMENTED' );
 		}
 		
 		public function deposit_addresses(){
-			return [];
+			/*$currencies = $this->get_currencies();
+
+			foreach( $currencies as $currency ) {
+				print_r( $this->deposit_address( $currency ) );
+			}
+
+			$addresses = $this->exch->addresses();*/
+
+			return array( 'error' => 'NOT_IMPLEMENTED' );
 		}
 
 		public function get_balances() {

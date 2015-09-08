@@ -37,8 +37,18 @@
 			return $sell;
 		}
 
-		public function get_open_orders( $arr = array( 'pair' => 'btc_usd' ) ) {
-			return $this->exch->get_orders();
+		public function get_open_orders() {
+			if( isset( $this->open_orders ) )
+				return $this->open_orders;
+			$this->open_orders = $this->exch->get_orders();
+			return $this->open_orders;
+		}
+
+		public function get_completed_orders() {
+			if( isset( $this->completed_orders ) )
+				return $this->completed_orders;
+			$this->completed_orders = $this->exch->get_fills();
+			return $this->completed_orders;
 		}
 
 		public function get_markets() {
@@ -60,11 +70,11 @@
 		}
 		
 		public function deposit_address($currency="BTC"){
-			return [];
+			return array( 'error' => 'NOT_IMPLEMENTED' );
 		}
 		
 		public function deposit_addresses(){
-			return [];
+			return array( 'error' => 'NOT_IMPLEMENTED' );
 		}
 
 		public function get_balances() {

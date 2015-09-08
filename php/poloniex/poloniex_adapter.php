@@ -32,8 +32,18 @@
 			return $sell;
 		}
 
-		public function get_open_orders( $pair = 'All' ) {
-			return $this->exch->returnOpenOrders( $pair );
+		public function get_open_orders() {
+			if( isset( $this->open_orders ) )
+				return $this->open_orders;
+			$this->open_orders = $this->exch->returnOpenOrders( 'All' );
+			return $this->open_orders;
+		}
+
+		public function get_completed_orders() {
+			if( isset( $this->completed_orders ) )
+				return $this->completed_orders;
+			$this->completed_orders = $this->exch->returnTradeHistory( 'All' );
+			return $this->completed_orders;
 		}
 
 		//BTC_USD, BTC_LTC, LTC_USD, etc...
@@ -52,7 +62,13 @@
 		}
 		
 		public function deposit_addresses(){
-			return [];
+			$addresses = $this->exch->returnDepositAddresses();
+			$currencies = array_diff( $this->get_currencies(), array_keys( $addresses ) );
+			foreach( $currencies as $currency ) {
+				$this->exch->generateNewAddress( $currency );
+			}
+			$addresses = $this->exch->returnDepositAddresses();
+			return $addresses;
 		}
 
 		public function get_balances() {

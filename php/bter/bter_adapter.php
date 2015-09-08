@@ -34,17 +34,25 @@
 				print_r( $sell );
 		}
 
-		public function get_open_orders( $pair = 'btc_usd' )
-		{
-			$json = $this->exch->orderlist();
+		public function get_open_orders() {
+			if( isset( $this->open_orders ) )
+				return $this->open_orders;
+			$orderlist = $this->exch->orderlist();
+			$this->open_orders = $orderlist['orders'];
+			return $this->open_orders;
+		}
 
-			/*$orders = array();
-			foreach( $json['orders'] as $order ) {
-				$order['detailedInfo'] = $this->exch->getorder($order['id']);
-				array_push($orders,$order);
-			}*/
-
-			return $json;
+		public function get_completed_orders() {
+			if( isset( $this->completed_orders ) )
+				return $this->completed_orders;
+			$markets = $this->get_markets();
+			$this->completed_orders = [];
+			foreach( $markets as $market ) {
+				$market = str_replace( "-", "_", strtolower( $market ) );
+				$trades24hours = $this->exch->mytrades( array( 'pair' => $market ) );
+				array_merge( $this->completed_orders, $trades24hours['trades'] );
+			}
+			return $this->completed_orders;
 		}
 
 		public function get_markets() {
@@ -63,11 +71,11 @@
 		}
 
 		public function deposit_address($currency="BTC"){
-			return [];
+			return array( 'error' => 'NOT_IMPLEMENTED' );
 		}
 		
 		public function deposit_addresses(){
-			return [];
+			return array( 'error' => 'NOT_IMPLEMENTED' );
 		}
 
 		public function get_balances() {
@@ -92,7 +100,7 @@
 		}
 
 		public function get_balance($currency="BTC") {
-			return [];
+			return array( 'error' => 'NOT_IMPLEMENTED' );
 		}
 
 		public function get_worth() {
@@ -172,15 +180,15 @@
 		}
 
 		public function get_lendbook() {
-			return [];
+			return array( 'error' => 'NOT_IMPLEMENTED' );
 		}
 
 		public function get_book() {
-			return [];
+			return array( 'error' => 'NOT_IMPLEMENTED' );
 		}
 
 		public function get_lends() {
-			return [];
+			return array( 'error' => 'NOT_IMPLEMENTED' );
 		}
 
 	}

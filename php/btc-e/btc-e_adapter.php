@@ -39,12 +39,18 @@
 			return $sell;
 		}
 
-		public function get_open_orders( $pair = 'All' ) {
-			$pair = strtolower( $pair );
-			if( $pair == 'all' ) {
-				return $this->exch->ActiveOrders( $arr = array() );
-			}
-			return $this->exch->ActiveOrders( $arr = array( 'pair' => $pair ) );
+		public function get_open_orders() {
+			if( isset( $this->open_orders ) )
+				return $this->open_orders;
+			$this->open_orders = $this->exch->ActiveOrders( $arr = array() );
+			return $this->open_orders;
+		}
+
+		public function get_completed_orders() {
+			if( isset( $this->completed_orders ) )
+				return $this->completed_orders;
+			$this->completed_orders = $this->exch->TradeHistory( array( 'count' => 1000, 'order' => 'DESC', 'since' => 0, 'end' => time() ) );
+			return $this->completed_orders;
 		}
 
 		public function get_markets() {
@@ -78,11 +84,31 @@
 		}
 		
 		public function deposit_address($currency="BTC"){
-			return [];
+			switch( $currency ) {
+				case "BTC":
+					return array( 'currency' => "BTC", 'address' => "1jPtEamiPHn2NaPXab29ruSAparsvrUre" );
+				case "LTC":
+					return array( 'currency' => "LTC", 'address' => "LZrNNQtK4yDzwEjj2VszEm529UaDDDsdPH" );
+				case "NMC":
+					return array( 'currency' => "NMC", 'address' => "NEtAMTUgqyD4w7DEA414PRSFjhoVJstP7W" );
+				case "NVC":
+					return array( 'currency' => "NVC", 'address' => "4KwnoXR5nKxPebxryruugbuqP7SdiuWxP3" );
+				case "PPC":
+					return array( 'currency' => "PPC", 'address' => "PVduuiWTCm3jPaPr9JTPyBhAVrhZuEER5D" );
+				default:
+					return FALSE;
+			}
 		}
 		
 		public function deposit_addresses(){
-			return [];
+			$addresses = [];
+			$currencies = $this->get_currencies();
+			foreach( $currencies as $currency ) {
+				$address = $this->deposit_address( $currency );
+				if( $address )
+					array_push( $addresses, $address );
+			}
+			return $addresses;
 		}
 
 		public function get_balances() {

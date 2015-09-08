@@ -40,11 +40,14 @@
 	$open_orders = [];
 	$worths = [];
 	$completed_orders = [];
+	$deposit_addresses = [];
+
 	try{
 		foreach( $Adapters as $Adapter ) {
 			echo "\n\n*******" . get_class( $Adapter ) . "******\n\n";
 
 			/*** Get Data from $Adapter ***/
+			//Make sure each piece of data contains key 'exchange' in it to refer back to adapter if necessary
 			$exchanges = array_merge( $exchanges, array( get_class( $Adapter ) ) );
 			$currencies = array_unique( array_merge( $currencies, $Adapter->get_currencies() ) );
 			$markets = array_unique( array_merge( $markets, $Adapter->get_markets() ) );
@@ -53,16 +56,22 @@
 			$open_orders = array_merge( $open_orders, $Adapter->get_open_orders() );
 			$worths[ get_class( $Adapter ) ]= $Adapter->get_worth();
 			$volumes[ get_class( $Adapter ) ] = Utilities::get_total_volumes( $Adapter->get_market_summaries() );
-			//$completed_orders = array_merge( $completed_orders, $Adapter->get_completed_orders() );
-
+			$completed_orders = array_merge( $completed_orders, $Adapter->get_completed_orders() );
 			//print_r( $Adapter->cancel_all() );
+			$deposit_addresses = array_merge( $deposit_addresses, $Adapter->deposit_addresses() );
+			if( isset( $deposit_addresses['error'] ) && $deposit_addresses['error'] == "NOT_IMPLEMENTED" )
+				echo "\nThis exchange does not generate addresses\n";
+
+
 		}
 
 		//TODO test all the arrays above to make sure each are consistent with the next like the following:
 		test_market_summaries( $market_summaries );
 		test_balances( $balances );
+		$all_orders = array_merge( $completed_orders, $open_orders );
+		test_orders( $all_orders );
 
-		//make_max_orders( $Adapters );
+		make_max_orders( $Adapters );
 
 		sort( $currencies );
 		sort( $markets );

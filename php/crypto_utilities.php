@@ -12,6 +12,9 @@
 				This MUST return volume for each of the quote currencies
 				Then a specific market for that currency will have a percentage of that market only
 				BTC is just another currency that could be used as a base or quote currency in a market
+
+				This should also return such things as Buy and Sell volume
+				It should also return orderbook volume, but the orderbook volume might be taken care of somewhere else
 			*/
 
 			$total_volume = 0;
@@ -43,11 +46,18 @@
 			}
 			return array( 'total_volume' => $total_volume );
 		}
-		public static function surch( $key, $value, $arr ) {
-			foreach( $arr as $a )
-				if( isset( $a[$key] ) && $a[$key] === $value )
-					return $a;
-			return FALSE;
+		public static function surch( $needles, $haystack ) {
+			$response = [];
+			foreach( $haystack as $bail ) {
+				$test = true;
+				foreach( $needles as $key => $val ) {
+					if( ! isset( $bail[$key] ) || $bail[$key] !== $val )
+						$test = false;
+				}
+				if( $test )
+					array_push( $response, $bail );
+			}
+			return $response;
 		}
 		public static function get_worth( $balances, $market_summaries ) {
 			$btc_worth = 0;
@@ -56,14 +66,14 @@
 					$btc_worth += $balance['total'];
 					continue;
 				}
-				$market_summary = Utilities::surch( "pair", $balance['currency']."-BTC", $market_summaries );
-				if( $market_summary ) {
-					$btc_worth += $balance['total'] * $market_summary['last_price'];
+				$market_summary = Utilities::surch( array( "pair" => $balance['currency']."-BTC" ), $market_summaries );
+				if( sizeof( $market_summary ) > 0 ) {
+					$btc_worth += $balance['total'] * $market_summary[0]['last_price'];
 					continue;
 				}
-				$market_summary = Utilities::surch( "pair", "BTC-".$balance['currency'], $market_summaries );
-				if( $market_summary ) {
-					$btc_worth += $balance['total'] / $market_summary['last_price'];
+				$market_summary = Utilities::surch( array( "pair" => "BTC-".$balance['currency'] ), $market_summaries );
+				if( sizeof( $market_summary ) > 0 ) {
+					$btc_worth += $balance['total'] / $market_summary[0]['last_price'];
 					continue;
 				}
 			}

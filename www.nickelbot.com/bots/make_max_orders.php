@@ -37,10 +37,11 @@
 				$quote_curs = array( /*"BTC", "LTC", "CNY", "NXT", "USD", "XRP"*/ );
 
 				if( $buy_price > 0 && ! in_array( $base_cur, $quote_curs ) ) {
-					$order_size = Utilities::surch( "currency", $base_cur, $balances );
-					if( $order_size !== FALSE ) {
-						$order_size = bcmul( $order_size['total'], 0.1, 32 );
-						$order_size = number_format( $order_size, $price_precision, '.', '' );
+					$order_size = Utilities::surch( array( "currency" => $quote_cur, "type" => "exchange" ), $balances );
+					if( sizeof( $order_size ) > 0 ) {
+						$order_size = bcmul( $order_size[0]['total'], 0.5, 32 );
+						$order_size = number_format( $order_size/$buy_price, $price_precision, '.', '' );
+
 						if( $order_size < $market_summary['minimum_order_size_base'] )
 							$order_size = $market_summary['minimum_order_size_base'];
 	
@@ -51,9 +52,9 @@
 				}
 
 				if( $sell_price > 0 && ! in_array( $base_cur, $quote_curs ) ) {
-					$order_size = Utilities::surch( "currency", $base_cur, $balances );
-					if( $order_size !== FALSE ) {
-						$order_size = bcmul( $order_size['available'], 0.1, 32 );
+					$order_size = Utilities::surch( array( "currency" => $base_cur, "type" => "exchange" ), $balances );
+					if( sizeof( $order_size ) > 0 ) {
+						$order_size = bcmul( $order_size[0]['available'], 0.99, 32 );
 						$order_size = number_format( $order_size, $price_precision, '.', '' );
 
 						if( $order_size > 0 ) {

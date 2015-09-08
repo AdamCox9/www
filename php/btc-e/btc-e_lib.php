@@ -77,7 +77,6 @@
 			return json_decode( file_get_contents( 'https://btc-e.com/api/3/trades/' . $ticker ), true );
 		}
 
-
 		//Authenticated Functions:
 
 		public function getInfo() {
@@ -88,7 +87,7 @@
 			return $this->query('TransHistory');
 		}
 
-		public function TradeHistory( $arr = array( 'from' => 0, 'count' => 1000, 'from_id' => '0', 'end_id' => '9999999999999', 'order' => 'DESC', 'since' => 0, 'end' => '9999999999999' ) ) {
+		public function TradeHistory( $arr = array() ) {
 			return $this->query( 'TradeHistory', $arr );
 		}
 

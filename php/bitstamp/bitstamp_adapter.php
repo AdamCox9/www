@@ -32,8 +32,18 @@
 				return $sell;
 		}
 
-		public function get_open_orders( $pair = 'All' ) {
-			return $this->exch->open_orders();
+		public function get_open_orders() {
+			if( isset( $this->open_orders ) )
+				return $this->open_orders;
+			$this->open_orders = $this->exch->open_orders();
+			return $this->open_orders;
+		}
+
+		public function get_completed_orders() {
+			if( isset( $this->completed_orders ) )
+				return $this->completed_orders;
+			$this->completed_orders = $this->exch->user_transactions( array( 'offset' => 0, 'limit' => 1000, 'sort' => 'desc' ) );
+			return $this->completed_orders;
 		}
 
 		public function get_markets() {
@@ -45,11 +55,25 @@
 		}
 		
 		public function deposit_address( $currency = "BTC" ){
-			return [];
+			$response = array();
+			if( $currency === "BTC" ) {
+				$address = $this->exch->bitcoin_deposit_address();
+				$response = array( 'wallet_type' => 'exchange', 'currency' => $currency, 'address' => $address, 'method' => "bitcoin" );
+			}
+			if( $currency === "XRP" ) {
+				$address = $this->exch->ripple_address();
+				$address = $address['address'];
+				$response = array( 'wallet_type' => 'exchange', 'currency' => $currency, 'address' => $address, 'method' => "ripple" );
+			}
+
+			return $response;
 		}
 		
 		public function deposit_addresses(){
-			return [];
+			$addresses = [];
+			array_push( $addresses, $this->deposit_address( "BTC" ) );
+			array_push( $addresses, $this->deposit_address( "XRP" ) );
+			return $addresses;
 		}
 
 		public function get_balances() {

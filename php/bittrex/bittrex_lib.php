@@ -88,28 +88,28 @@
 			return $this->query( "/market/getopenorders", $arr );
 		}
 		public function account_getbalances() {
-			return $this->query("/account/getbalances");
+			return $this->query( "/account/getbalances" );
 		}
 		public function account_getbalance( $arr = array( 'currency' => 'BTC' ) ) {
-			return $this->query("/account/getbalance",$arr);
+			return $this->query( "/account/getbalance", $arr );
 		}
-		public function account_getdepositaddress( $arr = array( 'currency' => 'BTC' ) ) {
-			return $this->query("/account/getdepositaddress",$arr);
+		public function account_getdepositaddress( $arr = array() ) {
+			return $this->query( "/account/getdepositaddress", $arr );
 		}
-		public function account_withdraw( $arr = array( 'currency' => 'BTC' ) ) {
-			return $this->query("/account/withdraw",$arr);
+		public function account_withdraw( $arr = array() ) {
+			return $this->query( "/account/withdraw", $arr );
 		}
 		public function account_getorder( $arr = array( 'uuid' => '123' ) ) {
-			return $this->query("/account/getorder",$arr);
+			return $this->query( "/account/getorder", $arr );
 		}
-		public function account_getorderhistory( $arr = array( 'market' => 'BTC-LTC', 'count' => 10 ) ) {
-			return $this->query("/account/getorderhistory",$arr);
+		public function account_getorderhistory( $arr = array() ) {
+			return $this->query( "/account/getorderhistory", $arr );
 		}
 		public function account_getwithdrawalhistory( $arr = array( 'market' => 'BTC-LTC', 'count' => 10 ) ) {
-			return $this->query("/account/getwithdrawalhistory",$arr);
+			return $this->query( "/account/getwithdrawalhistory", $arr );
 		}
 		public function account_getdeposithistory( $arr = array( 'market' => 'BTC-LTC', 'count' => 10 ) ) {
-			return $this->query("/account/getdeposithistory",$arr);
+			return $this->query( "/account/getdeposithistory", $arr );
 		}
 	}
 ?>

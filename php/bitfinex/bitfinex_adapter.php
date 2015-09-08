@@ -32,12 +32,24 @@
 			return $sell;
 		}
 
-		public function get_open_orders( $pair = 'All' ) {
-			return $this->exch->orders();
+		public function get_open_orders() {
+			if( isset( $this->open_orders ) )
+				return $this->open_orders;
+			$this->open_orders = $this->exch->orders();
+			return $this->open_orders;
 		}
 
-		public function get_completed_orders( $pair = 'All' ) {
-			return $this->exch->mytrades();
+
+		public function get_completed_orders() {
+			if( isset( $this->completed_orders ) )
+				return $this->completed_orders;
+			$markets = $this->get_markets();
+			$this->completed_orders = [];
+			foreach( $markets as $market ) {
+				$market = str_replace( "-", "", strtoupper( $market ) );
+				array_push( $this->completed_orders, $this->exch->mytrades( array( 'symbol' => $market, 'timestamp' => 0, 'until' => time(), 'limit_trades' => 10000 ) ) );
+			}
+			return $this->completed_orders;
 		}
 
 		public function get_markets() {
@@ -55,11 +67,26 @@
 		}
 		
 		public function deposit_address($currency="BTC"){
-			return [];
+			$wallet_types = array( "exchange", "deposit", "trading" );
+			$addresses = [];
+			foreach( $wallet_types as $wallet ) {
+				$wallet_address = $this->exch->deposit_new( $currency, $wallet, $renew = 0 );
+				if( $wallet_address['result'] === "success" ) {
+					$wallet_address['wallet_type'] = $wallet;
+					unset( $wallet_address['result'] );
+					array_push( $addresses, $wallet_address );
+				}
+			}
+			return $addresses;
 		}
 		
 		public function deposit_addresses(){
-			return [];
+			$currencies = array( "bitcoin", "litecoin", "darkcoin", "mastercoin" );
+			$addresses = [];
+			foreach( $currencies as $currency ) {
+				$addresses = array_merge( $addresses, $this->deposit_address( $currency ) );
+			}
+			return $addresses;
 		}
 
 		public function get_balances() {

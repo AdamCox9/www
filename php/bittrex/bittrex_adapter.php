@@ -31,8 +31,18 @@
 			return $this->exch->market_selllimit( array( 'market' => strtoupper($pair), 'quantity' => $amount, 'rate' => $price ) );
 		}
 
-		public function get_open_orders( $pair = 'All' ) {
-			return $this->exch->market_getopenorders();
+		public function get_open_orders() {
+			if( isset( $this->open_orders ) )
+				return $this->open_orders;
+			$this->open_orders = $this->exch->market_getopenorders();
+			return $this->open_orders;
+		}
+
+		public function get_completed_orders() {
+			if( isset( $this->completed_orders ) )
+				return $this->completed_orders;
+			$this->completed_orders = $this->exch->account_getorderhistory( array( 'market' => 'BTC-LTC', 'count' => 100 ) );
+			return $this->completed_orders;
 		}
 
 		public function get_markets() {
@@ -54,11 +64,33 @@
 		}
 
 		public function deposit_address($currency="BTC"){
-			return [];
+			$address = $this->exch->account_getdepositaddress( array( 'currency' => $currency ) );
+			if( $address['message'] == 'CURRENCY_OFFLINE' )
+				return FALSE;
+			if( $address['success'] == 1 ) {
+				if( $address['result']['Address'] == "" ) {
+					sleep( 5 );
+					return $this->deposit_address( $currency );
+				}
+				return $address['result'];
+			}
+			if( $address['message'] == 'ADDRESS_GENERATING' ) {
+				sleep( 5 );
+				return $this->deposit_address( $currency );
+			}
+			return false;
 		}
 		
 		public function deposit_addresses(){
-			return [];
+			$currencies = $this->get_currencies();
+			$addresses = [];
+			foreach( $currencies as $currency ) {
+				$address = $this->deposit_address( $currency );
+				if( $address ) {
+					array_push( $addresses, $address );
+				}
+			}
+			return $addresses;
 		}
 
 		public function get_balances() {

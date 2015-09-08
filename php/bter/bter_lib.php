@@ -74,15 +74,15 @@
 		}
 
 		public function ticker( $curr_a = "BTC", $curr_b = "USD" ) {
-			return json_decode( file_get_contents( $this->trading_url . '1/ticker/'.$curr_a.'_'.$curr_b ), true );
+			return json_decode( file_get_contents( $this->trading_url . '1/ticker/' . $curr_a . '_' . $curr_b ), true );
 		}
 
 		public function depth( $curr_a = "BTC", $curr_b = "USD" ) {
-			return json_decode( file_get_contents( $this->trading_url . '1/depth/'.$curr_a.'_'.$curr_b ), true );
+			return json_decode( file_get_contents( $this->trading_url . '1/depth/' . $curr_a . '_' . $curr_b ), true );
 		}
 
 		public function trade_history( $curr_a = "BTC", $curr_b = "USD" ) {
-			return json_decode( file_get_contents( $this->trading_url . '1/trade/'.$curr_a.'_'.$curr_b ), true );
+			return json_decode( file_get_contents( $this->trading_url . '1/trade/' . $curr_a . '_' . $curr_b ), true );
 		}
 
 		//Private Functions:
@@ -91,7 +91,6 @@
 			return $this->query( '1/private/getfunds' );
 		}
 
-		//array('pair' => 'BTC_USD', 'type' => 'BUY', 'rate' => '0.01', 'amount' => '0.01' )
 		public function placeorder( $arr = array() ) {
 			return $this->query( '1/private/placeorder', $arr );
 		}
@@ -109,7 +108,7 @@
 			return $this->query( '1/private/orderlist' );
 		}
 
-		public function mytrades( $arr = array( 'pair' => 'BTC_USD' ) ) {
+		public function mytrades( $arr = array() ) {
 			return $this->query( '1/private/mytrades', $arr );
 		}
 
