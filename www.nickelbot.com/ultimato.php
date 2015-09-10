@@ -41,37 +41,79 @@
 	$worths = [];
 	$completed_orders = [];
 	$deposit_addresses = [];
+	$trades = [];
+	$orderbook = [];
 
 	try{
 		foreach( $Adapters as $Adapter ) {
 			echo "\n\n*******" . get_class( $Adapter ) . "******\n\n";
 
-			/*** Get Data from $Adapter ***/
-			//Make sure each piece of data contains key 'exchange' in it to refer back to adapter if necessary
+			echo " -> exchange name\n";
 			$exchanges = array_merge( $exchanges, array( get_class( $Adapter ) ) );
+			test_exchanges( $exchanges );
+			
+			echo " -> getting currencies\n";
 			$currencies = array_unique( array_merge( $currencies, $Adapter->get_currencies() ) );
+			test_currencies( $currencies );
+			
+			echo " -> getting markets\n";
 			$markets = array_unique( array_merge( $markets, $Adapter->get_markets() ) );
-			$market_summaries = array_merge( $market_summaries, $Adapter->get_market_summaries() );
-			$balances = array_merge( $balances, $Adapter->get_balances() );
-			$open_orders = array_merge( $open_orders, $Adapter->get_open_orders() );
-			$worths[ get_class( $Adapter ) ]= $Adapter->get_worth();
-			$volumes[ get_class( $Adapter ) ] = Utilities::get_total_volumes( $Adapter->get_market_summaries() );
-			$completed_orders = array_merge( $completed_orders, $Adapter->get_completed_orders() );
-			//print_r( $Adapter->cancel_all() );
-			$deposit_addresses = array_merge( $deposit_addresses, $Adapter->deposit_addresses() );
-			if( isset( $deposit_addresses['error'] ) && $deposit_addresses['error'] == "NOT_IMPLEMENTED" )
-				echo "\nThis exchange does not generate addresses\n";
+			test_markets( $markets );
 
+			echo " -> getting market summaries\n";
+			$market_summaries = array_merge( $market_summaries, $Adapter->get_market_summaries() );
+			test_market_summaries( $market_summaries );
+
+			echo " -> getting balances\n";
+			$balances = array_merge( $balances, $Adapter->get_balances() );
+			test_balances( $balances );
+
+			echo " -> getting open orders\n";
+			$open_orders = array_merge( $open_orders, $Adapter->get_open_orders() );
+			test_open_orders( $open_orders );
+
+			echo " -> getting completed orders\n";
+			$completed_orders = array_merge( $completed_orders, $Adapter->get_completed_orders() );
+			test_completed_orders( $completed_orders );
+
+			//Should be the same
+			$all_orders = array_merge( $completed_orders, $open_orders );
+			test_all_orders( $all_orders );
+			
+			echo " -> getting worths\n";
+			$worths[ get_class( $Adapter ) ]= $Adapter->get_worth();
+			test_worths( $worths );
+
+			echo " -> getting volumes\n";
+			$volumes[ get_class( $Adapter ) ] = Utilities::get_total_volumes( $Adapter->get_market_summaries() );
+			test_volumes( $volumes );
+
+			echo " -> generating deposit addresses\n";
+			$deposit_addresses = array_merge( $deposit_addresses, $Adapter->deposit_addresses() );
+			test_deposit_addresses( $deposit_addresses );
+			
+			echo " -> getting all recent trades\n";
+			$trades = array_merge( $trades, $Adapter->get_trades( $market = "BTC-USD", $time = 0 ) );
+			test_trades( $trades );
+
+			foreach( $trades as $trade ) {
+				print_r( $trade );
+			}
+
+			echo " -> getting some depth of orderbook\n";
+			$orderbook = array_merge( $orderbook, $Adapter->get_orderbook( $market = "BTC-USD", $depth = 20 ) );
+			test_orderbook( $orderbook );
+
+			foreach( $orderbook as $order ) {
+				print_r( $order );
+			}
+
+			//echo " -> cancelling all orders\n"
+			//print_r( $Adapter->cancel_all() );
+
+			//make_max_orders( array( $Adapter ) );
 
 		}
-
-		//TODO test all the arrays above to make sure each are consistent with the next like the following:
-		test_market_summaries( $market_summaries );
-		test_balances( $balances );
-		$all_orders = array_merge( $completed_orders, $open_orders );
-		test_orders( $all_orders );
-
-		make_max_orders( $Adapters );
 
 		sort( $currencies );
 		sort( $markets );

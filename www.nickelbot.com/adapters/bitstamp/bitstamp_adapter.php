@@ -158,6 +158,20 @@
 			return $this->market_summaries;
 		}
 
+		public function get_trades( $market = 'BTC-USD', $time = 0 ) {
+			if( $market != 'BTC-USD' )
+				return array( 'error' => true, 'message' => "Only BTC-USD is accepted" );
+			$result = $this->exch->transactions( $time );
+			return $result;
+		}
+
+		public function get_orderbook( $market = 'BTC-USD', $depth = 0 ) {
+			if( $market != 'BTC-USD' )
+				return array( 'error' => true, 'message' => "Only BTC-USD is accepted" );
+			$result = $this->exch->order_book();
+			return $result;
+		}
+
 		public function get_lendbook() {
 			return [];
 		}

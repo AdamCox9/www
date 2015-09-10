@@ -64,18 +64,24 @@
 		}
 
 		public function deposit_address($currency="BTC"){
+			if( ! isset( $this->cnt ) )
+				$this->cnt = 0;
+			if( $this->cnt > 5 )
+				return false;
 			$address = $this->exch->account_getdepositaddress( array( 'currency' => $currency ) );
 			if( $address['message'] == 'CURRENCY_OFFLINE' )
 				return FALSE;
 			if( $address['success'] == 1 ) {
 				if( $address['result']['Address'] == "" ) {
 					sleep( 5 );
+					$this->cnt++;
 					return $this->deposit_address( $currency );
 				}
 				return $address['result'];
 			}
 			if( $address['message'] == 'ADDRESS_GENERATING' ) {
 				sleep( 5 );
+				$this->cnt++;
 				return $this->deposit_address( $currency );
 			}
 			return false;
@@ -192,6 +198,17 @@
 			}
 
 			return $this->market_summaries;
+		}
+
+		//TODO convert the $time to $count
+		public function get_trades( $market = 'BTC-USD', $time = 0 ) {
+			$result = $this->exch->getmarkethistory( array( 'market' => $market, 'count' => 20 ) );
+			return $result;
+		}
+
+		public function get_orderbook( $market = 'BTC-USD', $depth = 0 ) {
+			$result = $this->exch->getorderbook( array( 'market' => $market, 'type' => 'both', 'depth' => $depth ) );
+			return $result;
 		}
 
 		public function get_lendbook() {

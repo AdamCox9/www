@@ -23,8 +23,10 @@
 		//An array of every currency BTC, LTC, USD, etc...
 		public function get_currencies();
 
-		//Get all open orders: merge these 3?
+		//Get all open orders
 		public function get_open_orders();
+
+		//This is the same as a trade (trade=completed order)
 		public function get_completed_orders();
 		//public function get_order( $order_id );
 
@@ -50,6 +52,22 @@
 		//Should return worth on exchange in USD/BTC/XML/LTC/ETC...
 		public function get_worth();
 
+		//Get trades for a specific $market since $time
+		//This is the same as users completed order (trade=completed order)
+		/*
+			returns
+			array( '...' )
+		*/
+		public function get_trades( $market = "BTC-USD", $time = 0 );
+
+
+		/*
+			returns
+			array( 'price', 'amount', 'timestamp' )
+
+		*/
+		public function get_orderbook( $market = "BTC-USD", $depth = 20 );
+
 /*
 		//This could have exchange info such as name, url, location, total volume, etc???
 		public function get_info();
@@ -60,11 +78,12 @@
 		//This will return a link to currency info page if available
 		public function get_currency_url( $market = "LTC" );
 
-		//Get trades for a specific $market since $time
-		public function get_trades( $market = "BTC-USD", $time = 0 );
 
 		//Withdraw funds to $address
 		public function withdraw( $account = "exchange", $currency = "BTC", $address = "1fsdaa...dsadf", $amount = 1 );
+
+		//Analysis EMA, Change, Trades Per Minute, etc...
+		//Try to calculate percentile so an order can be set behind 20% or 10% of other volume...
 
 */
 

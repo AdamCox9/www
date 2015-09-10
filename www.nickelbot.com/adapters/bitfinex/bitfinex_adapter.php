@@ -161,16 +161,29 @@
 			return $this->market_summaries;
 		}
 
+		public function get_trades( $market = 'BTC-USD', $time = 0 ) {
+			$result = $this->exch->trades();
+			return $result;
+		}
+
+		public function get_orderbook( $market = 'BTC-USD', $depth = 20 ) {
+			$result = $this->exch->book();
+			return $result;
+		}
+
 		public function get_lendbook() {
 			$result = $this->exch->lendbook();
+			return $result;
 		}
 
 		public function get_book() {
 			$result = $this->exch->book();
+			return $result;
 		}
 
 		public function get_lends() {
 			$result = $this->exch->lends();
+			return $result;
 		}
 
 	}
