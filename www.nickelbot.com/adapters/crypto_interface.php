@@ -50,7 +50,6 @@
 		//Balances: confirmed, reserved, available, pending, total, btc_worth, usd_worth etc???
 		public function get_balance( $currency = "BTC" );
 		public function get_balances();
-		public function get_worth(); //Should this be a bot instead of a function?
 
 	}
 ?>

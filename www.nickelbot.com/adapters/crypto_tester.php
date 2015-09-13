@@ -2,25 +2,27 @@
 
 	class Tester {
 
-		public function test_adapter( $Adapter ) {
-			//Make sure there are no extra functions, etc...
-			//Use reflection?
-		}
-
-		public function test_exchanges( $exchanges ) {
-			//Make sure they are strings that have AdapterEtcForm or something like that...
-			//not null, etc...
-		}
-
 		public function test_currencies( $currencies ) {
-			//Make sure these have the correct keys, etc...
-			//Make sure all upper case and 3, 4 or 5 alpha-numeric characters, etc...
+			foreach( $currencies as $currency ) {
+				if( strtoupper( $currency ) !== $currency )
+					die( "Currency must be uppercase: $currency" );
+				if( strlen( $currency ) < 1 || strlen( $currency ) > 6 )
+					die( "Currency must be 1-6 characters: $currency" );
+			}
 		}
 
 		public function test_markets( $markets) {
-			//Make sure these have the correct keys, etc...
-			//Make sure all upper case and 3, 4 or 5 alpha-numeric characters, etc...
-			//Make sure two valid currencies are separated by a "-"
+			foreach( $markets as $market ) {
+				if( strtoupper( $market ) !== $market )
+					die( "Currency must be uppercase: $currency" );
+				$curs = explode( "-", $market );
+				if( sizeof( $curs ) !== 2 )
+					die( "invalid market format: $market" );
+				if( strlen( $curs[0] ) < 1 || strlen( $curs[0] ) > 6 )
+					die( "Currency must be 1-6 characters: {$curs[0]}" );
+				if( strlen( $curs[1] ) < 1 || strlen( $curs[1] ) > 6 )
+					die( "Currency must be 1-6 characters: {$curs[1]}" );
+			}
 		}
 
 		public function test_market_summaries( $market_summaries ) {
@@ -31,7 +33,7 @@
 			//}
 
 			foreach( $market_summaries as $market_summary ) {
-				test_market_summary( $market_summary );
+				$this->test_market_summary( $market_summary );
 			}
 		}
 
@@ -39,9 +41,9 @@
 			//Data:
 			$keys = array(	'ask', 'base_volume', 'bid', 'btc_volume', 'created', 'display_name', 'exchange', 
 							'expiration', 'frozen', 'high', 'initial_margin', 'last_price', 
-							'low', 'market_id', 'maximum_order_size', 'mid', 'minimum_margin', 
+							'low', 'market', 'market_id', 'maximum_order_size', 'mid', 'minimum_margin', 
 							'minimum_order_size_base', 'minimum_order_size_quote', 'open_buy_orders',
-							'open_sell_orders', 'pair', 'percent_change', 'price_precision', 
+							'open_sell_orders', 'percent_change', 'price_precision', 
 							'quote_volume', 'result', 'timestamp', 'verified_only', 'vwap' );
 
 			$numbers = array( 'ask', 'base_volume', 'bid', 'high', 'last_price', 'low', 'quote_volume' );
@@ -50,10 +52,10 @@
 			$not_null = array_merge( $numbers, $strings );
 
 			//Tests:
-			equal_keys( $keys, $market_summary );
-			numbers( $numbers, $market_summary );
-			not_null( $not_null, $market_summary );
-			above_zero( $above_zero, $market_summary );
+			$this->equal_keys( $keys, $market_summary );
+			$this->numbers( $numbers, $market_summary );
+			$this->not_null( $not_null, $market_summary );
+			$this->above_zero( $above_zero, $market_summary );
 
 			if(  is_null( $market_summary['minimum_order_size_base'] ) && is_null( $market_summary['minimum_order_size_quote'] ) ) {
 				print_r( $market_summary );
@@ -65,39 +67,35 @@
 			$keys = array( 'type', 'currency', 'available', 'total', 'reserved', 'pending', 'btc_value' );
 			$numbers = array( 'available', 'total', 'reserved', 'pending' );
 			foreach( $balances as $balance ) {
-				equal_keys( $keys, $balance );
+				$this->equal_keys( $keys, $balance );
+				$this->numbers( $numbers, $balance );
 			}
-			numbers( $numbers, $balance );
 		}
 
-		public function test_open_orders( $active_orders ) {
-			//Make sure these have the correct keys, etc...
-		}
-
-		public function test_completed_orders( $completed_orders ) {
-			//Make sure these have the correct keys, etc...
-		}
-
-		public function test_worths( $worths ) {
-			//Make sure all worths for each currency are all good under the hood!!!
-		}
-
-		public function test_buy_order( $buy_order ) {
-			//Make sure the order was placed and returns correct keys, etc...
-		}
-
-		public function test_sell_order( $sell_order ) {
-			//Make sure the order was placed and returns correct keys, etc...
-		}
-		
 		public function test_volumes( $volumes ) {
-			//Make sure the order was placed and returns correct keys, etc...
+
 		}
 
 		public function test_deposit_addresses( $addresses ) {
-			//Make sure the order was placed and returns correct keys, etc...
+
 		}
 
+		public function test_open_orders( $active_orders ) {
+
+		}
+
+		public function test_completed_orders( $completed_orders ) {
+
+		}
+
+		public function test_buy_order( $buy_order ) {
+
+		}
+
+		public function test_sell_order( $sell_order ) {
+
+		}
+		
 		//Time or Quantity?
 		public function test_trades( $trades ) {
 			$keys = array( 'pair', 'base_cur', 'quote_cur', 'price', 'amount', 'timestamp', 'etc' );
@@ -164,5 +162,7 @@
 			}
 			return true;
 		}
+
 	}
+
 ?>

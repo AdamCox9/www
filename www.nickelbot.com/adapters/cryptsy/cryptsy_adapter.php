@@ -41,15 +41,8 @@
 		public function cancel_all() {
 			$orders = $this->get_open_orders();
 			$results = [];
-			if( isset( $orders['data'] ) && isset( $orders['data']['buyorders'] ) ) {
-				foreach( $orders['data']['buyorders'] as $order ) {
-					array_push( $results, $this->cancel( $order['orderid'] ) );
-				}
-			}
-			if( isset( $orders['data'] ) && isset( $orders['data']['sellorders'] ) ) {
-				foreach( $orders['data']['sellorders'] as $order ) {
-					array_push( $results, $this->cancel( $order['orderid'] ) );
-				}
+			foreach( $orders as $order ) {
+				array_push( $results, $this->cancel( $order['orderid'] ) );
 			}
 			return $results;
 		}
@@ -144,10 +137,6 @@
 			return [];
 		}
 
-		public function get_worth() {
-			return Utilities::get_worth( $this->get_balances(), $this->get_market_summaries() );
-		}
-
 		public function get_market_summary( $market = "BTC-LTC" ) {
 			$market_summary = $this->exch->market( $market );
 			$market_summary = $market_summary['data'];
@@ -169,7 +158,7 @@
 
 				$market_summary['exchange'] = "cryptsy";
 				$market_summary = array_merge( $market_summary, $m_tickers[$market_summary['id']] );
-				$market_summary['pair'] = strtoupper( str_replace( "/", "-", $market_summary['label'] ) );
+				$market_summary['market'] = strtoupper( str_replace( "/", "-", $market_summary['label'] ) );
 				$market_summary['low'] = $market_summary['24hr']['price_low'];
 				$market_summary['high'] = $market_summary['24hr']['price_high'];
 				$market_summary['timestamp'] = $market_summary['last_trade']['timestamp'];

@@ -151,10 +151,6 @@
 			return [];
 		}
 
-		public function get_worth() {
-			return Utilities::get_worth( $this->get_balances(), $this->get_market_summaries() );
-		}
-
 		public function get_market_summary( $market="LTC-BTC" ) {
 			return $this->exch->getmarketsummary( array('market' => $market ) );
 		}
@@ -169,7 +165,7 @@
 			foreach( $market_summaries as $market_summary ) {
 				$market_summary['exchange'] = "bittrex";
 				$msmn = explode( "-", $market_summary['MarketName'] );
-				$market_summary['pair'] = $msmn[1] . "-" . $msmn[0];
+				$market_summary['market'] = $msmn[1] . "-" . $msmn[0];
 				$market_summary['high'] = $market_summary['High'];
 				$market_summary['low'] = $market_summary['Low'];
 				$market_summary['base_volume'] = $market_summary['Volume'];
@@ -179,7 +175,7 @@
 				$market_summary['timestamp'] = $market_summary['TimeStamp'];
 				$market_summary['bid'] = is_null( $market_summary['Bid'] ) ? 0 : $market_summary['Bid'];
 				$market_summary['ask'] = is_null( $market_summary['Ask'] ) ? 0 : $market_summary['Ask'];
-				$market_summary['display_name'] = $market_summary['pair'];
+				$market_summary['display_name'] = $market_summary['market'];
 				$market_summary['result'] = true;
 				$market_summary['created'] = $market_summary['Created'];
 				$market_summary['open_buy_orders'] = $market_summary['OpenBuyOrders'];

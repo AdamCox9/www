@@ -41,11 +41,10 @@
 		public function cancel_all() {
 			$orders = $this->get_open_orders();
 			$results = [];
-			if( is_array( $orders ) && count( $orders ) > 0 ) {
-				foreach( $orders as $order ) {
-					array_push( $results, $this->cancel( $order['id'] ) );
-				}
-			}
+			if( is_array( $orders ) && count( $orders ) > 0 )
+				foreach( $orders as $order )
+					if( isset( $order['id'] ) )
+						array_push( $results, $this->cancel( $order['id'] ) );
 			return $results;
 		}
 
@@ -109,20 +108,24 @@
 			$balances = $this->exch->accounts();
 			$response = [];
 
-			foreach( $balances as $balance ) {
-				$balance['type'] = "exchange";
-				$balance['total'] = $balance['balance'];
-				$balance['reserved'] = $balance['hold'];
-				$balance['pending'] = 0;
-				$balance['btc_value'] = 0;
-				$balance['currency'] = strtoupper( $balance['currency'] );
+			if( ! isset( $balances['message'] ) ) {
+				foreach( $balances as $balance ) {
+					$balance['type'] = "exchange";
+					$balance['total'] = $balance['balance'];
+					$balance['reserved'] = $balance['hold'];
+					$balance['pending'] = 0;
+					$balance['btc_value'] = 0;
+					$balance['currency'] = strtoupper( $balance['currency'] );
 
-				unset( $balance['balance'] );
-				unset( $balance['hold'] );
-				unset( $balance['id'] );
-				unset( $balance['profile_id'] );
-				
-				array_push( $response, $balance );
+					unset( $balance['balance'] );
+					unset( $balance['hold'] );
+					unset( $balance['id'] );
+					unset( $balance['profile_id'] );
+					
+					array_push( $response, $balance );
+				} 
+			} else {
+					error_reporting( $balances['message'] );
 			}
 
 			return $response;
@@ -130,10 +133,6 @@
 
 		public function get_balance($currency="BTC") {
 			return [];
-		}
-
-		public function get_worth() {
-			return Utilities::get_worth( $this->get_balances(), $this->get_market_summaries() );
 		}
 
 		public function get_market_summary( $market = "BTC-LTC" ) {
@@ -153,7 +152,7 @@
 				$market_summary['high'] = isset( $market_summary['high'] ) ? $market_summary['high'] : 0;
 				$market_summary['low'] = isset( $market_summary['low'] ) ? $market_summary['low'] : 0;
 				$market_summary['volume'] = isset( $market_summary['volume'] ) ? $market_summary['volume'] : 0;
-				$market_summary['pair'] = $market_summary['id'];
+				$market_summary['market'] = $market_summary['id'];
 				$market_summary['minimum_order_size_base'] = $market_summary['base_min_size'];
 				$market_summary['minimum_order_size_quote'] = null;
 				$market_summary['maximum_order_size'] = $market_summary['base_max_size'];

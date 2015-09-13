@@ -130,10 +130,6 @@
 			return [];
 		}
 
-		public function get_worth() {
-			return Utilities::get_worth( $this->get_balances(), $this->get_market_summaries() );
-		}
-
 		public function get_market_summary( $market = "BTC-LTC" ) {
 			$market = strtolower( str_replace( "-", "", $market ) );
 			if( isset( $this->market_summaries ) )
@@ -153,7 +149,7 @@
 			foreach( $market_summaries as $market_summary ) {
 				$market_summary = array_merge( $market_summary, $this->exch->pubticker( $market_summary['pair'] ) );
 				$market_summary['exchange'] = 'bitfinex';
-				$market_summary['pair'] = strtoupper( $market_summary['pair'] );
+				$market_summary['market'] = strtoupper( $market_summary['pair'] );
 				$market_summary['pair'] = substr_replace($market_summary['pair'], '-', 3, 0);
 				$market_summary['display_name'] = $market_summary['pair'];
 				$market_summary['minimum_order_size_base'] = $market_summary['minimum_order_size'];
@@ -171,6 +167,7 @@
 				$market_summary['open_sell_orders'] = null;
 				$market_summary['market_id'] = null;
 
+				unset( $market_summary['pair'] );
 				unset( $market_summary['volume'] );
 				unset( $market_summary['minimum_order_size'] );
 

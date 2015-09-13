@@ -128,16 +128,12 @@
 			return $this->exch->balance();
 		}
 
-		public function get_worth() {
-			return Utilities::get_worth( $this->get_balances(), $this->get_market_summaries() );
-		}
-
 		public function get_market_summary( $market = "BTC-USD" ) {
 
 			$market_summary = $this->exch->ticker();
 
 			//Set variables:
-			$market_summary['pair'] = strtoupper( $market );
+			$market_summary['market'] = strtoupper( $market );
 			$market_summary['exchange'] = 'bitstamp';
 			$market_summary['display_name'] = $market;
 			$market_summary['last_price'] = $market_summary['last'];

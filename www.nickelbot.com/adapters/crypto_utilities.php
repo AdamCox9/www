@@ -20,11 +20,11 @@
 
 			$total_volume = 0;
 			foreach( $market_summaries as $market_summary ) {
-				if( strstr( $market_summary['pair'], "-BTC" ) !== FALSE ) {
+				if( strstr( $market_summary['market'], "-BTC" ) !== FALSE ) {
 					$total_volume += $market_summary['quote_volume'];
 					continue;
 				}
-				if( strstr( $market_summary['pair'], "BTC-" ) !== FALSE ) {
+				if( strstr( $market_summary['market'], "BTC-" ) !== FALSE ) {
 					$total_volume += $market_summary['base_volume'];
 					continue;
 				}
@@ -34,12 +34,12 @@
 				$curs = explode( "-", $market_summary['pair'] );
 				$base_cur = $curs[0];
 				$quote_cur = $curs[1];
-				$market_summary = Utilities::surch( "pair", $base_cur."-BTC", $market_summaries );
+				$market_summary = Utilities::surch( "market", $base_cur."-BTC", $market_summaries );
 				if( $market_summary ) {
 					$total_volume += $quote_volume / $market_summary['last_price'];
 					continue;
 				}
-				$market_summary = Utilities::surch( "pair", "BTC-".$quote_cur, $market_summaries );
+				$market_summary = Utilities::surch( "market", "BTC-".$quote_cur, $market_summaries );
 				if( $market_summary ) {
 					$total_volume += $base_volume / $market_summary['last_price'];
 					continue;
@@ -69,12 +69,12 @@
 					$btc_worth += $balance['total'];
 					continue;
 				}
-				$market_summary = Utilities::surch( array( "pair" => $balance['currency']."-BTC" ), $market_summaries );
+				$market_summary = Utilities::surch( array( "market" => $balance['currency']."-BTC" ), $market_summaries );
 				if( sizeof( $market_summary ) > 0 ) {
 					$btc_worth += $balance['total'] * $market_summary[0]['last_price'];
 					continue;
 				}
-				$market_summary = Utilities::surch( array( "pair" => "BTC-".$balance['currency'] ), $market_summaries );
+				$market_summary = Utilities::surch( array( "market" => "BTC-".$balance['currency'] ), $market_summaries );
 				if( sizeof( $market_summary ) > 0 ) {
 					$btc_worth += $balance['total'] / $market_summary[0]['last_price'];
 					continue;

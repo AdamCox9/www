@@ -41,9 +41,9 @@
 		}
 		
 		public function cancel_all() {
-			$json = $this->get_open_orders();
+			$orders = $this->get_open_orders();
 			$results = array();
-			foreach( $json['orders'] as $order ) {
+			foreach( $orders as $order ) {
 				$order['detailedInfo'] = $this->exch->cancelorder( array( 'order_id' => $order['id'] ) );
 				array_push($results,$order);
 			}
@@ -133,10 +133,6 @@
 			return array( 'error' => 'NOT_IMPLEMENTED' );
 		}
 
-		public function get_worth() {
-			return Utilities::get_worth( $this->get_balances(), $this->get_market_summaries() );
-		}
-
 		public function get_market_summary( $market = "BTC-LTC" ) {
 			$market = explode( "-", strtolower( $market ) );
 			return $this->exch->ticker( $market[0], $market[1] );;
@@ -159,7 +155,7 @@
 			}
 
 			foreach( $tickers as $key => $market_summary ) {
-				$market_summary['pair'] = strtoupper( str_replace( "_", "-", $key ) );
+				$market_summary['market'] = strtoupper( str_replace( "_", "-", $key ) );
 				$market_summary['exchange'] = "bter";
 				$market_summary = array_merge( $market_summary, $markets[$key] );
 				$curs = explode( "_", $key );
@@ -169,7 +165,7 @@
 				$market_summary['bid'] = is_null( $market_summary['buy'] ) ? 0 : $market_summary['buy'];
 				$market_summary['ask'] = is_null( $market_summary['sell'] ) ? 0 : $market_summary['sell'];
 				$market_summary['last_price'] = $market_summary['last'];
-				$market_summary['display_name'] = $market_summary['pair'];
+				$market_summary['display_name'] = $market_summary['market'];
 				$market_summary['percent_change'] = $market_summary['rate_change_percentage'];
 				$market_summary['base_volume'] = $market_summary['vol_'.$cur1];
 				$market_summary['quote_volume'] = $market_summary['vol_'.$cur2];

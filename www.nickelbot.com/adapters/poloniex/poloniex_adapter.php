@@ -40,10 +40,6 @@
 			return $this->exch->returnOrderBook($market);
 		}
 
-		public function cancel( $orderid="1", $opts = array() ) {//requires market to be passed in
-			return $this->exch->cancelOrder( $opts['pair'], $orderid );
-		}
-		
 		public function buy($market='LTC-BTC',$amount=0,$price=0,$type="LIMIT",$opts=array()) {
 			$market = explode( "-", $market );
 			$market = $market[1] . "-" . $market[0];
@@ -126,10 +122,6 @@
 
 		public function get_balance($currency="BTC") {
 			return [];
-		}
-
-		public function get_worth() {
-			return Utilities::get_worth( $this->get_balances(), $this->get_market_summaries() );
 		}
 
 		public function get_market_summary( $market = "BTC-LTC" ) {
@@ -219,6 +211,10 @@
 				}
 			}
 			return $results;
+		}
+
+		public function cancel( $orderid="1", $opts = array() ) {//requires market to be passed in
+			return $this->exch->cancelOrder( $opts['market'], $orderid );
 		}
 
 	}

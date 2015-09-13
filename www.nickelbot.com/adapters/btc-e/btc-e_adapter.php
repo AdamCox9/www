@@ -186,10 +186,6 @@
 			return [];
 		}
 
-		public function get_worth() {
-			return Utilities::get_worth( $this->get_balances(), $this->get_market_summaries() );
-		}
-
 		public function get_market_summary( $market = "BTC-LTC" ) {
 			$market = strtolower( str_replace( "-", "_", $market ) );
 			return $this->exch->ticker( $market );
@@ -204,7 +200,7 @@
 				$key = array_keys( $market_summary );
 				$key = $key[0];
 				$market_summary = $market_summary[$key];
-				$market_summary['pair'] = strtoupper( str_replace( "_", "-", $key ) );
+				$market_summary['market'] = strtoupper( str_replace( "_", "-", $key ) );
 				$market_summary['exchange'] = "btc-e";
 				$info = $this->exch->info( $market );
 				$market_summary['timestamp'] = $info['server_time'];
@@ -217,7 +213,7 @@
 				$market_summary['base_volume'] = bcdiv( $market_summary['quote_volume'], $market_summary['mid'], 32 );
 				$market_summary['btc_volume'] = null;
 				$market_summary['last_price'] = $market_summary['last'];
-				$market_summary['display_name'] = $market_summary['pair'];
+				$market_summary['display_name'] = $market_summary['market'];
 				$market_summary['result'] = true;
 				$market_summary['created'] = null;
 				$market_summary['open_buy_orders'] = null;
