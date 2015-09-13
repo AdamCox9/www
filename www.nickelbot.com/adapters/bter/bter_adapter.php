@@ -6,6 +6,36 @@
 			$this->exch = $Exch;
 		}
 
+		public function get_info() {
+			return [];
+		}
+
+		public function withdraw( $account = "exchange", $currency = "BTC", $address = "1fsdaa...dsadf", $amount = 1 ) {
+			return [];
+		}
+
+		public function get_currency_summary( $currency = "BTC" ) {
+			return [];
+		}
+		
+		public function get_currency_summaries( $currency = "BTC" ) {
+			return [];
+		}
+		
+		public function get_order( $orderid = "1" ) {
+			return [];
+		}
+
+		public function get_trades( $market = "BTC-USD", $time = 0 ) {
+			$curs = explode( "-", $market );
+			return $this->exch->trade_history( $curs[0], $curs[1] );
+		}
+
+		public function get_orderbook( $market = "BTC-USD", $depth = 0 ) {
+			$curs = explode( "-", $market );
+			return $this->exch->depth( $curs[0], $curs[1] );
+		}
+
 		public function cancel( $orderid="1", $opts = array() ) {
 			return $this->exch->cancelorder( array( 'order_id' => $orderid ) );
 		}
@@ -34,7 +64,7 @@
 				print_r( $sell );
 		}
 
-		public function get_open_orders() {
+		public function get_open_orders( $market = "BTC-USD" ) {
 			if( isset( $this->open_orders ) )
 				return $this->open_orders;
 			$orderlist = $this->exch->orderlist();
@@ -42,7 +72,7 @@
 			return $this->open_orders;
 		}
 
-		public function get_completed_orders() {
+		public function get_completed_orders( $market = "BTC-USD" ) {
 			if( isset( $this->completed_orders ) )
 				return $this->completed_orders;
 			$markets = $this->get_markets();
@@ -179,17 +209,6 @@
 			return $this->market_summaries;
 		}
 
-		public function get_lendbook() {
-			return array( 'error' => 'NOT_IMPLEMENTED' );
-		}
-
-		public function get_book() {
-			return array( 'error' => 'NOT_IMPLEMENTED' );
-		}
-
-		public function get_lends() {
-			return array( 'error' => 'NOT_IMPLEMENTED' );
-		}
-
 	}
+
 ?>

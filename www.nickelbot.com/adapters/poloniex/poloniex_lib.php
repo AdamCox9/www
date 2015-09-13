@@ -72,31 +72,31 @@
 		//Public Methods
 
 		public function returnTicker() {
-			return $this->retrieveJSON($this->public_url.'?command=returnTicker');
+			return $this->retrieveJSON( $this->public_url . '?command=returnTicker' );
 		}
 		
 		public function return24hVolume() {
-			return $this->retrieveJSON($this->public_url.'?command=return24hVolume');
+			return $this->retrieveJSON( $this->public_url . '?command=return24hVolume' );
 		}
 		
-		public function returnOrderBook($pair) {
-			return $this->retrieveJSON($this->public_url.'?command=returnOrderBook&currencyPair='.strtoupper($pair));
+		public function returnOrderBook( $pair ) {
+			return $this->retrieveJSON( $this->public_url . "?command=returnOrderBook&currencyPair=$pair" );
 		}
 		
-		public function returnPublicTradeHistory($pair) {
-			return $this->retrieveJSON($this->public_url.'?command=returnTradeHistory&currencyPair='.strtoupper($pair));
+		public function returnPublicTradeHistory( $pair ) {
+			return $this->retrieveJSON( $this->public_url . "?command=returnTradeHistory&currencyPair=$pair" );
 		}
 		
 		public function returnChartData($pair) {
-			return $this->retrieveJSON($this->public_url.'?command=returnChartData&currencyPair='.strtoupper($pair));
+			return $this->retrieveJSON( $this->public_url . "?command=returnChartData&currencyPair=$pair" );
 		}
 		
 		public function returnCurrencies() {
-			return $this->retrieveJSON($this->public_url.'?command=returnCurrencies');
+			return $this->retrieveJSON( $this->public_url . '?command=returnCurrencies' );
 		}
 
 		public function returnLoanOrders() {
-			return $this->retrieveJSON($this->public_url.'?command=returnLoanOrders');
+			return $this->retrieveJSON( $this->public_url . '?command=returnLoanOrders' );
 		}
 
 		//Authenticated Methods

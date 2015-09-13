@@ -6,6 +6,34 @@
 			$this->exch = $Exch;
 		}
 
+		public function get_info() {
+			return [];
+		}
+
+		public function withdraw( $account = "exchange", $currency = "BTC", $address = "1fsdaa...dsadf", $amount = 1 ) {
+			return [];
+		}
+
+		public function get_currency_summary( $currency = "BTC" ) {
+			return [];
+		}
+		
+		public function get_currency_summaries( $currency = "BTC" ) {
+			return [];
+		}
+		
+		public function get_order( $orderid = "1" ) {
+			return [];
+		}
+
+		public function get_trades( $market = "LTC_BTC", $time = 0 ) {
+			return $this->exch->market_tradehistory( str_replace( "-", "_", $market ) );
+		}
+
+		public function get_orderbook( $market = "LTC_BTC", $depth = 0 ) {
+			return $this->exch->market_orderbook( str_replace( "-", "_", $market ) );
+		}
+
 		public function cancel( $orderid="1", $opts = array() ) {
 			return $this->exch->cancel_order( $orderid );
 		}
@@ -38,7 +66,7 @@
 			return $sell;
 		}
 
-		public function get_open_orders() {
+		public function get_open_orders( $market = "BTC-USD" ) {
 			if( isset( $this->open_orders ) )
 				return $this->open_orders;
 			$this->open_orders = [];
@@ -48,7 +76,7 @@
 			return $this->open_orders;
 		}
 
-		public function get_completed_orders() {
+		public function get_completed_orders( $market = "BTC-USD" ) {
 			if( isset( $this->completed_orders ) )
 				return $this->completed_orders;
 			//TODO get 100 at a time and join them
@@ -186,17 +214,6 @@
 			return $response;
 		}
 
-		public function get_lendbook() {
-			return [];
-		}
-
-		public function get_book() {
-			return [];
-		}
-
-		public function get_lends() {
-			return [];
-		}
-
 	}
+
 ?>

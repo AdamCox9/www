@@ -6,6 +6,26 @@
 			$this->exch = $Exch;
 		}
 
+		public function get_info() {
+			return [];
+		}
+
+		public function withdraw( $account = "exchange", $currency = "BTC", $address = "1fsdaa...dsadf", $amount = 1 ) {
+			return [];
+		}
+
+		public function get_currency_summary( $currency = "BTC" ) {
+			return [];
+		}
+		
+		public function get_currency_summaries( $currency = "BTC" ) {
+			return [];
+		}
+		
+		public function get_order( $orderid = "1" ) {
+			return [];
+		}
+
 		public function cancel($orderid="1", $opts = array() ) {
 			return $this->exch->market_cancel( array("uuid" => $orderid ) );
 		}
@@ -31,14 +51,14 @@
 			return $this->exch->market_selllimit( array( 'market' => strtoupper($pair), 'quantity' => $amount, 'rate' => $price ) );
 		}
 
-		public function get_open_orders() {
+		public function get_open_orders( $market = "BTC-USD" ) {
 			if( isset( $this->open_orders ) )
 				return $this->open_orders;
 			$this->open_orders = $this->exch->market_getopenorders();
 			return $this->open_orders;
 		}
 
-		public function get_completed_orders() {
+		public function get_completed_orders( $market = "BTC-USD" ) {
 			if( isset( $this->completed_orders ) )
 				return $this->completed_orders;
 			$this->completed_orders = $this->exch->account_getorderhistory( array( 'market' => 'BTC-LTC', 'count' => 100 ) );
@@ -63,7 +83,7 @@
 			return array_map( 'strtoupper', $response );
 		}
 
-		public function deposit_address($currency="BTC"){
+		public function deposit_address( $currency = "BTC" ){
 			if( ! isset( $this->cnt ) )
 				$this->cnt = 0;
 			if( $this->cnt > 5 )
@@ -127,7 +147,7 @@
 			return $results;
 		}
 
-		public function get_balance($currency="BTC") {
+		public function get_balance( $currency="BTC" ) {
 			return [];
 		}
 
@@ -135,7 +155,7 @@
 			return Utilities::get_worth( $this->get_balances(), $this->get_market_summaries() );
 		}
 
-		public function get_market_summary($market="LTC-BTC") {
+		public function get_market_summary( $market="LTC-BTC" ) {
 			return $this->exch->getmarketsummary( array('market' => $market ) );
 		}
 
@@ -201,26 +221,14 @@
 		}
 
 		//TODO convert the $time to $count
-		public function get_trades( $market = 'BTC-USD', $time = 0 ) {
+		public function get_trades( $market = "BTC-USD", $time = 0 ) {
 			$result = $this->exch->getmarkethistory( array( 'market' => $market, 'count' => 20 ) );
 			return $result;
 		}
 
-		public function get_orderbook( $market = 'BTC-USD', $depth = 0 ) {
-			$result = $this->exch->getorderbook( array( 'market' => $market, 'type' => 'both', 'depth' => $depth ) );
+		public function get_orderbook( $market = "BTC-USD", $depth = 0 ) {
+			$result = $this->exch->getorderbook( array( 'market' => $market, 'type' => "both", 'depth' => $depth ) );
 			return $result;
-		}
-
-		public function get_lendbook() {
-			return [];
-		}
-
-		public function get_book() {
-			return [];
-		}
-
-		public function get_lends() {
-			return [];
 		}
 
 	}

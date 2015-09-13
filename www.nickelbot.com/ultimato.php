@@ -43,6 +43,9 @@
 	$deposit_addresses = [];
 	$trades = [];
 	$orderbook = [];
+	$volumes = [];
+
+	$Tester = new Tester();
 
 	try{
 		foreach( $Adapters as $Adapter ) {
@@ -50,59 +53,59 @@
 
 			echo " -> exchange name\n";
 			$exchanges = array_merge( $exchanges, array( get_class( $Adapter ) ) );
-			test_exchanges( $exchanges );
+			$Tester->test_exchanges( $exchanges );
 			
 			echo " -> getting currencies\n";
-			$currencies = array_unique( array_merge( $currencies, $Adapter->get_currencies() ) );
-			test_currencies( $currencies );
+			//$currencies = array_unique( array_merge( $currencies, $Adapter->get_currencies() ) );
+			//test_currencies( $currencies );
 			
 			echo " -> getting markets\n";
-			$markets = array_unique( array_merge( $markets, $Adapter->get_markets() ) );
-			test_markets( $markets );
+			//$markets = array_unique( array_merge( $markets, $Adapter->get_markets() ) );
+			//test_markets( $markets );
 
 			echo " -> getting market summaries\n";
-			$market_summaries = array_merge( $market_summaries, $Adapter->get_market_summaries() );
-			test_market_summaries( $market_summaries );
+			//$market_summaries = array_merge( $market_summaries, $Adapter->get_market_summaries() );
+			//test_market_summaries( $market_summaries );
 
 			echo " -> getting balances\n";
-			$balances = array_merge( $balances, $Adapter->get_balances() );
-			test_balances( $balances );
+			//$balances = array_merge( $balances, $Adapter->get_balances() );
+			//test_balances( $balances );
 
 			echo " -> getting open orders\n";
-			$open_orders = array_merge( $open_orders, $Adapter->get_open_orders() );
-			test_open_orders( $open_orders );
+			//$open_orders = array_merge( $open_orders, $Adapter->get_open_orders() );
+			//test_open_orders( $open_orders );
 
 			echo " -> getting completed orders\n";
-			$completed_orders = array_merge( $completed_orders, $Adapter->get_completed_orders() );
-			test_completed_orders( $completed_orders );
+			//$completed_orders = array_merge( $completed_orders, $Adapter->get_completed_orders() );
+			//test_completed_orders( $completed_orders );
 
 			//Should be the same
-			$all_orders = array_merge( $completed_orders, $open_orders );
-			test_all_orders( $all_orders );
+			//$all_orders = array_merge( $completed_orders, $open_orders );
+			//test_all_orders( $all_orders );
 			
 			echo " -> getting worths\n";
-			$worths[ get_class( $Adapter ) ]= $Adapter->get_worth();
-			test_worths( $worths );
+			//$worths[ get_class( $Adapter ) ]= $Adapter->get_worth();
+			//test_worths( $worths );
 
 			echo " -> getting volumes\n";
-			$volumes[ get_class( $Adapter ) ] = Utilities::get_total_volumes( $Adapter->get_market_summaries() );
-			test_volumes( $volumes );
+			//$volumes[ get_class( $Adapter ) ] = Utilities::get_total_volumes( $Adapter->get_market_summaries() );
+			//test_volumes( $volumes );
 
 			echo " -> generating deposit addresses\n";
-			$deposit_addresses = array_merge( $deposit_addresses, $Adapter->deposit_addresses() );
-			test_deposit_addresses( $deposit_addresses );
+			//$deposit_addresses = array_merge( $deposit_addresses, $Adapter->deposit_addresses() );
+			//test_deposit_addresses( $deposit_addresses );
 			
 			echo " -> getting all recent trades\n";
-			$trades = array_merge( $trades, $Adapter->get_trades( $market = "BTC-USD", $time = 0 ) );
-			test_trades( $trades );
+			$trades = array_merge( $trades, $Adapter->get_trades( $market = "LTC-BTC", $time = 0 ) );
+			$Tester->test_trades( $trades );
 
 			foreach( $trades as $trade ) {
 				print_r( $trade );
 			}
 
 			echo " -> getting some depth of orderbook\n";
-			$orderbook = array_merge( $orderbook, $Adapter->get_orderbook( $market = "BTC-USD", $depth = 20 ) );
-			test_orderbook( $orderbook );
+			$orderbook = array_merge( $orderbook, $Adapter->get_orderbook( $market = "LTC-BTC", $depth = 20 ) );
+			$Tester->test_orderbook( $orderbook );
 
 			foreach( $orderbook as $order ) {
 				print_r( $order );

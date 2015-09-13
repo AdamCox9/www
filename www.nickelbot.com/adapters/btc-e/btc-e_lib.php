@@ -2,6 +2,7 @@
 
 	//implements https://btc-e.com/api/documentation
 	//implements https://btc-e.com/api/3/docs
+	//implements https://btc-e.com/tapi/docs
 
 	class btce {
 		protected $api_key;

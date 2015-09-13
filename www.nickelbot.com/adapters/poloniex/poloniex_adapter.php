@@ -6,40 +6,72 @@
 			$this->exch = $Exch;
 		}
 
-		public function cancel( $orderid="1", $opts = array() ) {
+		public function get_info() {
+			return [];
+		}
+
+		public function withdraw( $account = "exchange", $currency = "BTC", $address = "1fsdaa...dsadf", $amount = 1 ) {
+			return [];
+		}
+
+		public function get_currency_summary( $currency = "BTC" ) {
+			return [];
+		}
+		
+		public function get_currency_summaries( $currency = "BTC" ) {
+			return [];
+		}
+		
+		public function get_order( $orderid = "1" ) {
+			return [];
+		}
+
+		public function get_trades( $market = "BTC-USD", $time = 0 ) {
+			$market = explode( "-", $market );
+			$market = $market[1] . "-" . $market[0];
+			$market = str_replace( "-", "_", $market );
+			return $this->exch->returnPublicTradeHistory( $market );
+		}
+
+		public function get_orderbook( $market = "BTC-USD", $depth = 0 ) {
+			$market = explode( "-", $market );
+			$market = $market[1] . "-" . $market[0];
+			$market = str_replace( "-", "_", $market );
+			return $this->exch->returnOrderBook($market);
+		}
+
+		public function cancel( $orderid="1", $opts = array() ) {//requires market to be passed in
 			return $this->exch->cancelOrder( $opts['pair'], $orderid );
 		}
 		
-		public function buy($pair='BTC-LTC',$amount=0,$price=0,$type="LIMIT",$opts=array()) {
-			$pair = explode( "-", $pair );
-			$pair = $pair[1] . "-" . $pair[0];
-			$pair = strtolower( $pair );
-			$pair = str_replace( "-", "_", $pair );
-			$buy = $this->exch->buy($pair,$price,$amount);
+		public function buy($market='LTC-BTC',$amount=0,$price=0,$type="LIMIT",$opts=array()) {
+			$market = explode( "-", $market );
+			$market = $market[1] . "-" . $market[0];
+			$market = str_replace( "-", "_", $market );
+			$buy = $this->exch->buy($market,$price,$amount);
 			if( isset( $buy['error'] ) )
 				print_r( $buy );
 			return $buy;
 		}
 		
-		public function sell($pair='BTC-LTC',$amount=0,$price=0,$type="LIMIT",$opts=array()) {
-			$pair = explode( "-", $pair );
-			$pair = $pair[1] . "-" . $pair[0];
-			$pair = strtolower( $pair );
-			$pair = str_replace( "-", "_", $pair );
-			$sell = $this->exch->sell($pair,$price,$amount);
+		public function sell($market='LTC-BTC',$amount=0,$price=0,$type="LIMIT",$opts=array()) {
+			$market = explode( "-", $market );
+			$market = $market[1] . "-" . $market[0];
+			$market = str_replace( "-", "_", $market );
+			$sell = $this->exch->sell($market,$price,$amount);
 			if( isset( $sell['error'] ) )
 				print_r( $sell );
 			return $sell;
 		}
 
-		public function get_open_orders() {
+		public function get_open_orders( $market = "BTC-USD" ) {
 			if( isset( $this->open_orders ) )
 				return $this->open_orders;
 			$this->open_orders = $this->exch->returnOpenOrders( 'All' );
 			return $this->open_orders;
 		}
 
-		public function get_completed_orders() {
+		public function get_completed_orders( $market = "BTC-USD" ) {
 			if( isset( $this->completed_orders ) )
 				return $this->completed_orders;
 			$this->completed_orders = $this->exch->returnTradeHistory( 'All' );
@@ -101,10 +133,10 @@
 		}
 
 		public function get_market_summary( $market = "BTC-LTC" ) {
-			$pair = strtoupper($pair);
+			$market = strtoupper($market);
 			$prices = $this->exch->returnTicker();
-			if(isset($prices[$pair]))
-				return $prices[$pair];
+			if(isset($prices[$market]))
+				return $prices[$market];
 			else
 				return array();
 		}
@@ -113,9 +145,9 @@
 			$market_summaries = $this->exch->returnTicker();
 			$response = [];
 			foreach( $market_summaries as $key => $market_summary ) {
-				$market_summary['pair'] = strtoupper( str_replace( "_", "-", $key ) );
-				$msmn = explode( "-", $market_summary['pair'] );
-				$market_summary['pair'] = $msmn[1] . "-" . $msmn[0];
+				$market_summary['market'] = strtoupper( str_replace( "_", "-", $key ) );
+				$msmn = explode( "-", $market_summary['market'] );
+				$market_summary['market'] = $msmn[1] . "-" . $msmn[0];
 				$market_summary['exchange'] = "poloniex";
 				$market_summary['last_price'] = $market_summary['last'];
 				$market_summary['ask'] = is_null( $market_summary['lowestAsk'] ) ? 0 : $market_summary['lowestAsk'];
@@ -125,7 +157,7 @@
 				$market_summary['btc_volume'] = null;
 				$market_summary['low'] = $market_summary['low24hr'];
 				$market_summary['high'] = $market_summary['high24hr'];
-				$market_summary['display_name'] = $market_summary['pair'];
+				$market_summary['display_name'] = $market_summary['market'];
 				$market_summary['percent_change'] = $market_summary['percentChange'];
 				$market_summary['frozen'] = $market_summary['isFrozen'];
 				$market_summary['result'] = true;
@@ -137,11 +169,11 @@
 				$market_summary['mid'] = null;
 				$market_summary['minimum_margin'] = null;
 
-				if( strpos( $market_summary['pair'], "-XMR" ) !== FALSE )
+				if( strpos( $market_summary['market'], "-XMR" ) !== FALSE )
 					$market_summary['minimum_order_size_quote'] = '0.01000000';
-				if( strpos( $market_summary['pair'], "-USDT" ) !== FALSE )
+				if( strpos( $market_summary['market'], "-USDT" ) !== FALSE )
 					$market_summary['minimum_order_size_quote'] = '0.01000000';
-				if( strpos( $market_summary['pair'], "-BTC" ) !== FALSE )
+				if( strpos( $market_summary['market'], "-BTC" ) !== FALSE )
 					$market_summary['minimum_order_size_quote'] = '0.00050000';
 
 				$market_summary['minimum_order_size_base'] = null;
@@ -169,30 +201,19 @@
 			return $response;
 		}
 
-		public function get_lendbook() {
-			return [];
-		}
-
-		public function get_book() {
-			return [];
-		}
-
-		public function get_lends() {
-			return [];
-		}
-
 		//_____Cancel all orders:
-		function cancel_all()
-		{
-			$pairs = $this->get_markets();
+		function cancel_all() {
+			$markets = $this->get_markets();
 			$results = [];
-			foreach( $pairs as $key ) {
+			foreach( $markets as $key ) {
 				$key = str_replace( "-", "_", $key );
-				$open_orders = $this->get_open_orders($key);
+				$open_orders = $this->get_open_orders($key); //this will change to be standard across all adapters...
 				if( is_array( $open_orders ) ) {
 					foreach( $open_orders as $open_order ) {
-						if( isset( $open_order['orderNumber'] ) ) {
-							array_push($results, $this->cancel($open_order['orderNumber'], array( 'pair' => $key ) ) );
+						foreach( $open_order as $order ) {
+							if( isset( $order['orderNumber'] ) ) {
+								array_push($results, $this->cancel($order['orderNumber'], array( 'market' => $key ) ) );
+							}
 						}
 					}
 				}
@@ -201,4 +222,5 @@
 		}
 
 	}
+
 ?>

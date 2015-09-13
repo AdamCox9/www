@@ -2,37 +2,57 @@
 
 	class BitfinexAdapter implements CryptoExchange {
 
-		public function __construct($Exch) {
+		public function __construct( $Exch ) {
 			$this->exch = $Exch;
 		}
 
-		public function cancel($orderid="1", $opts = array() ) {
-			return $this->exch->order_cancel($orderid);
+		public function get_info() {
+			return [];
+		}
+
+		public function withdraw( $account = "exchange", $currency = "BTC", $address = "1fsdaa...dsadf", $amount = 1 ) {
+			return [];
+		}
+
+		public function get_currency_summary( $currency = "BTC" ) {
+			return [];
+		}
+		
+		public function get_currency_summaries( $currency = "BTC" ) {
+			return [];
+		}
+		
+		public function get_order( $orderid = "1" ) {
+			return [];
+		}
+		
+		public function cancel( $orderid="1", $opts = array() ) {
+			return $this->exch->order_cancel( $orderid );
 		}
 
 		public function cancel_all() {
 			return $this->exch->order_cancel_all();
 		}
 
-		public function buy($pair='LTC-BTC',$amount=0,$price=0,$type="LIMIT",$opts=array()) {
+		public function buy( $pair="BTC-USD", $amount=0, $price=0, $type="LIMIT", $opts=array() ) {
 			$pair = strtolower( $pair );
 			$pair = str_replace( "-", "", $pair );
-			$buy = $this->exch->order_new($pair,$amount,$price,"bitfinex","buy","exchange limit",true);
+			$buy = $this->exch->order_new( $pair, $amount, $price, "bitfinex", "buy", "exchange limit", true );
 			if( isset( $sell['message'] ) )
 				print_r( $buy );
 			return $buy;
 		}
 		
-		public function sell($pair='LTC-BTC',$amount=0,$price=0,$type="LIMIT",$opts=array()) {
+		public function sell( $pair="BTC-USD", $amount=0, $price=0, $type="LIMIT", $opts=array() ) {
 			$pair = strtolower( $pair );
 			$pair = str_replace( "-", "", $pair );
-			$sell = $this->exch->order_new($pair,$amount,$price,"bitfinex","sell","exchange limit",true);
+			$sell = $this->exch->order_new( $pair, $amount, $price, "bitfinex", "sell", "exchange limit", true );
 			if( isset( $sell['message'] ) )
 				print_r( $sell );
 			return $sell;
 		}
 
-		public function get_open_orders() {
+		public function get_open_orders( $market = "BTC-USD" ) {
 			if( isset( $this->open_orders ) )
 				return $this->open_orders;
 			$this->open_orders = $this->exch->orders();
@@ -40,7 +60,7 @@
 		}
 
 
-		public function get_completed_orders() {
+		public function get_completed_orders( $market = "BTC-USD" ) {
 			if( isset( $this->completed_orders ) )
 				return $this->completed_orders;
 			$markets = $this->get_markets();
@@ -65,8 +85,8 @@
 		public function get_currencies() {
 			return array( 'USD', 'BTC', 'LTC', 'DRK' );
 		}
-		
-		public function deposit_address($currency="BTC"){
+
+		public function deposit_address( $currency = "BTC" ){
 			$wallet_types = array( "exchange", "deposit", "trading" );
 			$addresses = [];
 			foreach( $wallet_types as $wallet ) {
@@ -106,7 +126,7 @@
 			return $response;
 		}
 
-		public function get_balance($currency="BTC") {
+		public function get_balance( $currency = "BTC" ) {
 			return [];
 		}
 
@@ -168,21 +188,6 @@
 
 		public function get_orderbook( $market = 'BTC-USD', $depth = 20 ) {
 			$result = $this->exch->book();
-			return $result;
-		}
-
-		public function get_lendbook() {
-			$result = $this->exch->lendbook();
-			return $result;
-		}
-
-		public function get_book() {
-			$result = $this->exch->book();
-			return $result;
-		}
-
-		public function get_lends() {
-			$result = $this->exch->lends();
 			return $result;
 		}
 

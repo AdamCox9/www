@@ -6,6 +6,7 @@
 	// but they should accept arrays returned from Adapter APIs
 
 	class Utilities {
+
 		public static function get_total_volumes( $market_summaries ) {
 
 			/*
@@ -46,6 +47,7 @@
 			}
 			return array( 'total_volume' => $total_volume );
 		}
+
 		public static function surch( $needles, $haystack ) {
 			$response = [];
 			foreach( $haystack as $bail ) {
@@ -59,6 +61,7 @@
 			}
 			return $response;
 		}
+
 		public static function get_worth( $balances, $market_summaries ) {
 			$btc_worth = 0;
 			foreach( $balances as $balance ) {

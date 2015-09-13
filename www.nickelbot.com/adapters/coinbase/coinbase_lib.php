@@ -124,7 +124,7 @@
 		}
 
 		public function products_book( $product_id ) {
-			return $this->query('/products/'.$product_id.'/book');
+			return $this->query('/products/'.$product_id.'/book?level=2' );
 		}
 
 		public function products_ticker( $product_id ) {

@@ -6,6 +6,26 @@
 			$this->exch = $Exch;
 		}
 
+		public function get_info() {
+			return [];
+		}
+
+		public function withdraw( $account = "exchange", $currency = "BTC", $address = "1fsdaa...dsadf", $amount = 1 ) {
+			return [];
+		}
+
+		public function get_currency_summary( $currency = "BTC" ) {
+			return [];
+		}
+		
+		public function get_currency_summaries( $currency = "BTC" ) {
+			return [];
+		}
+		
+		public function get_order( $orderid = "1" ) {
+			return [];
+		}
+		
 		public function cancel( $orderid="1", $opts = array() ) {
 			return $this->exch->cancel_order($orderid);
 		}
@@ -32,14 +52,14 @@
 				return $sell;
 		}
 
-		public function get_open_orders() {
+		public function get_open_orders( $market = "BTC-USD" ) {
 			if( isset( $this->open_orders ) )
 				return $this->open_orders;
 			$this->open_orders = $this->exch->open_orders();
 			return $this->open_orders;
 		}
 
-		public function get_completed_orders() {
+		public function get_completed_orders( $market = "BTC-USD" ) {
 			if( isset( $this->completed_orders ) )
 				return $this->completed_orders;
 			$this->completed_orders = $this->exch->user_transactions( array( 'offset' => 0, 'limit' => 1000, 'sort' => 'desc' ) );
@@ -170,18 +190,6 @@
 				return array( 'error' => true, 'message' => "Only BTC-USD is accepted" );
 			$result = $this->exch->order_book();
 			return $result;
-		}
-
-		public function get_lendbook() {
-			return [];
-		}
-
-		public function get_book() {
-			return [];
-		}
-
-		public function get_lends() {
-			return [];
 		}
 
 	}
