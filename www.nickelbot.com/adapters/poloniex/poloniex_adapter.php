@@ -26,11 +26,15 @@
 			return [];
 		}
 
-		public function get_trades( $market = "BTC-USD", $time = 0 ) {
-			$market = explode( "-", $market );
-			$market = $market[1] . "-" . $market[0];
-			$market = str_replace( "-", "_", $market );
-			return $this->exch->returnPublicTradeHistory( $market );
+		public function get_trades( $time = 0 ) {
+			$results = [];
+			foreach( $this->get_markets() as $market ) {
+				$market = explode( "-", $market );
+				$market = $market[1] . "-" . $market[0];
+				$market = str_replace( "-", "_", $market );
+				array_push( $results, $this->exch->returnPublicTradeHistory( $market ) );
+			}
+			return $results;
 		}
 
 		public function get_orderbook( $market = "BTC-USD", $depth = 0 ) {
@@ -200,17 +204,13 @@
 			foreach( $markets as $key ) {
 				$key = str_replace( "-", "_", $key );
 				$open_orders = $this->get_open_orders($key); //this will change to be standard across all adapters...
-				if( is_array( $open_orders ) ) {
-					foreach( $open_orders as $open_order ) {
-						foreach( $open_order as $order ) {
-							if( isset( $order['orderNumber'] ) ) {
+				if( is_array( $open_orders ) )
+					foreach( $open_orders as $open_order )
+						foreach( $open_order as $order )
+							if( isset( $order['orderNumber'] ) )
 								array_push($results, $this->cancel($order['orderNumber'], array( 'market' => $key ) ) );
-							}
-						}
-					}
-				}
 			}
-			return $results;
+			return array( 'success' => true, 'error' => false, 'message' => $results );
 		}
 
 		public function cancel( $orderid="1", $opts = array() ) {//requires market to be passed in

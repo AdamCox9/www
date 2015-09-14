@@ -31,7 +31,11 @@
 		}
 
 		public function cancel_all() {
-			return $this->exch->cancel_all_orders();
+			$result = $this->exch->cancel_all_orders();
+			if( $result == 1 ) {
+				return array( 'success' => true, 'error' => false, 'message' => $result );
+			}
+			return array( 'success' => false, 'error' => true, 'message' => $result );
 		}
 
 		public function buy( $pair="BTC-LTC", $amount=0, $price=0, $type="LIMIT", $opts=array() ) {
@@ -62,7 +66,28 @@
 		public function get_completed_orders( $market = "BTC-USD" ) {
 			if( isset( $this->completed_orders ) )
 				return $this->completed_orders;
-			$this->completed_orders = $this->exch->user_transactions( array( 'offset' => 0, 'limit' => 1000, 'sort' => 'desc' ) );
+			$completed_orders = $this->exch->user_transactions( array( 'offset' => 0, 'limit' => 1000, 'sort' => 'desc' ) );
+			$this->completed_orders = [];
+			foreach( $completed_orders as $completed_order ) {
+				$completed_order['market'] = "BTC-USD";
+				$completed_order['exchange'] = "bitstamp";
+				$completed_order['timestamp'] = $completed_order['datetime'];
+				$completed_order['price'] = $completed_order['btc_usd'];
+				$completed_order['amount'] = $completed_order['btc'];
+				$completed_order['total'] = $completed_order['usd'];
+
+				unset( $completed_order['datetime'] );
+				unset( $completed_order['btc_usd'] );
+				unset( $completed_order['usd'] );
+				unset( $completed_order['btc'] );
+
+				$completed_order['tid'] = null;
+				$completed_order['fee_amount'] = null;
+				$completed_order['fee_currency'] = null;
+
+				array_push( $this->completed_orders, $completed_order );
+			}
+
 			return $this->completed_orders;
 		}
 
@@ -174,17 +199,57 @@
 			return $this->market_summaries;
 		}
 
-		public function get_trades( $market = 'BTC-USD', $time = 0 ) {
-			if( $market != 'BTC-USD' )
-				return array( 'error' => true, 'message' => "Only BTC-USD is accepted" );
-			$result = $this->exch->transactions( $time );
+		public function get_trades( $market = "BTC-USD", $time = 0 ) {
+			$trades = $this->exch->transactions( $time );
+			$results = [];
+			foreach( $trades as $trade ) {
+				$trade['exchange'] = 'bitstamp';
+				$trade['market'] = $market;
+				$trade['timestamp'] = $trade['date'];
+				unset( $trade['date'] );
+				array_push( $results, $trade );
+			}
+			return $results;
+		}
+
+		public function get_all_trades( $time = 0 ) {
+			$result = $this->get_trades( "BTC-USD", $time );
 			return $result;
 		}
 
 		public function get_orderbook( $market = 'BTC-USD', $depth = 0 ) {
 			if( $market != 'BTC-USD' )
 				return array( 'error' => true, 'message' => "Only BTC-USD is accepted" );
-			$result = $this->exch->order_book();
+			$book = $this->exch->order_book();
+
+			$results = [];
+			foreach( $book['bids'] as $bid ) {
+				$bid['timestamp' ] = $book['timestamp'];
+				$bid['exchange'] = "bitstamp";
+				$bid['market'] = $market;
+				$bid['type'] = "buy";
+				$bid['price'] = $bid[0];
+				$bid['amount'] = $bid[1];
+				unset( $bid[0] );
+				unset( $bid[1] );
+				array_push( $results, $bid );
+			}
+			foreach( $book['asks'] as $ask ) {
+				$ask['timestamp' ] = $book['timestamp'];
+				$ask['exchange'] = "bitstamp";
+				$ask['market'] = $market;
+				$ask['type'] = "sell";
+				$ask['price'] = $ask[0];
+				$ask['amount'] = $ask[1];
+				unset( $ask[0] );
+				unset( $ask[1] );
+				array_push( $results, $ask );
+			}
+			return $results;
+		}
+
+		public function get_orderbooks( $depth = 0 ) {
+			$result = $this->get_orderbook( "BTC-USD", $depth );
 			return $result;
 		}
 

@@ -44,15 +44,16 @@
 			$Tester->test_completed_orders( $completed_orders );
 
 			echo " -> getting all recent trades\n";
-			$trades = array_merge( $trades, $Adapter->get_trades( $market = "LTC-BTC", $time = 0 ) );
+			$trades = array_merge( $trades, $Adapter->get_all_trades( $time = 0 ) );
 			$Tester->test_trades( $trades );
 
 			echo " -> getting some depth of orderbook\n";
-			$orderbook = array_merge( $orderbook, $Adapter->get_orderbook( $market = "LTC-BTC", $depth = 20 ) );
-			$Tester->test_orderbook( $orderbook );
+			$orderbooks = array_merge( $orderbooks, $Adapter->get_orderbooks( $depth = 20 ) );
+			$Tester->test_orderbooks( $orderbooks );
 
 			echo " -> cancelling all orders\n";
-			print_r( $Adapter->cancel_all() );
+			$cancel_all = $Adapter->cancel_all();
+			$Tester->test_cancel_all( $cancel_all );
 
 			/*****
 				Utilities: they do not directly access native API libraries where as Adapters must access native API or self

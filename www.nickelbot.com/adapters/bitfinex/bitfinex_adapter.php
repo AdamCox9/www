@@ -31,7 +31,11 @@
 		}
 
 		public function cancel_all() {
-			return $this->exch->order_cancel_all();
+			$result = $this->exch->order_cancel_all();
+			if( $result['result'] == "All orders cancelled" ) {
+				return array( 'success' => true, 'error' => false, 'message' => $result );
+			}
+			return array( 'success' => false, 'error' => true, 'message' => $result );
 		}
 
 		public function buy( $pair="BTC-USD", $amount=0, $price=0, $type="LIMIT", $opts=array() ) {
@@ -55,10 +59,17 @@
 		public function get_open_orders( $market = "BTC-USD" ) {
 			if( isset( $this->open_orders ) )
 				return $this->open_orders;
-			$this->open_orders = $this->exch->orders();
+			$open_orders = $this->exch->orders();
+			$this->open_orders = [];
+			foreach( $open_orders as $open_order ) {
+				$open_order['exchange'] = "bitfinex";
+				$open_order['market'] = $open_order['symbol'];
+
+				unset( $open_order['symbol'] );
+				array_push( $this->open_orders, $open_order );
+			}
 			return $this->open_orders;
 		}
-
 
 		public function get_completed_orders( $market = "BTC-USD" ) {
 			if( isset( $this->completed_orders ) )
@@ -67,7 +78,15 @@
 			$this->completed_orders = [];
 			foreach( $markets as $market ) {
 				$market = str_replace( "-", "", strtoupper( $market ) );
-				array_push( $this->completed_orders, $this->exch->mytrades( array( 'symbol' => $market, 'timestamp' => 0, 'until' => time(), 'limit_trades' => 10000 ) ) );
+				$market_trades = $this->exch->mytrades( array( 'symbol' => $market, 'timestamp' => 0, 'until' => time(), 'limit_trades' => 10000 ) );
+				foreach( $market_trades as $market_trade ) {
+					$market_trade['market'] = $market;
+					$market_trade['exchange'] = "bitfinex";
+					$market_trade['id'] = null;
+					$market_trade['fee'] = null;
+					$market_trade['total'] = null;
+					array_push( $this->completed_orders, $market_trade );
+				}
 			}
 			return $this->completed_orders;
 		}
@@ -178,14 +197,48 @@
 			return $this->market_summaries;
 		}
 
-		public function get_trades( $market = 'BTC-USD', $time = 0 ) {
-			$result = $this->exch->trades();
-			return $result;
+		public function get_trades( $market = "BTC-USD", $time = 0 ) {
+			return $this->exch->trades( str_replace( "-", "", strtolower( $market ) ) );
+		}
+
+		public function get_all_trades( $time = 0 ) {
+			if( isset( $this->trades ) )
+				return $this->trades;
+			$this->trades = [];
+			foreach( $this->get_markets() as $market ) {
+				$trades = $this->get_trades( $market, $time );
+				foreach( $trades as $trade ) {
+					$trade['market'] = "$market";
+					array_push( $this->trades, $trade );
+				}
+			}
+			return $this->trades;
+		}
+
+		public function get_orderbooks( $depth = 20 ) {
+			$results = [];
+			foreach( $this->get_markets() as $market )
+				$results = array_merge( $results, $this->get_orderbook( $market, $depth ) );
+
+			return $results;
 		}
 
 		public function get_orderbook( $market = 'BTC-USD', $depth = 20 ) {
-			$result = $this->exch->book();
-			return $result;
+			$book = $this->exch->book( str_replace( "-", "", strtolower( $market ) ) );
+			$results = [];
+			foreach( $book['bids'] as $bid ) {
+				$bid['exchange'] = "bitfinex";
+				$bid['market'] = $market;
+				$bid['type'] = "buy";
+				array_push( $results, $bid );
+			}
+			foreach( $book['asks'] as $ask ) {
+				$ask['exchange'] = "bitfinex";
+				$ask['market'] = $market;
+				$ask['type'] = "sell";
+				array_push( $results, $ask );
+			}
+			return $results;
 		}
 
 	}

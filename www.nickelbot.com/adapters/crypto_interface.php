@@ -30,8 +30,10 @@
 		public function cancel_all();
 
 		//Public Orders
-		public function get_orderbook( $market = "BTC-USD", $depth = 20 ); //returns array( 'price', 'amount', 'timestamp' )
-		public function get_trades( $market = "BTC-USD", $time = 0 ); // get all trades in market
+		public function get_orderbooks( $depth = 20 );
+		public function get_orderbook( $market = "BTC-USD", $depth = 20 );
+		public function get_all_trades( $time = 0 );
+		public function get_trades( $market = "BTC-USD", $time = 0 );
 
 		//Get a deposit address for a currency
 		public function deposit_address( $currency = "BTC" );
@@ -50,6 +52,9 @@
 		//Balances: confirmed, reserved, available, pending, total, btc_worth, usd_worth etc???
 		public function get_balance( $currency = "BTC" );
 		public function get_balances();
+
+		//supertrollbox would be a bot
+		//public function get_trollbox(); //maybe forum if no trollbox?
 
 	}
 ?>

@@ -26,9 +26,13 @@
 			return [];
 		}
 
-		public function get_trades( $market = "BTC-USD", $time = 0 ) {
-			$curs = explode( "-", $market );
-			return $this->exch->trade_history( $curs[0], $curs[1] );
+		public function get_trades( $time = 0 ) {
+			$results = [];
+			foreach( $this->get_markets() as $market ) {
+				$curs = explode( "-", $market );
+				array_push( $results, $this->exch->trade_history( $curs[0], $curs[1] ) );
+			}
+			return $results;
 		}
 
 		public function get_orderbook( $market = "BTC-USD", $depth = 0 ) {
@@ -47,17 +51,17 @@
 				$order['detailedInfo'] = $this->exch->cancelorder( array( 'order_id' => $order['id'] ) );
 				array_push($results,$order);
 			}
-			return $results;
+			return array( 'success' => true, 'error' => false, 'message' => $results );
 		}
 
-		public function buy($pair='BTC-LTC',$amount=0,$price=0,$type="LIMIT",$opts=array()) {
+		public function buy( $pair='BTC-LTC', $amount=0, $price=0, $type="LIMIT", $opts=array() ) {
 			$pair = str_replace( "-", "_", strtolower( $pair ) );
 			$buy = $this->exch->placeorder( array('pair' => $pair, 'type' => 'BUY', 'rate' => $price, 'amount' => $amount ) );
 			if( $buy['message'] != "Success" )
 				print_r( $buy );
 		}
 		
-		public function sell($pair='BTC-LTC',$amount=0,$price=0,$type="LIMIT",$opts=array()) {
+		public function sell( $pair='BTC-LTC', $amount=0, $price=0, $type="LIMIT", $opts=array() ) {
 			$pair = str_replace( "-", "_", strtolower( $pair ) );
 			$sell = $this->exch->placeorder( array('pair' => $pair, 'type' => 'SELL', 'rate' => $price, 'amount' => $amount ) );
 			if( $sell['message'] != "Success" )

@@ -26,8 +26,12 @@
 			return [];
 		}
 
-		public function get_trades( $market = "BTC-USD", $time = 0 ) {
-			return $this->exch->products_trades( $market );
+		public function get_trades( $time = 0 ) {
+			$results = [];
+			foreach( $this->get_markets() as $market ) {
+				array_push( $results, $this->exch->products_trades( $market ) );
+			}
+			return $results;
 		}
 
 		public function get_orderbook( $market = "BTC-USD", $depth = 0 ) {
@@ -45,7 +49,7 @@
 				foreach( $orders as $order )
 					if( isset( $order['id'] ) )
 						array_push( $results, $this->cancel( $order['id'] ) );
-			return $results;
+			return array( 'success' => true, 'error' => false, 'message' => $results );
 		}
 
 		public function buy($pair="BTC-LTC",$amount=0,$price=0,$type="LIMIT",$opts=array()) {

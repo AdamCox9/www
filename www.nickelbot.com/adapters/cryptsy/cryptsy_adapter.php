@@ -26,8 +26,12 @@
 			return [];
 		}
 
-		public function get_trades( $market = "LTC_BTC", $time = 0 ) {
-			return $this->exch->market_tradehistory( str_replace( "-", "_", $market ) );
+		public function get_trades( $time = 0 ) {
+			$results = [];
+			foreach( $this->get_markets() as $market ) {
+				array_push( $results, $this->exch->market_tradehistory( str_replace( "-", "_", $market ) ) );
+			}
+			return $results;
 		}
 
 		public function get_orderbook( $market = "LTC_BTC", $depth = 0 ) {
@@ -41,10 +45,9 @@
 		public function cancel_all() {
 			$orders = $this->get_open_orders();
 			$results = [];
-			foreach( $orders as $order ) {
+			foreach( $orders as $order )
 				array_push( $results, $this->cancel( $order['orderid'] ) );
-			}
-			return $results;
+			return array( 'success' => true, 'error' => false, 'message' => $results );
 		}
 
 		public function buy( $pair=null, $amount="0", $price="0", $type="LIMIT", $opts=array() ) {

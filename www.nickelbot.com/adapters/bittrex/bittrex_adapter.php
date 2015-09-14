@@ -33,10 +33,14 @@
 		public function cancel_all() {
 			$result = $this->get_open_orders();
 			$response = array();
-			foreach( $result['result'] as $order ) {
-				array_push($response,$this->cancel($order['OrderUuid']));
-			}
-			return $response;
+			if( isset( $result['success'] ) )
+				foreach( $result['result'] as $order )
+					array_push($response,$this->cancel($order['OrderUuid']));
+
+			if( $result['success'] )
+				return array( 'success' => true, 'error' => false, 'message' => $response );
+			else
+				return array( 'success' => false, 'error' => true, 'message' => $result );
 		}
 
 		public function buy( $pair="LTC-BTC", $amount=0, $price=0, $type="LIMIT", $opts=array() ) {
@@ -217,9 +221,12 @@
 		}
 
 		//TODO convert the $time to $count
-		public function get_trades( $market = "BTC-USD", $time = 0 ) {
-			$result = $this->exch->getmarkethistory( array( 'market' => $market, 'count' => 20 ) );
-			return $result;
+		public function get_trades( $time = 0 ) {
+			$results = [];
+			foreach( $this->get_markets() as $market ) {
+				array_push( $results, $this->exch->getmarkethistory( array( 'market' => $market, 'count' => 20 ) ) );
+			}
+			return $results;
 		}
 
 		public function get_orderbook( $market = "BTC-USD", $depth = 0 ) {
