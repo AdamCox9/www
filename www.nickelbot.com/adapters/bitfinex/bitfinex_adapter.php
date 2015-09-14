@@ -64,6 +64,7 @@
 			foreach( $open_orders as $open_order ) {
 				$open_order['exchange'] = "bitfinex";
 				$open_order['market'] = $open_order['symbol'];
+				$open_order['amount'] = null;
 
 				unset( $open_order['symbol'] );
 				array_push( $this->open_orders, $open_order );
@@ -168,8 +169,7 @@
 			foreach( $market_summaries as $market_summary ) {
 				$market_summary = array_merge( $market_summary, $this->exch->pubticker( $market_summary['pair'] ) );
 				$market_summary['exchange'] = 'bitfinex';
-				$market_summary['market'] = strtoupper( $market_summary['pair'] );
-				$market_summary['pair'] = substr_replace($market_summary['pair'], '-', 3, 0);
+				$market_summary['market'] = substr_replace( strtoupper( $market_summary['pair'] ), '-', 3, 0);
 				$market_summary['display_name'] = $market_summary['pair'];
 				$market_summary['minimum_order_size_base'] = $market_summary['minimum_order_size'];
 				$market_summary['minimum_order_size_quote'] = null;

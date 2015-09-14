@@ -71,7 +71,7 @@
 			Bots: like an app.
 		 *****/
 
-		//make_max_orders( $Adapters );
+		make_max_orders( $Adapters );
 		//make_min_orders( $Adapters );
 		//make_extreme_orders( $Adapters );
 		//make_ema_orders( $Adapters );

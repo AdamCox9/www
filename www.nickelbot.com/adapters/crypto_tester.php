@@ -45,13 +45,13 @@
 							'minimum_order_size_base', 'minimum_order_size_quote', 'open_buy_orders',
 							'open_sell_orders', 'percent_change', 'price_precision', 
 							'quote_volume', 'result', 'timestamp', 'verified_only', 'vwap' );
-
 			$numbers = array( 'ask', 'base_volume', 'bid', 'high', 'last_price', 'low', 'quote_volume' );
 			$strings = array( 'display_name', 'exchange' );
 			$above_zero = array( );
 			$not_null = array_merge( $numbers, $strings );
 
 			//Tests:
+			$this->test_markets( array( $market_summary['market'] ) );
 			$this->equal_keys( $keys, $market_summary );
 			$this->numbers( $numbers, $market_summary );
 			$this->not_null( $not_null, $market_summary );
@@ -94,7 +94,7 @@
 		}
 
 		public function test_open_orders( $active_orders ) {
-			$keys = array( 'id', 'market', 'price', 'timestamp', 'exchange', 'avg_execution_price', 'side','type', 'is_live', 'is_cancelled', 'is_hidden', 'was_forced', 'original_amount', 'remaining_amount', 'executed_amount' );
+			$keys = array( 'id', 'market', 'price', 'timestamp', 'exchange', 'avg_execution_price', 'side','type', 'is_live', 'is_cancelled', 'is_hidden', 'was_forced', 'original_amount', 'remaining_amount', 'executed_amount', 'amount' );
 			foreach( $active_orders as $active_order ) {
 				$this->equal_keys( $keys, $active_order );
 			}

@@ -59,7 +59,25 @@
 		public function get_open_orders( $market = "BTC-USD" ) {
 			if( isset( $this->open_orders ) )
 				return $this->open_orders;
-			$this->open_orders = $this->exch->open_orders();
+			$open_orders = $this->exch->open_orders();
+			$this->open_orders = [];
+			foreach( $open_orders as $open_order ) {
+				$open_order['market'] = $market;
+				$open_order['timestamp'] = $open_order['datetime'];
+				$open_order['exchange'] = "bitstamp";
+				$open_order['avg_execution_price'] = null;
+				$open_order['side'] = null;
+				$open_order['is_live'] = null;
+				$open_order['is_cancelled'] = null;
+				$open_order['is_hidden'] = null;
+				$open_order['was_forced'] = null;
+				$open_order['original_amount'] = null;
+				$open_order['amount'] = null;
+				$open_order['remaining_amount'] = null;
+				$open_order['executed_amount'] = null;
+				unset( $open_order['datetime'] );
+				array_push( $this->open_orders, $open_order );
+			}
 			return $this->open_orders;
 		}
 
@@ -122,31 +140,31 @@
 		}
 
 		public function get_balances() {
-			$t_balance = $this->get_balance();
+			$balances = $this->get_balance();
 
-			$balances = [];
+			$response = [];
 
 			$balance['type'] = "exchange";
 			$balance['currency'] = "BTC";
-			$balance['available'] = $t_balance['btc_available'];
-			$balance['total'] = $t_balance['btc_balance'];
-			$balance['reserved'] = $t_balance['btc_reserved'];
+			$balance['available'] = $balances['btc_available'];
+			$balance['total'] = $balances['btc_balance'];
+			$balance['reserved'] = $balances['btc_reserved'];
 			$balance['pending'] = 0;
 			$balance['btc_value'] = 0;
 
-			array_push( $balances, $balance );
+			array_push( $response, $balance );
 
 			$balance['type'] = "exchange";
 			$balance['currency'] = "USD";
-			$balance['available'] = $t_balance['usd_available'];
-			$balance['total'] = $t_balance['usd_balance'];
-			$balance['reserved'] = $t_balance['usd_reserved'];
+			$balance['available'] = $balances['usd_available'];
+			$balance['total'] = $balances['usd_balance'];
+			$balance['reserved'] = $balances['usd_reserved'];
 			$balance['pending'] = 0;
 			$balance['btc_value'] = 0;
 
-			array_push( $balances, $balance );
+			array_push( $response, $balance );
 
-			return $balances;
+			return $response;
 		}
 
 		public function get_balance( $currency = "BTC" ) {
