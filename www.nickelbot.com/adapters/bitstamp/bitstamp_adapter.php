@@ -56,7 +56,7 @@
 				return $sell;
 		}
 
-		public function get_open_orders( $market = "BTC-USD" ) {
+		public function get_open_orders() {
 			if( isset( $this->open_orders ) )
 				return $this->open_orders;
 			$open_orders = $this->exch->open_orders();
@@ -81,7 +81,7 @@
 			return $this->open_orders;
 		}
 
-		public function get_completed_orders( $market = "BTC-USD" ) {
+		public function get_completed_orders() {
 			if( isset( $this->completed_orders ) )
 				return $this->completed_orders;
 			$completed_orders = $this->exch->user_transactions( array( 'offset' => 0, 'limit' => 1000, 'sort' => 'desc' ) );
@@ -202,6 +202,7 @@
 			$market_summary['market_id'] = null;
 
 			unset( $market_summary['last'] );
+			unset( $market_summary['open'] );
 			unset( $market_summary['volume'] );
 
 			ksort( $market_summary );

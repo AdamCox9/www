@@ -56,7 +56,7 @@
 			return $sell;
 		}
 
-		public function get_open_orders( $market = "BTC-USD" ) {
+		public function get_open_orders() {
 			if( isset( $this->open_orders ) )
 				return $this->open_orders;
 			$open_orders = $this->exch->orders();
@@ -72,7 +72,7 @@
 			return $this->open_orders;
 		}
 
-		public function get_completed_orders( $market = "BTC-USD" ) {
+		public function get_completed_orders() {
 			if( isset( $this->completed_orders ) )
 				return $this->completed_orders;
 			$markets = $this->get_markets();

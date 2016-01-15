@@ -27,7 +27,7 @@
 			$market_summaries = array_merge( $market_summaries, $Adapter->get_market_summaries() );
 			$Tester->test_market_summaries( $market_summaries );
 
-			echo " -> getting balances\n";
+			/*echo " -> getting balances\n";
 			$balances = array_merge( $balances, $Adapter->get_balances() );
 			$Tester->test_balances( $balances );
 
@@ -49,29 +49,31 @@
 
 			echo " -> getting some depth of orderbook\n";
 			$orderbooks = array_merge( $orderbooks, $Adapter->get_orderbooks( $depth = 20 ) );
-			$Tester->test_orderbooks( $orderbooks );
+			$Tester->test_orderbooks( $orderbooks );*/
 
-			echo " -> cancelling all orders\n";
+			/*echo " -> cancelling all orders\n";
 			$cancel_all = $Adapter->cancel_all();
-			$Tester->test_cancel_all( $cancel_all );
+			$Tester->test_cancel_all( $cancel_all );*/
 
 			/*****
 				Utilities: they do not directly access native API libraries where as Adapters must access native API or self
 			 *****/
 
-			echo " -> getting volumes\n";
+			/*echo " -> getting volumes\n";
 			$volumes[ get_class( $Adapter ) ] = Utilities::get_total_volumes( $Adapter->get_market_summaries() );
 
 			echo " -> getting worths\n";
 			$worths[ get_class( $Adapter ) ]= Utilities::get_worth( $Adapter->get_balances(), $Adapter->get_market_summaries() );
+			*/
 
+			sleep(1);
 		}
 
 		/*****
 			Bots: like an app.
 		 *****/
 
-		make_max_orders( $Adapters );
+		//make_max_orders( $Adapters );
 		//make_min_orders( $Adapters );
 		//make_extreme_orders( $Adapters );
 		//make_ema_orders( $Adapters );

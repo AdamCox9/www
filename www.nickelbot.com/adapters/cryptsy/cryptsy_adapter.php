@@ -26,7 +26,7 @@
 			return [];
 		}
 
-		public function get_trades( $time = 0 ) {
+		public function get_trades( $market = "BTC-USD", $time = 0 ) {
 			$results = [];
 			foreach( $this->get_markets() as $market ) {
 				array_push( $results, $this->exch->market_tradehistory( str_replace( "-", "_", $market ) ) );
@@ -36,6 +36,28 @@
 
 		public function get_orderbook( $market = "LTC_BTC", $depth = 0 ) {
 			return $this->exch->market_orderbook( str_replace( "-", "_", $market ) );
+		}
+
+		public function get_all_trades( $time = 0 ) {
+			if( isset( $this->trades ) )
+				return $this->trades;
+			$this->trades = [];
+			foreach( $this->get_markets() as $market ) {
+				$trades = $this->get_trades( $market, $time );
+				foreach( $trades as $trade ) {
+					$trade['market'] = "$market";
+					array_push( $this->trades, $trade );
+				}
+			}
+			return $this->trades;
+		}
+
+		public function get_orderbooks( $depth = 20 ) {
+			$results = [];
+			foreach( $this->get_markets() as $market )
+				$results = array_merge( $results, $this->get_orderbook( $market, $depth ) );
+
+			return $results;
 		}
 
 		public function cancel( $orderid="1", $opts = array() ) {
@@ -67,8 +89,10 @@
 				return $this->open_orders;
 			$this->open_orders = [];
 			$orders = $this->exch->get_orders( array( 'type' => 'all' ) );
-			$this->open_orders = array_merge( $this->open_orders, $orders['data']['buyorders'] );
-			$this->open_orders = array_merge( $this->open_orders, $orders['data']['sellorders'] );
+			if( isset( $orders['data']['buyorders'] ) )
+				$this->open_orders = array_merge( $this->open_orders, $orders['data']['buyorders'] );
+			if( isset( $orders['data']['sellorders'] ) )
+				$this->open_orders = array_merge( $this->open_orders, $orders['data']['sellorders'] );
 			return $this->open_orders;
 		}
 

@@ -26,7 +26,7 @@
 					[high] => 2.60037475
 
 				*/
-print_r( $market_summary );
+
 				$curs_bq = explode( "-", $market_summary['market'] );
 				$base_cur = $curs_bq[0];
 				$quote_cur = $curs_bq[1];
@@ -55,7 +55,7 @@ print_r( $market_summary );
 				if( $sell_price > 0 && ! in_array( $base_cur, $quote_curs ) ) {
 					$order_size = Utilities::surch( array( "currency" => $base_cur, "type" => "exchange" ), $balances );
 					if( sizeof( $order_size ) > 0 ) {
-						$order_size = bcmul( $order_size[0]['available'], 0.99, 32 );
+						$order_size = bcmul( $order_size[0]['available'], 0.9999, 32 );
 						$order_size = number_format( $order_size, $price_precision, '.', '' );
 
 						if( $order_size < $market_summary['minimum_order_size_base'] )

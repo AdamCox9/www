@@ -19,8 +19,8 @@
 		public function sell( $pair='BTC-USD', $amount="0.01", $price="0.01", $type="LIMIT", $opts=array() );
 		
 		//Private Orders
-		public function get_open_orders( $market = "BTC-USD" );
-		public function get_completed_orders( $market = "BTC-USD" );
+		public function get_open_orders();
+		public function get_completed_orders();
 		public function get_order( $order_id );
 
 		//Cancel one or many orders: TODO accept array of orderid's

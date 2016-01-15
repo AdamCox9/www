@@ -55,17 +55,85 @@
 			return $this->exch->market_selllimit( array( 'market' => strtoupper($pair), 'quantity' => $amount, 'rate' => $price ) );
 		}
 
-		public function get_open_orders( $market = "BTC-USD" ) {
+		public function get_open_orders() {
 			if( isset( $this->open_orders ) )
 				return $this->open_orders;
-			$this->open_orders = $this->exch->market_getopenorders();
+			$open_orders = $this->exch->market_getopenorders();
+			$this->open_orders = [];
+			foreach( $open_orders['result'] as $open_order ) {
+				$open_order['id'] = $open_order['OrderUuid'];
+				$open_order['market'] = $open_order['Exchange'];
+				$open_order['exchange'] = "bittrex";
+				$open_order['price'] = $open_order['Limit'];
+				$open_order['timestamp'] = $open_order['Opened'];
+				$open_order['avg_execution_price'] = $open_order['Price'];
+				$open_order['side'] = $open_order['OrderType'];
+				$open_order['type'] = $open_order['OrderType'];
+				$open_order['is_live'] = true;
+				$open_order['is_cancelled'] = false;
+				$open_order['is_hidden'] = false;
+				$open_order['was_forced'] = false;
+				$open_order['original_amount'] = null;
+				$open_order['remaining_amount'] = null;
+				$open_order['executed_amount'] = null;
+				$open_order['amount'] = null;
+
+				unset( $open_order['Uuid'] );
+				unset( $open_order['OrderUuid'] );
+				unset( $open_order['Exchange'] );
+				unset( $open_order['OrderType'] );
+				unset( $open_order['Quantity'] );
+				unset( $open_order['QuantityRemaining'] );
+				unset( $open_order['Limit'] );
+				unset( $open_order['CommissionPaid'] );
+				unset( $open_order['Price'] );
+				unset( $open_order['PricePerUnit'] );
+				unset( $open_order['Opened'] );
+				unset( $open_order['Closed'] );
+				unset( $open_order['CancelInitiated'] );
+				unset( $open_order['ImmediateOrCancel'] );
+				unset( $open_order['IsConditional'] );
+				unset( $open_order['Condition'] );
+				unset( $open_order['ConditionTarget'] );
+
+				array_push( $this->open_orders, $open_order );
+			}
 			return $this->open_orders;
 		}
 
-		public function get_completed_orders( $market = "BTC-USD" ) {
+/*Array
+(
+    [Uuid] =>
+    [OrderUuid] => 15507d39-5d77-43fd-bf46-8b30901ef448
+    [Exchange] => BTC-JBS
+    [OrderType] => LIMIT_BUY
+    [Quantity] => 21963.79333375
+    [QuantityRemaining] => 21963.79333375
+    [Limit] => 8.003E-5
+    [CommissionPaid] => 0
+    [Price] => 0
+    [PricePerUnit] =>
+    [Opened] => 2015-09-14T08:19:13.263
+    [Closed] =>
+    [CancelInitiated] =>
+    [ImmediateOrCancel] =>
+    [IsConditional] =>
+    [Condition] => NONE
+    [ConditionTarget] =>
+)*/
+
+		public function get_completed_orders() {
 			if( isset( $this->completed_orders ) )
 				return $this->completed_orders;
-			$this->completed_orders = $this->exch->account_getorderhistory( array( 'market' => 'BTC-LTC', 'count' => 100 ) );
+			$this->completed_orders = [];
+			foreach( $this->get_markets() as $market ) {
+				$completed_orders = $this->exch->account_getorderhistory( array( 'market' => $market, 'count' => 100 ) );
+				foreach( $completed_orders['result'] as $completed_order ) {
+					$completed_order['exchange'] = "bittrex";
+					$completed_order['market'] = $market;
+					array_push( $this->completed_orders, $completed_order );
+				}
+			}
 			return $this->completed_orders;
 		}
 
@@ -117,6 +185,14 @@
 			foreach( $currencies as $currency ) {
 				$address = $this->deposit_address( $currency );
 				if( $address ) {
+					$address['wallet_type'] = "exchange";
+					$address['currency'] = $address['Currency'];
+					$address['address'] = $address['Address'];
+					$address['method'] = null;
+
+					unset( $address['Currency'] );
+					unset( $address['Address'] );
+
 					array_push( $addresses, $address );
 				}
 			}
@@ -221,15 +297,24 @@
 		}
 
 		//TODO convert the $time to $count
-		public function get_trades( $time = 0 ) {
+		public function get_all_trades( $time = 0 ) {
 			$results = [];
 			foreach( $this->get_markets() as $market ) {
-				array_push( $results, $this->exch->getmarkethistory( array( 'market' => $market, 'count' => 20 ) ) );
+				array_push( $results, $this->get_trades( $market, $time ) );
 			}
 			return $results;
 		}
 
+		public function get_trades( $market = 'BTC-USD', $time = 0 ) {
+			return $this->exch->getmarkethistory( array( 'market' => $market, 'count' => 20 ) );
+		}
+
 		public function get_orderbook( $market = "BTC-USD", $depth = 0 ) {
+			$result = $this->exch->getorderbook( array( 'market' => $market, 'type' => "both", 'depth' => $depth ) );
+			return $result;
+		}
+
+		public function get_orderbooks( $depth = 0 ) {
 			$result = $this->exch->getorderbook( array( 'market' => $market, 'type' => "both", 'depth' => $depth ) );
 			return $result;
 		}
