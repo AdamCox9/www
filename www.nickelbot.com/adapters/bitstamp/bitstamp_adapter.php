@@ -1,33 +1,75 @@
 <?PHP
 
-	class BitstampAdapter implements CryptoExchange {
+	class BitstampAdapter extends CryptoBase implements CryptoExchange {
 
 		public function __construct( $Exch ) {
 			$this->exch = $Exch;
 		}
 
 		public function get_info() {
-			return [];
+			return array( 'ERROR' => 'METHOD_NOT_AVAILABLE' );
 		}
 
 		public function withdraw( $account = "exchange", $currency = "BTC", $address = "1fsdaa...dsadf", $amount = 1 ) {
-			return [];
+			return array( 'ERROR' => 'METHOD_NOT_AVAILABLE' );
 		}
 
 		public function get_currency_summary( $currency = "BTC" ) {
-			return [];
+			return array( 'ERROR' => 'METHOD_NOT_AVAILABLE' );
 		}
 		
 		public function get_currency_summaries( $currency = "BTC" ) {
-			return [];
+			return array( 'ERROR' => 'METHOD_NOT_AVAILABLE' );
 		}
 		
 		public function get_order( $orderid = "1" ) {
-			return [];
+			return array( 'ERROR' => 'METHOD_NOT_AVAILABLE' );
 		}
 		
 		public function cancel( $orderid="1", $opts = array() ) {
 			return $this->exch->cancel_order($orderid);
+		}
+
+		public function get_deposits_withdrawals() {
+			$currencies = $this->get_currencies();
+			$results = [];
+			foreach( $currencies as $currency ) {
+				$transactions = $this->get_completed_orders( $market="BTC-USD", $limit=100 );
+				foreach( $transactions as $transaction ) {
+					if( $transaction['type'] == 0 || $transaction['type'] == 1 ) {
+						$transaction['type'] = $transaction['type'] == 0 ? "DEPOSIT" : "WITHDRAWAL"; 
+						$transaction['exchange'] = "Bitstamp";
+						$transaction['currency'] = $transaction['market'];
+						$transaction['method'] = $transaction['market'];
+						$transaction['description'] = $transaction['market'];
+						$transaction['status'] = 'COMPLETED';
+						$transaction['address'] = null;
+						$transaction['confirmations'] = null;
+
+						unset( $transaction['order_id'] );
+						unset( $transaction['market'] );
+						unset( $transaction['price'] );
+						unset( $transaction['total'] );
+						unset( $transaction['tid'] );
+						unset( $transaction['fee_amount'] );
+						unset( $transaction['fee_currency'] );
+						array_push( $results, $transaction );
+					}
+				}
+			}
+			return $results;
+		}
+
+		public function get_deposits() {
+			return array( 'ERROR' => 'METHOD_NOT_AVAILABLE' );
+		}
+
+		public function get_deposit( $deposit_id="1", $opts = array() ) {
+			return array( 'ERROR' => 'METHOD_NOT_AVAILABLE' );
+		}
+
+		public function get_withdrawals() {
+			return array( 'ERROR' => 'METHOD_NOT_AVAILABLE' );
 		}
 
 		public function cancel_all() {
@@ -43,7 +85,7 @@
 			$amount = number_format( $amount, 4, ".", "" );
 			$buy = $this->exch->buy( $amount, $price );
 			if( isset( $buy['error'] ) )
-				print_r( $buy );
+				$buy['message'] = 'ERROR';
 			return $buy;
 		}
 		
@@ -51,19 +93,25 @@
 			$price = number_format( $price, 2, ".", "" );
 			$amount = number_format( $amount, 4, ".", "" );
 			$sell = $this->exch->sell( $amount, $price );
-			if( isset( $buy['error'] ) )
-				print_r( $sell );
-				return $sell;
+			if( isset( $sell['error'] ) )
+				$sell['message'] = 'ERROR';
+			return $sell;
 		}
 
 		public function get_open_orders() {
 			if( isset( $this->open_orders ) )
 				return $this->open_orders;
 			$open_orders = $this->exch->open_orders();
+
+			if( isset( $open_orders['error'] ) ) {
+				print_r( $open_orders );
+				return array( 'error' => $open_orders ); //need to standardize!
+			}
+
 			$this->open_orders = [];
 			foreach( $open_orders as $open_order ) {
-				$open_order['market'] = $market;
-				$open_order['timestamp'] = $open_order['datetime'];
+				$open_order['market'] = "BTC-USD";
+				$open_order['timestamp_created'] = strtotime( $open_order['datetime'] . " UTC" );
 				$open_order['exchange'] = "bitstamp";
 				$open_order['avg_execution_price'] = null;
 				$open_order['side'] = null;
@@ -72,7 +120,6 @@
 				$open_order['is_hidden'] = null;
 				$open_order['was_forced'] = null;
 				$open_order['original_amount'] = null;
-				$open_order['amount'] = null;
 				$open_order['remaining_amount'] = null;
 				$open_order['executed_amount'] = null;
 				unset( $open_order['datetime'] );
@@ -81,10 +128,10 @@
 			return $this->open_orders;
 		}
 
-		public function get_completed_orders() {
+		public function get_completed_orders( $market="BTC-USD", $limit=100 ) {
 			if( isset( $this->completed_orders ) )
 				return $this->completed_orders;
-			$completed_orders = $this->exch->user_transactions( array( 'offset' => 0, 'limit' => 1000, 'sort' => 'desc' ) );
+			$completed_orders = $this->exch->user_transactions( array( 'offset' => 0, 'limit' => $limit, 'sort' => 'desc' ) );
 			$this->completed_orders = [];
 			foreach( $completed_orders as $completed_order ) {
 				$completed_order['market'] = "BTC-USD";
@@ -121,12 +168,12 @@
 			$response = array();
 			if( $currency === "BTC" ) {
 				$address = $this->exch->bitcoin_deposit_address();
-				$response = array( 'wallet_type' => 'exchange', 'currency' => $currency, 'address' => $address, 'method' => "bitcoin" );
+				$response = array( 'wallet_type' => 'exchange', 'currency' => $currency, 'address' => $address );
 			}
 			if( $currency === "XRP" ) {
 				$address = $this->exch->ripple_address();
 				$address = $address['address'];
-				$response = array( 'wallet_type' => 'exchange', 'currency' => $currency, 'address' => $address, 'method' => "ripple" );
+				$response = array( 'wallet_type' => 'exchange', 'currency' => $currency, 'address' => $address );
 			}
 
 			return $response;
@@ -140,7 +187,10 @@
 		}
 
 		public function get_balances() {
-			$balances = $this->get_balance();
+			/*if( isset( $this->balances ) )//internal cache
+				return $this->balances;*/
+
+			$balances = $this->exch->balance();
 
 			$response = [];
 
@@ -164,11 +214,15 @@
 
 			array_push( $response, $balance );
 
-			return $response;
+			$this->balances = $response;
+			return $this->balances;
 		}
 
-		public function get_balance( $currency = "BTC" ) {
-			return $this->exch->balance();
+		public function get_balance( $currency="BTC" ) {
+			$balances = $this->get_balances();
+			foreach( $balances as $balance )
+				if( $balance['currency'] == $currency )
+					return $balance;
 		}
 
 		public function get_market_summary( $market = "BTC-USD" ) {
@@ -207,18 +261,22 @@
 
 			ksort( $market_summary );
 
-			return array( $market_summary );
+			return $market_summary;
 		}
 
 		public function get_market_summaries() {
-			if( isset( $this->market_summaries ) ) //cache
-				return $this->market_summaries;
-
-			$this->market_summaries = $this->get_market_summary( "BTC-USD" );
-			return $this->market_summaries;
+			return array( $this->get_market_summary( "BTC-USD" ) );
 		}
 
-		public function get_trades( $market = "BTC-USD", $time = 0 ) {
+		public function get_trades( $market = "BTC-USD", $time = 60 ) {
+
+			if( $time <= 60 )
+				$time = 'minute';
+			if( $time <= 3600 && $time > 60 )
+				$time = 'hour';
+			if( $time <= 3600*24 && $time > 3600 )
+				$time = 'day';
+
 			$trades = $this->exch->transactions( $time );
 			$results = [];
 			foreach( $trades as $trade ) {
@@ -229,11 +287,6 @@
 				array_push( $results, $trade );
 			}
 			return $results;
-		}
-
-		public function get_all_trades( $time = 0 ) {
-			$result = $this->get_trades( "BTC-USD", $time );
-			return $result;
 		}
 
 		public function get_orderbook( $market = 'BTC-USD', $depth = 0 ) {
@@ -267,9 +320,56 @@
 			return $results;
 		}
 
-		public function get_orderbooks( $depth = 0 ) {
-			$result = $this->get_orderbook( "BTC-USD", $depth );
-			return $result;
+		//Return trollbox data from the exchange, otherwise get forum posts or twitter feed if must...
+		public function get_trollbox() {
+			return array( 'ERROR' => 'METHOD_NOT_AVAILABLE' );
+		}
+
+		//Margin trading
+		public function margin_history() {
+			return array( 'ERROR' => 'METHOD_NOT_AVAILABLE' );
+		}
+		public function margin_info() {
+			return array( 'ERROR' => 'METHOD_NOT_AVAILABLE' );
+		}
+		
+		//lending:
+		public function loan_offer() {
+			return array( 'ERROR' => 'METHOD_NOT_AVAILABLE' );
+		}
+		
+		public function cancel_loan_offer() {
+			return array( 'ERROR' => 'METHOD_NOT_AVAILABLE' );
+		}
+		
+		public function loan_offer_status() {
+			return array( 'ERROR' => 'METHOD_NOT_AVAILABLE' );
+		}
+
+		public function active_loan_offers() {
+			return array( 'ERROR' => 'METHOD_NOT_AVAILABLE' );
+		}
+
+		//borrowing:
+
+		public function get_positions() {
+			return array( 'ERROR' => 'METHOD_NOT_AVAILABLE' );
+		}
+
+		public function claim_position() {
+			return array( 'ERROR' => 'METHOD_NOT_AVAILABLE' );
+		}
+
+		public function close_position() {
+			return array( 'ERROR' => 'METHOD_NOT_AVAILABLE' );
+		}
+
+		public function active_loan() {
+			return array( 'ERROR' => 'METHOD_NOT_AVAILABLE' );
+		}
+
+		public function inactive_loan() {
+			return array( 'ERROR' => 'METHOD_NOT_AVAILABLE' );
 		}
 
 	}

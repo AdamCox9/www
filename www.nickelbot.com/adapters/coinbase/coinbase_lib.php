@@ -7,13 +7,26 @@
 		protected $api_secret;
 		protected $trading_url = "https://api.exchange.coinbase.com";
 		
-		public function __construct($api_key, $api_secret,$passphrase) {
+		public function __construct($api_key, $api_secret,$passphrase) 
+		{
 			$this->api_key = $api_key;
 			$this->api_secret = $api_secret;
 			$this->passphrase = $passphrase;
 		}
 			
-		public function query( $method, $params = array(), $type = "GET" ) {
+		public function query( $method, $params = array(), $type = "GET" ) 
+		{
+
+			/*echo "\n\n";
+			echo "$method";
+			echo "\n";
+			print_r( $params );
+			echo "\n";
+			echo "$type";
+			echo "\n\n";*/
+
+			usleep( 100000 ); //sleep for 1/10th of second so don't overload server...
+
 			$key = $this->api_key;
 			$secret = $this->api_secret;
 			$passphrase = $this->passphrase;
@@ -87,12 +100,12 @@
 			return $this->query('/accounts/'.$order_id);
 		}
 
-		public function account_ledger($order_id) {
-			return $this->query('/accounts/'.$order_id.'/ledger');
+		public function account_ledger($account_id) {
+			return $this->query('/accounts/'.$account_id.'/ledger');
 		}
 
-		public function account_holds($order_id) {
-			return $this->query('/accounts/'.$order_id.'/holds');
+		public function account_holds($account_id) {
+			return $this->query('/accounts/'.$account_id.'/holds');
 		}
 
 		public function create_order( $arr = array() ) {
@@ -100,7 +113,7 @@
 		}
 
 		public function cancel_order( $order_id ) {
-			return "SUCCESS".$this->query('/orders/'.$order_id, array(), "DELETE" );
+			return $this->query('/orders/'.$order_id, array(), "DELETE" );
 		}
 
 		public function get_orders() {
@@ -131,8 +144,9 @@
 			return $this->query('/products/'.$product_id.'/ticker');
 		}
 
-		public function products_trades( $product_id ) {
-			return $this->query('/products/'.$product_id.'/trades');
+		//need to get pagination working...
+		public function products_trades( $product_id, $limit = 10 ) {
+			return $this->query('/products/'.$product_id.'/trades?limit=' . $limit);
 		}
 
 		public function products_candles( $product_id ) {

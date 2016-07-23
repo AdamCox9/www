@@ -8,12 +8,20 @@
 		protected $trading_url = "https://poloniex.com/tradingApi";
 		protected $public_url = "https://poloniex.com/public";
 		
-		public function __construct($api_key, $api_secret) {
+		public function __construct($api_key, $api_secret) 
+		{
 			$this->api_key = $api_key;
 			$this->api_secret = $api_secret;
 		}
 			
-		private function query(array $req = array()) {
+		private function query(array $req = array()) 
+		{
+			usleep(1000000);//rate limit
+
+			/*echo "\n\n";
+			print_r( $req );
+			echo "\n\n";*/
+
 			// API settings
 			$key = $this->api_key;
 			$secret = $this->api_secret;
@@ -83,8 +91,9 @@
 			return $this->retrieveJSON( $this->public_url . "?command=returnOrderBook&currencyPair=$pair" );
 		}
 		
-		public function returnPublicTradeHistory( $pair ) {
-			return $this->retrieveJSON( $this->public_url . "?command=returnTradeHistory&currencyPair=$pair" );
+		//https://poloniex.com/public?command=returnTradeHistory&currencyPair=BTC_NXT&start=1410158341&end=1410499372
+		public function returnPublicTradeHistory( $pair, $time = 60 ) {
+			return $this->retrieveJSON( $this->public_url . "?command=returnTradeHistory&currencyPair=$pair&start=" . ( time() - $time ) . "&end=" . time() );
 		}
 		
 		public function returnChartData($pair) {
@@ -154,7 +163,7 @@
 			return $this->query( 
 				array(
 					'command' => 'returnOpenOrders',
-					'currencyPair' => strtoupper($currencyPair)
+					'currencyPair' => $currencyPair
 				)
 			);
 		}
@@ -194,7 +203,7 @@
 			return $this->query( 
 				array(
 					'command' => 'cancelOrder',	
-					'currencyPair' => strtoupper($currencyPair),
+					'currencyPair' => $currencyPair,
 					'orderNumber' => $order_number
 				)
 			);

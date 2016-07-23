@@ -12,7 +12,7 @@ if ( isset( $_SESSION['username'] ) && isset( $_SESSION['password'] ) ) {
 
 $GLOBALS['db_host'] = 'localhost';
 $GLOBALS['db_user'] = 'root';
-$GLOBALS['db_pass'] = '123233abc';
+$GLOBALS['db_pass'] = 'rz18LFEURrOm9fmoDnHa';
 $GLOBALS['db_name'] = 'randomthoughts';
 
 require_once '../php/common_lib.php';

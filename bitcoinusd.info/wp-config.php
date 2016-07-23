@@ -22,7 +22,7 @@ define('DB_NAME', 'wpbitcoinusd');
 define('DB_USER', 'root');
 
 /** MySQL database password */
-define('DB_PASSWORD', '123233abc');
+define('DB_PASSWORD', 'rz18LFEURrOm9fmoDnHa');
 
 /** MySQL hostname */
 define('DB_HOST', 'localhost');

@@ -7,12 +7,23 @@
 		protected $api_secret;
 		protected $trading_url = "https://api.bitfinex.com/v1";
 		
-		public function __construct( $api_key, $api_secret ) {
+		public function __construct( $api_key, $api_secret ) 
+		{
 			$this->api_key = $api_key;
 			$this->api_secret = $api_secret;
 		}
 			
-		private function query( $path, array $req = array() ) {
+		private function query( $path, array $req = array() ) 
+		{
+
+			/*echo "\n\n";
+			echo "$path";
+			echo "\n";
+			print_r( $req );
+			echo "\n\n";*/
+
+			usleep( 100000 ); //sleep for 1/10th of second so don't overload server...
+
 			// API settings
 			$key = $this->api_key;
 			$secret = $this->api_secret;
@@ -72,8 +83,8 @@
 			return json_decode( file_get_contents( $this->trading_url . "/book/" . $symbol ), true );
 		}
 		
-		public function trades( $symbol = "btcusd" ) {
-			return json_decode( file_get_contents( $this->trading_url . "/trades/" . $symbol ), true );
+		public function trades( $symbol = "btcusd", $limit = 10 ) {
+			return json_decode( file_get_contents( $this->trading_url . "/trades/" . $symbol . "?limit_trades=" . $limit ), true );
 		}
 		
 		public function lends( $currency = "btc" ) {
@@ -89,6 +100,10 @@
 		}
 
 		//Authenticated Functions:
+
+		public function account_infos() {
+			return $this->query( "/account_infos" );
+		}
 
 		public function deposit_new( $method = "bitcoin", $wallet_name = "exchange", $renew = 0 ) {
 			return $this->query( "/deposit/new", array( "method" => $method, "wallet_name" => $wallet_name, "renew" => $renew ) );
@@ -119,7 +134,7 @@
 		}
 
 		public function order_status( $order_id ) {
-			return $this->query( "/order/cancel", array( 'order_id' => $order_id ) );
+			return $this->query( "/order/status", array( 'order_id' => $order_id ) );
 		}
 
 		public function orders() {
@@ -138,8 +153,15 @@
 			return $this->query( "/history" );
 		}
 
-		public function history_movements() {
-			return $this->query( "/history/movements" );
+		/*****
+			currency	[string]	The currency to look for.
+			method		[string]	Optional. The method of the deposit/withdrawal (can be “bitcoin”, “litecoin”, “darkcoin”, “wire”).
+			since		[time]		Optional. Return only the history after this timestamp.
+			until		[time]		Optional. Return only the history before this timestamp.
+			limit		[int]		Optional. Limit the number of entries to return. Default is 500.
+		*****/
+		public function history_movements( $currency = "BTC" ) {
+			return $this->query( "/history/movements", array( 'currency' => $currency )  );
 		}
 
 		public function mytrades( $arr = array() ) {
@@ -158,23 +180,23 @@
 			return array( 'error' => 'NOT_IMPLEMENTED' );
 		}
 
-		public function offers() {
-			return array( 'error' => 'NOT_IMPLEMENTED' );
-		}
-
 		public function credits() {
 			return array( 'error' => 'NOT_IMPLEMENTED' );
 		}
 
-		public function taken_swaps() {
+		public function taken_funds() {
 			return array( 'error' => 'NOT_IMPLEMENTED' );
 		}
 
-		public function total_taken_swaps() {
+		public function unused_taken_funds() {
 			return array( 'error' => 'NOT_IMPLEMENTED' );
 		}
 
-		public function close_swap() {
+		public function total_taken_funds() {
+			return array( 'error' => 'NOT_IMPLEMENTED' );
+		}
+
+		public function funding_close() {
 			return array( 'error' => 'NOT_IMPLEMENTED' );
 		}
 
@@ -182,12 +204,20 @@
 			return $this->query( "/balances" );
 		}
 
-		public function account_infos() {
-			return $this->query( "/account_infos" );
-		}
-
 		public function margin_infos() {
 			return $this->query( "/margin_infos" );
+		}
+
+		public function transfer() {
+			return array( 'error' => 'NOT_IMPLEMENTED' );
+		}
+
+		public function withdraw() {
+			return array( 'error' => 'NOT_IMPLEMENTED' );
+		}
+
+		public function key_info() {
+			return array( 'error' => 'NOT_IMPLEMENTED' );
 		}
 
 	}

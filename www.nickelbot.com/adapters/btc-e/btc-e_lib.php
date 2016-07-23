@@ -9,13 +9,24 @@
 		protected $api_secret;
 		protected $trading_url = "https://btc-e.com/tapi/";
 		
-		public function __construct($api_key, $api_secret) {
+		public function __construct($api_key, $api_secret) 
+		{
 			$this->api_key = $api_key;
 			$this->api_secret = $api_secret;
 			$this->x = 0;
 		}
 
-		private function query($method, array $req = array()) {
+		private function query($method, array $req = array())
+		{
+
+			/*echo "\n\n";
+			echo "$method";
+			echo "\n";
+			print_r( $req );
+			echo "\n\n";*/
+
+			usleep( 100000 ); //sleep for 1/10th of second so don't overload server...
+
 			// API settings
 			$key = $this->api_key;
 			$secret = $this->api_secret;
@@ -55,6 +66,15 @@
 			if ($res === false) 
 				throw new Exception('Curl error: '.curl_error($ch));
 			$dec = json_decode($res, true);
+
+			//fix bug with nonce too small...
+			if( isset( $dec['error'] ) && $dec['success'] === 0 ) {
+				$nonce = explode( "you should send:", $dec['error'] );
+				if( isset( $nonce[1] ) )
+					$this->x = $nonce[1] - $req['nonce'];
+			}
+
+
 			if (!$dec) 
 				throw new Exception('Invalid data: '.$res);
 			return $dec;
@@ -74,8 +94,8 @@
 			return json_decode( file_get_contents( 'https://btc-e.com/api/3/depth/' . $ticker ), true );
 		}
 
-		public function trades($ticker) {
-			return json_decode( file_get_contents( 'https://btc-e.com/api/3/trades/' . $ticker ), true );
+		public function trades($ticker, $limit = 10 ) {
+			return json_decode( file_get_contents( 'https://btc-e.com/api/3/trades/' . $ticker . '?limit=' . $limit ), true );
 		}
 
 		//Authenticated Functions:

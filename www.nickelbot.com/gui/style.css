@@ -1,0 +1,42 @@
+/* The worst style I could think of */
+
+body { font-family: arial; font-size: 10pt; }
+
+h1 { font-size: 18pt; }
+h2 { font-size: 17pt; }
+h3 { font-size: 16pt; }
+h4 { font-size: 15pt; }
+h5 { font-size: 14pt; }
+h6 { font-size: 13pt; }
+
+img { max-width: 250px; }
+
+div.tab { padding-left:2em; }
+div#div_exchanges_save{ display: none; }
+
+div.exchange{ font-size: 11pt; border: 2px dotted #BBAA44; background: black; font-weight: bold; color: yellow; }
+div.currency{ font-size: 11pt; border: 2px ridge #B17A2A; background: red; font-weight: bold; color: orange; }
+div.market{ font-size: 10pt; border: 1px groove #BB371F; background: green; font-weight: bold; color: purple; }
+
+div.deposit_address{ font-size: 10pt; border: 1px solid #FFEEAA; background: blue; font-weight: bold; color: orange; }
+span.deposit_address{ font-size: 8pt; color: green; }
+
+div.open_orders{ font-size: 10pt; border: 1px solid #88BB36; background: orange; font-weight: bold; color: yellow; }
+span.open_orders{ font-size: 8pt; color: green; }
+
+div.completed_orders{ font-size: 10pt; border: 1px solid #88BB36; background: silver; font-weight: bold; color: black; }
+span.completed_orders{ font-size: 8pt; color: red; }
+
+div.trollbox_wrapper { float:left; }
+div.trollbox { font-size:10pt; width:300px; height:200px; border: 1px solid #666; overflow-x: hidden; overflow-y: scroll; }
+div.nickelbox{ height:100px; overflow-x: hidden; overflow-y: scroll; background: #EEEEEE; }
+
+div.code { margin-bottom: 25px; padding: 10px; border: 2px ridge #444; }
+div.code_desc { margin: 8px; border: 1px #666 dashed; padding: 10px; }
+div.code_resp { font-size: 9pt; margin: 6px; border: 2px #999 dashed; padding: 7px; }
+div.code_api { margin: 8px; border: 1px #BABCBA dotted; padding: 13px; }
+
+div.github_link { font-size: 24pt; }
+
+.clicker { text-decoration: underline; }
+.clicker:hover { background-color: yellow; cursor: pointer; }

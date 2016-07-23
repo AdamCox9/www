@@ -1,11 +1,18 @@
 <?PHP
 
 	// Utility functions:
-	// These should be compatible with all of the exchanges
-	// They should not use ExchangeAdapter objects, 
-	// but they should accept arrays returned from Adapter APIs
+	// These should be compatible with all of the data returned from Adapter objects.
+	// They should not use the Adapter objects themselves, but they should accept arrays returned from Adapter APIs
+	// This can be used to perform custom calculations on data.
 
 	class Utilities {
+
+		public static function get_min_order_size( $min_order_size_base, $min_order_size_quote, $epsilon, $price, $precision ) {
+			if( is_null( $min_order_size_base ) )
+				return bcdiv( $min_order_size_quote * 1.01, $price, $precision );//why is it always short when converting quote currency to base currency...
+			else
+				return $min_order_size_base;
+		}
 
 		public static function get_total_volumes( $market_summaries ) {
 
@@ -18,6 +25,10 @@
 				It should also return orderbook volume, but the orderbook volume might be taken care of somewhere else
 			*/
 
+
+			//_____this don't even work right...
+
+			$results = [];
 			$total_volume = 0;
 			foreach( $market_summaries as $market_summary ) {
 				if( strstr( $market_summary['market'], "-BTC" ) !== FALSE ) {
@@ -28,6 +39,7 @@
 					$total_volume += $market_summary['base_volume'];
 					continue;
 				}
+				array_push( $results, array( 'market' => $market_summary['market'], 'base_volume' => $total_volume, 'quote_volume' => $total_volume ) );
 				//TODO calculate then non-BTC markets too...
 				/*$base_volume = $market_summary['base_volume'];
 				$quote_volume = $market_summary['quote_volume'];
@@ -45,7 +57,7 @@
 					continue;
 				}*/
 			}
-			return array( 'total_volume' => $total_volume );
+			return $results;
 		}
 
 		public static function surch( $needles, $haystack ) {
@@ -83,8 +95,8 @@
 			return array( "btc_worth" => $btc_worth );
 		}
 
-		//Calculate avg_buy_price, avg_sell_price, loss, profit, breakeven sale price,
-		//for all buys & sells (disregard transfers & deposits... only trades) etc...
+		//Calculate avg_buy_price, avg_sell_price, loss, profit, breakeven sale price, etc...
+		//for all buys & sells & withdrawals & transfers & deposits & etc...
 		public static function analysis( $trades = array(), $time = 0 ){}
 
 		//This function will parse through trades since $time finding the highest & lowest sell price
