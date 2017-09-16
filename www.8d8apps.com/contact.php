@@ -7,13 +7,11 @@
 	$content = <<<HTML
 
 <br>
-<br>
-<br>
 <br>	E-Mails can be sent to <a href="Adam.Cox9@gmail.com">Adam.Cox9@gmail.com</a>
 <br>
-<br>	Adam Cox - 8D8 Apps
-<br>	106 Chadwick Street
-<br>	Haverhill, MA 01835
+<br>	8D8 Apps
+<br>	358 Main Street
+<br>	Haverhill, MA 01830
 <br>	
 <br>
 

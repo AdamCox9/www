@@ -71,6 +71,8 @@ function searchForItems($category,$keywords,$pagenum=1)
 
 	$items = repeatGetItems($category,$keywords,$pagenum);
 
+echo $items;
+
 	$AmazonList = null;
 	$AmazonListCnt = 0;
 	if( $items )

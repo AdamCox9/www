@@ -14,6 +14,8 @@
 	$head = "<base href='..'>";
 	$head .= "<link rel='canonical' href='http://www.8d8apps.com/aws/storeFront.php?pagenum=$pagenum&amp;category=$Category&amp;displayCat=".urlencode(ucwords(strtolower($SearchTerm)))."' />";
 
+	$head .= "\n<META NAME='ROBOTS' CONTENT='NOINDEX, NOFOLLOW'>\n";
+
 	//Will be overwritten in functions
 	$labels = "";
 
@@ -22,12 +24,6 @@
 	$SearchTerm = ucwords(strtolower($SearchTerm));
 	$linkCat = getAmazonLinkCat($SearchTerm);
 
-	if( strpos($AmazonList,'1404847855') && strpos($AmazonList,'B007SUW24W') && strpos($AmazonList,'B00JKGYSAI') ) {
-		$head .= '<META NAME="ROBOTS" CONTENT="NOINDEX, FOLLOW">';
-		$linkCat = null;
-	}
-
-	
 	if( $Category == 'All' && $pagenum == 1 )
 		$WikipediaSearch = GetWikipediaSearch($SearchTerm);
 	else

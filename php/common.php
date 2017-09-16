@@ -1,5 +1,8 @@
 <?php
 
+//error_reporting(E_ALL);
+//ini_set("display_errors", 1);
+
 $title = 'Random Thoughts';
 
 session_start();
@@ -12,7 +15,7 @@ if ( isset( $_SESSION['username'] ) && isset( $_SESSION['password'] ) ) {
 
 $GLOBALS['db_host'] = 'localhost';
 $GLOBALS['db_user'] = 'root';
-$GLOBALS['db_pass'] = 'rz18LFEURrOm9fmoDnHa';
+$GLOBALS['db_pass'] = '123233';
 $GLOBALS['db_name'] = 'randomthoughts';
 
 require_once '../php/common_lib.php';

@@ -32,8 +32,9 @@
 
 	$labels = "";
 
+	$head .= "\n<META NAME='ROBOTS' CONTENT='NOINDEX, NOFOLLOW'>\n";
+
 	if( $item == null ) {
-		$head .= "\n<META NAME='ROBOTS' CONTENT='NOINDEX, FOLLOW'>\n";
 		$content = "NOT AVAILABLE";
 	} else {
 
