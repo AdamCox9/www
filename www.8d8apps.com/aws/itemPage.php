@@ -32,7 +32,7 @@
 
 	$labels = "";
 
-	$head .= "\n<META NAME='ROBOTS' CONTENT='NOINDEX, NOFOLLOW'>\n";
+	//$head .= "\n<META NAME='ROBOTS' CONTENT='NOINDEX, NOFOLLOW'>\n";
 
 	if( $item == null ) {
 		$content = "NOT AVAILABLE";
@@ -49,7 +49,7 @@
 			$wordnet_def = getWordnetDef($title);
 		else
 			$wordnet_def = null;
-		$labels = null;// getLabels($labels,1);
+		$labels = getLabels($labels,3);
 
 		/*****
 		 Content
@@ -79,7 +79,7 @@
 				<a rel='nofollow' style='margin-top:25px;margin-bottom:15px;margin-left:0px;' class="btn btn-lg btn-primary" href="$DetailPageURL" role="button">View Price &raquo;</a>
 				<p>
 					$ItemLinks
-					[<a href="http://www.amazon.com/gp/aws/cart/add.html?AssociateTag=ezstbu-20&amp;SubscriptionId=15XGD9GB2J5T8BQHYE02&amp;ASIN.1=$asin&amp;Quantity.1=1">Add to Cart &raquo;</a>]
+					[<a rel='nofollow' href="http://www.amazon.com/gp/aws/cart/add.html?AssociateTag=ezstbu-20&amp;SubscriptionId=15XGD9GB2J5T8BQHYE02&amp;ASIN.1=$asin&amp;Quantity.1=1">Add to Cart &raquo;</a>]
 				</p>
 				<p>
 					$EditorialReview

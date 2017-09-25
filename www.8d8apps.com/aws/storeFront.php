@@ -14,7 +14,7 @@
 	$head = "<base href='..'>";
 	$head .= "<link rel='canonical' href='http://www.8d8apps.com/aws/storeFront.php?pagenum=$pagenum&amp;category=$Category&amp;displayCat=".urlencode(ucwords(strtolower($SearchTerm)))."' />";
 
-	$head .= "\n<META NAME='ROBOTS' CONTENT='NOINDEX, NOFOLLOW'>\n";
+	//$head .= "\n<META NAME='ROBOTS' CONTENT='NOINDEX, NOFOLLOW'>\n";
 
 	//Will be overwritten in functions
 	$labels = "";
@@ -34,7 +34,7 @@
 	else
 		$wordnet_def = null;
 
-	$labels = null;//getLabels($labels,1);
+	$labels = getLabels($labels,3);
 
 	if( $pagenum > 1 || $Category != 'All' ) {
 		$YoutubeVideos = $WikipediaSearch = $wordnet_def = null;

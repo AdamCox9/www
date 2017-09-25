@@ -42,7 +42,7 @@
 
 	$head = null;
 
-	$labels = null; // getLabels($labels,3);
+	$labels = getLabels($labels,3);
 
 	$content = <<<HTML
 			<div>

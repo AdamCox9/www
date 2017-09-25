@@ -7,14 +7,6 @@ function GetWikipediaSearch($SearchTerm)
 	if( strlen( $SearchTerm ) > 50 || substr_count( $SearchTerm, '+' ) > 2 )
 		return null;
 
-//	return null;
-
-	
-	
-	
-	//TODO let's cache the results so we don't get rape limited!!!!!!!!!!
-
-
 	$xml = checkCache("wikipedia","search",$SearchTerm);
 
 	if( ! $xml ) {
@@ -23,7 +15,6 @@ function GetWikipediaSearch($SearchTerm)
 			$xml = simplexml_load_file('http://en.wikipedia.org/w/api.php?action=opensearch&search='.urlencode($SearchTerm).'&format=xml&callback=spellcheck');
 			if( ! $xml ) {
 				error_log( "throttled by wikipedia '$SearchTerm'" );
-				addToCache("wikipedia","search",$SearchTerm,'','',"<nilnull/>");
 			}
 			else
 				addToCache("wikipedia","search",$SearchTerm,'','',$xml->asXML());

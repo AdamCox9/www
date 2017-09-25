@@ -3,7 +3,7 @@
 	require 'local.php';
 
 	$head = "<base href='..'>";
-	$head .= "\n<META NAME='ROBOTS' CONTENT='NOINDEX, NOFOLLOW'>\n";
+	//$head .= "\n<META NAME='ROBOTS' CONTENT='NOINDEX, NOFOLLOW'>\n";
 
 	$nodeId = isset( $_GET['node'] ) ? $_GET['node'] : '171119';
 
