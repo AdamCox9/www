@@ -1,15 +1,10 @@
 <?PHP
 
-	ini_set( 'display_errors', 1 );
-	error_reporting( E_ALL );
+	die('safety');
 
-	require_once 'generate_library.php';
 	require 'local.php';
 
-	if( ! $db )
-		$db = new DatabaseConnection();
-
-	//List all files in 'files' directory:
+	$conn = open_db_conn();
 
 	if ($handle = opendir('wavs')) {
 		while (false !== ($entry = readdir($handle)))

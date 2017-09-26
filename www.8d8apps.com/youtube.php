@@ -1,13 +1,13 @@
 <?PHP
 
+	require 'local.php';
+
 	if( isset( $_GET['q'] ) ) {
 		$q = ucwords( strtolower( $_GET['q'] ) );
-		header("HTTP/1.1 301 Moved Permanently"); 
-		header("Location: http://randomthoughts.club/aws/storeFront.php?pagenum=1&category=All&displayCat=$q");
+		header("HTTP/1.1 301 Moved Permanently");
+		header("Location: http://www.8d8apps.com/aws/storeFront.php?pagenum=1&category=All&displayCat=$q");
 		exit;
 	}
-
-	require 'local.php';
 
 	$title = "Home";
 
@@ -42,7 +42,7 @@
 
 	$head = null;
 
-	$labels = getLabels($labels,3);
+	$labels = getLabels($labels,1);
 
 	$content = <<<HTML
 			<div>

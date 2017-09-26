@@ -15,8 +15,8 @@ if ( isset( $_SESSION['username'] ) && isset( $_SESSION['password'] ) ) {
 
 $GLOBALS['db_host'] = 'localhost';
 $GLOBALS['db_user'] = 'root';
-$GLOBALS['db_pass'] = '123233';
-$GLOBALS['db_name'] = 'randomthoughts';
+$GLOBALS['db_pass'] = 'pqBsMMnroIm2k2ldqiSQ';
+$GLOBALS['db_name'] = '8d8global';
 
 require_once '../php/common_lib.php';
 require_once '../php/amazon/amazon_lib.php';
@@ -33,13 +33,8 @@ require_once '../php/users/users.profile.class.php';
 
 $db = null; //This should be set to new DatabaseConnection if it is used...
 
-$template = file_get_contents( 'template.html' );
-
-$randomId = file_get_contents( '../php/thoughts/randomids/ids.txt' );
-$randomId = explode( "\n", $randomId );
-
-$template = str_replace( '<!--[[[~RANDOMID~]]]-->', $randomId[rand(0,sizeof($randomId))], $template );
-
 $user = 'Anonymous';
+
+$timestamp = time();
 
 ?>

@@ -34,7 +34,7 @@
 	else
 		$wordnet_def = null;
 
-	$labels = getLabels($labels,3);
+	$labels = getLabels($labels,1);
 
 	if( $pagenum > 1 || $Category != 'All' ) {
 		$YoutubeVideos = $WikipediaSearch = $wordnet_def = null;

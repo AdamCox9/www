@@ -1,8 +1,5 @@
 <?PHP
 
-	ini_set( 'display_errors', 1 );
-	error_reporting( E_ALL );
-
 	if( sizeof( $_GET ) > 0 ) {
 		header("HTTP/1.1 301 Moved Permanently");
 		header("Location: http://www.8d8apps.com/");

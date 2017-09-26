@@ -4,7 +4,7 @@
 	{
 		global $conn;
 
-		$entry = mysql_real_escape_string($entry,$conn);
+		$entry = mysqli_real_escape_string($entry,$conn);
 
 		//0 is new, 1 is published, 2 is rejected...
 		$query = "SELECT id FROM `mp3s` WHERE `filename` = '$entry' AND `verified` > 1;";
@@ -61,11 +61,11 @@
 		global $conn;
 
 		$Date = time();
-		$Filename = $Date . '__|__' . mysql_real_escape_string($_FILES['mp3']['name'],$conn);
-		$Title = mysql_real_escape_string($_POST['title'],$conn);
-		$Author = mysql_real_escape_string($_POST['author'],$conn);
-		$Website = mysql_real_escape_string($_POST['website'],$conn);
-		$Email = mysql_real_escape_string($_POST['email'],$conn);
+		$Filename = $Date . '__|__' . mysqli_real_escape_string($_FILES['mp3']['name'],$conn);
+		$Title = mysqli_real_escape_string($_POST['title'],$conn);
+		$Author = mysqli_real_escape_string($_POST['author'],$conn);
+		$Website = mysqli_real_escape_string($_POST['website'],$conn);
+		$Email = mysqli_real_escape_string($_POST['email'],$conn);
 		$Verified = 0;
 
 		$query = "INSERT INTO `mp3s` VALUES(NULL, '$Filename', '$Title', '$Author', '$Website', '$Email', '$Verified', $Date);";
@@ -104,7 +104,7 @@
 	{
 		global $conn;
 
-		$getref = mysql_real_escape_string( $getref, $conn );
+		$getref = mysqli_real_escape_string( $getref, $conn );
 
 		$query = "SELECT `id` FROM `refs` WHERE `deviceid` = '$getref';";
 		$result = mysql_query($query,$conn);
@@ -121,7 +121,7 @@
 	{
 		global $conn;
 
-		$ref = mysql_real_escape_string( $ref, $conn );
+		$ref = mysqli_real_escape_string( $ref, $conn );
 		$query = "SELECT `id` FROM `devices` WHERE `id` = $ref;";
 		$result = mysql_query($query,$conn);
 		if ( !( $result ) ) {
@@ -140,7 +140,7 @@
 	{
 		global $conn;
 
-		$ref = mysql_real_escape_string( $ref, $conn );
+		$ref = mysqli_real_escape_string( $ref, $conn );
 		$query = "SELECT `id` FROM `devices` WHERE `key` = '$ref';";
 		$result = mysql_query($query,$conn);
 		if ( !( $result ) ) {
@@ -166,8 +166,8 @@
 	{
 		global $conn;
 
-		$ref = mysql_real_escape_string( $ref, $conn );
-		$ip = mysql_real_escape_string( $ip, $conn );
+		$ref = mysqli_real_escape_string( $ref, $conn );
+		$ip = mysqli_real_escape_string( $ip, $conn );
 
 		$query = "SELECT `id` FROM `refs` WHERE `deviceid` = '$ref' AND `ip` = '$ip';";
 		$result = mysql_query($query,$conn);
@@ -186,8 +186,8 @@
 	{
 		global $conn;
 
-		$ref = mysql_real_escape_string( $ref, $conn );
-		$ip = mysql_real_escape_string( $ip, $conn );
+		$ref = mysqli_real_escape_string( $ref, $conn );
+		$ip = mysqli_real_escape_string( $ip, $conn );
 		$time = time();
 
 		$query = "INSERT INTO `refs` VALUES(NULL, '$ref', '$ip', $time);";
@@ -201,7 +201,7 @@
 	{
 		global $conn;
 
-		$registerid = mysql_real_escape_string( $registerid, $conn );
+		$registerid = mysqli_real_escape_string( $registerid, $conn );
 		$time = time();
 
 		$query = "INSERT INTO `devices` VALUES(NULL, '$registerid', $time);";
@@ -237,13 +237,13 @@
 	{
 		global $conn;
 
-		$id = mysql_real_escape_string($_GET['id'],$conn);
-		$filename = mysql_real_escape_string($_GET['filename'],$conn);
-		$title = mysql_real_escape_string($_GET['title'],$conn);
-		$author = mysql_real_escape_string($_GET['author'],$conn);
-		$website = mysql_real_escape_string($_GET['website'],$conn);
-		$email = mysql_real_escape_string($_GET['email'],$conn);
-		$verified = mysql_real_escape_string($_GET['verified'],$conn);
+		$id = mysqli_real_escape_string($_GET['id'],$conn);
+		$filename = mysqli_real_escape_string($_GET['filename'],$conn);
+		$title = mysqli_real_escape_string($_GET['title'],$conn);
+		$author = mysqli_real_escape_string($_GET['author'],$conn);
+		$website = mysqli_real_escape_string($_GET['website'],$conn);
+		$email = mysqli_real_escape_string($_GET['email'],$conn);
+		$verified = mysqli_real_escape_string($_GET['verified'],$conn);
 
 		$query = "UPDATE `mp3s` SET 
 			`filename` = '$filename',
@@ -264,26 +264,10 @@
 		}
 	}
 
-
-	function set_db_vars()
-	{
-		$GLOBALS['db_ip'] = 'localhost';
-		$GLOBALS['db_user'] = 'root';
-		$GLOBALS['db_pass'] = '123233abc';
-		$GLOBALS['db_name'] = '8d8apps';
-	}
-
 	function open_db_conn()
 	{
-		$conn = mysql_connect($GLOBALS['db_ip'], $GLOBALS['db_user'], $GLOBALS['db_pass']);
-		mysql_select_db($GLOBALS['db_name'], $conn);
-		return $conn;
-	}
-
-	function close_db_conn()
-	{
-		global $conn;
-		mysql_close($conn);
+		$DB = new DatabaseConnection();
+		return $DB->conn;
 	}
 
 ?>

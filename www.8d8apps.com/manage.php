@@ -9,13 +9,12 @@
 
 	die( 'test' );
 
-	require 'library.php';
+	require 'local.php';
 
 	//print_r( $_FILES );
 	//print_r( $_POST );
 
 	if( isset( $_GET['action'] ) ) {
-		set_db_vars();
 		$conn = open_db_conn();
 
 		switch( $_GET['action'] ) {

@@ -5,9 +5,8 @@ die( "careful" );
 	ini_set( 'display_errors', 1 );
 	error_reporting( E_ALL );
 
-	require( 'library.php' );
+	require( 'local.php' );
 
-	set_db_vars();
 	$conn = open_db_conn();
 
 	//List all files in 'files' directory:

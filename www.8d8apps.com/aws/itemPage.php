@@ -49,7 +49,8 @@
 			$wordnet_def = getWordnetDef($title);
 		else
 			$wordnet_def = null;
-		$labels = getLabels($labels,3);
+
+		$labels = getLabels($labels,1);
 
 		/*****
 		 Content

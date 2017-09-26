@@ -1,9 +1,5 @@
 <?PHP
 
-	$template = file_get_contents( 'template.html' );
-
-	$head = "";
-
 	require 'local.php';
 	$MicroAmazonList = microSearchForItems('All','Android',1);
 

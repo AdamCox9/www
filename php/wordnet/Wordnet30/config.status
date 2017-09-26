@@ -512,12 +512,12 @@ s,@LIBOBJS@,,;t t
 s,@CYGPATH_W@,echo,;t t
 s,@PACKAGE@,WordNet,;t t
 s,@VERSION@,3.0,;t t
-s,@ACLOCAL@,${SHELL} /var/www/html/lib/php/wordnet/Wordnet30/missing --run aclocal-1.9,;t t
-s,@AUTOCONF@,${SHELL} /var/www/html/lib/php/wordnet/Wordnet30/missing --run autoconf,;t t
-s,@AUTOMAKE@,${SHELL} /var/www/html/lib/php/wordnet/Wordnet30/missing --run automake-1.9,;t t
-s,@AUTOHEADER@,${SHELL} /var/www/html/lib/php/wordnet/Wordnet30/missing --run autoheader,;t t
-s,@MAKEINFO@,${SHELL} /var/www/html/lib/php/wordnet/Wordnet30/missing --run makeinfo,;t t
-s,@install_sh@,/var/www/html/lib/php/wordnet/Wordnet30/install-sh,;t t
+s,@ACLOCAL@,${SHELL} /var/www/www/php/wordnet/Wordnet30/missing --run aclocal-1.9,;t t
+s,@AUTOCONF@,${SHELL} /var/www/www/php/wordnet/Wordnet30/missing --run autoconf,;t t
+s,@AUTOMAKE@,${SHELL} /var/www/www/php/wordnet/Wordnet30/missing --run automake-1.9,;t t
+s,@AUTOHEADER@,${SHELL} /var/www/www/php/wordnet/Wordnet30/missing --run autoheader,;t t
+s,@MAKEINFO@,${SHELL} /var/www/www/php/wordnet/Wordnet30/missing --run makeinfo,;t t
+s,@install_sh@,/var/www/www/php/wordnet/Wordnet30/install-sh,;t t
 s,@STRIP@,,;t t
 s,@ac_ct_STRIP@,,;t t
 s,@INSTALL_STRIP_PROGRAM@,${SHELL} $(install_sh) -c -s,;t t
@@ -525,7 +525,7 @@ s,@mkdir_p@,mkdir -p --,;t t
 s,@AWK@,gawk,;t t
 s,@SET_MAKE@,,;t t
 s,@am__leading_dot@,.,;t t
-s,@AMTAR@,${SHELL} /var/www/html/lib/php/wordnet/Wordnet30/missing --run tar,;t t
+s,@AMTAR@,${SHELL} /var/www/www/php/wordnet/Wordnet30/missing --run tar,;t t
 s,@am__tar@,${AMTAR} chof - "$$tardir",;t t
 s,@am__untar@,${AMTAR} xf -,;t t
 s,@DEPDIR@,.deps,;t t
@@ -540,7 +540,7 @@ s,@am__fastdepCC_FALSE@,#,;t t
 s,@TCL_LIB_SPEC@,-L/usr/lib64 -ltcl8.6,;t t
 s,@TCL_INCLUDE_SPEC@,-I/usr/include,;t t
 s,@TK_LIB_SPEC@,-L/usr/lib64 -ltk8.6,;t t
-s,@TK_LIBS@,-lX11 -lXft -lfreetype  -lfontconfig  -lpthread -ldl -lz  -lpthread -lieee -lm,;t t
+s,@TK_LIBS@,-lX11 -lXft -lfreetype -lfontconfig  -lpthread -ldl -lz  -lpthread -lieee -lm,;t t
 s,@TK_XINCLUDES@,,;t t
 s,@TK_PREFIX@,/usr,;t t
 s,@ac_prefix@,/usr/local/WordNet-3.0,;t t

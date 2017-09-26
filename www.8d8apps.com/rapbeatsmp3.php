@@ -1,15 +1,8 @@
 <?PHP
 
-	//ini_set( 'display_errors', 1 );
-	//error_reporting( E_ALL );
-
 	require 'local.php';
-	require 'generate_library.php';
-	require 'library.php';
 
-	set_db_vars();
 	$conn = open_db_conn();
-
 
 /*
 
@@ -43,9 +36,6 @@ Your browser does not support the audio element.
 		}
 
 	}
-
-
-	close_db_conn();
 
 	$MicroAmazonList = microSearchForItems('All','Android',1);
 

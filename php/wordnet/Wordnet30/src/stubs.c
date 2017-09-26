@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#define USE_INTERP_RESULT 1
 #include <tcl.h>
 #include <tk.h>
 #include <wn.h>

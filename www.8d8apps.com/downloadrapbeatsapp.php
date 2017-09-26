@@ -4,7 +4,7 @@
 
 	$head = "<link rel='canonical' href='http://www.8d8apps.com/credits.php' />";
 
-	require '../php/common.php';
+	require 'local.php';
 	$MicroAmazonList = microSearchForItems('All','Android',1);
 
 	$content = <<<HTML
