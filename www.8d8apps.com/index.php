@@ -1,11 +1,12 @@
 <?PHP
 
+	require_once 'local.php';
+
 	if( sizeof( $_GET ) > 0 ) {
 		header("HTTP/1.1 301 Moved Permanently");
 		header("Location: http://www.8d8apps.com/");
 	}
 
-	require 'local.php';
 	$MicroAmazonList = microSearchForItems('All','Android',1);
 
 	$template = file_get_contents( 'template.html' );

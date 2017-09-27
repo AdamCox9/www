@@ -26,7 +26,7 @@ function repeatGetItems($category,$keywords,$pagenum)
 	$items = requestSearch($category,$keywords,$pagenum);
 
 	$escape = false;
-	if( $items == null ) {
+	/*if( $items == null ) {
 		usleep(500000);
 		$keywords = explode(" ",$keywords);
 		if( sizeof( $keywords ) <= 1 )
@@ -52,9 +52,14 @@ function repeatGetItems($category,$keywords,$pagenum)
 		$keywords = array_slice($keywords,0,sizeof($keywords)/3);
 		$keywords = implode(" ",$keywords);
 		$items = requestSearch($category,$keywords,$pagenum);
-	}
+	}*/
 	if( ! $escape && $items == null ) {
-		$items = requestSearch($category,"random thoughts",$pagenum);
+		if( $_SERVER['SERVER_NAME'] === 'randomthoughts.club' || $_SERVER['SERVER_NAME'] === 'www.randomthoughts.club' )
+			$keywords = 'random thoughts';
+		else
+			$keywords = 'dj equipment';
+
+		$items = requestSearch($category,$keywords,$pagenum);
 	}
 
 	return $items;
@@ -70,8 +75,6 @@ function searchForItems($category,$keywords,$pagenum=1)
 	global $labels;
 
 	$items = repeatGetItems($category,$keywords,$pagenum);
-
-echo $items;
 
 	$AmazonList = null;
 	$AmazonListCnt = 0;
@@ -203,19 +206,16 @@ function requestSearch($category,$keywords,$pagenum)
                    'Keywords' => $keywords,
 				   'AssociateTag' => 'ezstbu-20');
 
-	if( rand(0,3) === 1 ) {
-		error_log( 'fetching' );
-		$result = aws_signed_request("com", $array, TOKEN, SECRETKEY);
+	$result = aws_signed_request("com", $array, TOKEN, SECRETKEY);
 
-		if( $result ) {
-			$items = $result->Items;
-			addToCache("amazon","search",$keywords,$pagenum,$category,$items->asXML());
-			if( ! $items->Request->Errors->Error )
-				return $items;
-		} else {
-			//$e = new Exception();
-			error_log( "throttled by aws for search '$keywords' -- " );
-		}
+	if( $result ) {
+		$items = $result->Items;
+		addToCache("amazon","search",$keywords,$pagenum,$category,$items->asXML());
+		if( ! $items->Request->Errors->Error )
+			return $items;
+	} else {
+		//$e = new Exception();
+		error_log( "throttled by aws for search '$keywords' -- " );
 	}
 
 	return null;

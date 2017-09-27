@@ -1,10 +1,9 @@
 <?PHP
 
-	$template = file_get_contents( 'template.html' );
+	require_once 'local.php';
 
 	$head = "<link rel='canonical' href='http://www.8d8apps.com/credits.php' />";
 
-	require 'local.php';
 	$MicroAmazonList = microSearchForItems('All','Android',1);
 
 	$content = <<<HTML

@@ -1,12 +1,9 @@
 <?PHP
 
-	ini_set( 'display_errors', 1 );
-	error_reporting( E_ALL );
+	require_once 'local.php';
 
-	require 'local.php';
-
-	if( ! $db )
-		$db = new DatabaseConnection();
+	$DB = new DatabaseConnection();
+	$conn = $DB->getConn();
 
 	$MDP = "http://www.8d8apps.com/downloadrapbeatsapp.php";
 
@@ -67,25 +64,5 @@
 		echo file_get_contents( $MDP );
 
 	}
-
-
-
-/*
-
-CREATE TABLE `devices` (
-  `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
-  `key` VARCHAR(36) UNIQUE,
-  `time` int(11) default NULL
-) ENGINE=InnoDB;
-
-CREATE TABLE `refs` (
-  `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
-  `deviceid` INTEGER NOT NULL,
-  `ip` VARCHAR(16) NOT NULL,
-  `time` int(11) default NULL,
-  FOREIGN KEY (deviceid) REFERENCES devices(id) ON DELETE CASCADE
-) ENGINE=InnoDB;
-
-*/
 
 ?>

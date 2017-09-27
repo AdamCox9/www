@@ -1,7 +1,6 @@
 <?PHP
 
-	$template = file_get_contents( 'template.html' );
-	$head = "";
+	require_once 'local.php';
 
 	$content = <<<HTML
 

@@ -2,12 +2,10 @@
 
 die( "careful" );
 
-	ini_set( 'display_errors', 1 );
-	error_reporting( E_ALL );
+	require_once 'local.php';
 
-	require( 'local.php' );
-
-	$conn = open_db_conn();
+	$DB = new DatabaseConnection();
+	$conn = $DB->getConn();
 
 	//List all files in 'files' directory:
 
@@ -21,8 +19,6 @@ die( "careful" );
 		}
 		closedir($handle);
 	}
-
-	close_db_conn();
 
 	echo "OK";
 

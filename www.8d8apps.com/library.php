@@ -4,24 +4,23 @@
 	{
 		global $conn;
 
-		$entry = mysqli_real_escape_string($entry,$conn);
+		$entry = mysqli_real_escape_string($conn, $entry);
 
 		//0 is new, 1 is published, 2 is rejected...
 		$query = "SELECT id FROM `mp3s` WHERE `filename` = '$entry' AND `verified` > 1;";
-		$result = mysql_query($query,$conn);
+		$result = mysqli_query($conn,$query);
 		if ( !( $result ) ) {
-			echo "CleanEntryIfNotValid (select): there was a problem with the Database!.<br/>";
-			echo mysql_error();
+			error_log( "CleanEntryIfNotValid (select): there was a problem with the Database!." );
+			echo mysqli_error($conn);
 		}
 
 		$mp3s = Array();
-		if ( $mp3 = mysql_fetch_assoc($result) ) {
-			echo "Bad File: " . $mp3['id'];
+		if ( $mp3 = mysqli_fetch_assoc($result) ) {
 			$query = "DELETE FROM `mp3s` WHERE `id` = {$mp3['id']};";
-			$result = mysql_query($query,$conn);
+			$result = mysqli_query($conn,$query);
 			if ( !( $result ) ) {
-				echo "CleanEntryIfNotValid (delete): there was a problem with the Database!.<br/>";
-				echo mysql_error();
+				error_log( "CleanEntryIfNotValid (delete): there was a problem with the Database!." );
+				echo mysqli_error($conn);
 			}
 
 			//Delete this bad file:
@@ -61,16 +60,16 @@
 		global $conn;
 
 		$Date = time();
-		$Filename = $Date . '__|__' . mysqli_real_escape_string($_FILES['mp3']['name'],$conn);
-		$Title = mysqli_real_escape_string($_POST['title'],$conn);
-		$Author = mysqli_real_escape_string($_POST['author'],$conn);
-		$Website = mysqli_real_escape_string($_POST['website'],$conn);
-		$Email = mysqli_real_escape_string($_POST['email'],$conn);
+		$Filename = $Date . '__|__' . mysqli_real_escape_string($conn, $_FILES['mp3']['name']);
+		$Title = mysqli_real_escape_string($conn, $_POST['title']);
+		$Author = mysqli_real_escape_string($conn, $_POST['author']);
+		$Website = mysqli_real_escape_string($conn, $_POST['website']);
+		$Email = mysqli_real_escape_string($conn, $_POST['email']);
 		$Verified = 0;
 
 		$query = "INSERT INTO `mp3s` VALUES(NULL, '$Filename', '$Title', '$Author', '$Website', '$Email', '$Verified', $Date);";
 
-		$result = mysql_query($query,$conn) or die( mysql_error() );
+		$result = mysqli_query($conn,$query) or die( mysqli_error($conn) );
 	}
 
 	/*
@@ -85,14 +84,14 @@
 
 		//0 is new, 1 is published, 2 is rejected...
 		$query = "SELECT * FROM `mp3s` WHERE `verified` = 1 ORDER BY `title`;";
-		$result = mysql_query($query,$conn);
+		$result = mysqli_query($conn,$query);
 		if ( !( $result ) ) {
-			echo "GetAllVerifiedMP3Data: there was a problem with the Database!.<br/>";
-			echo mysql_error();
+			error_log( "GetAllVerifiedMP3Data: there was a problem with the Database!." );
+			echo mysqli_error($conn);
 		}
 
 		$mp3s = Array();
-		while ( $mp3 = mysql_fetch_assoc($result) ) {
+		while ( $mp3 = mysqli_fetch_assoc($result) ) {
 			$mp3s[] = $mp3;
 		}
 		return $mp3s;
@@ -104,16 +103,16 @@
 	{
 		global $conn;
 
-		$getref = mysqli_real_escape_string( $getref, $conn );
+		$getref = mysqli_real_escape_string( $conn, $getref );
 
 		$query = "SELECT `id` FROM `refs` WHERE `deviceid` = '$getref';";
-		$result = mysql_query($query,$conn);
+		$result = mysqli_query($conn,$query);
 		if ( !( $result ) ) {
-			echo "GetRefCountForDevice: there was a problem with the Database!.<br/>";
-			echo mysql_error();
+			error_log( "GetRefCountForDevice: there was a problem with the Database!." );
+			echo mysqli_error($conn);
 		}
 
-		return mysql_num_rows($result);
+		return mysqli_num_rows($result);
 	}
 
 	//_____The id exists in the table...
@@ -121,15 +120,15 @@
 	{
 		global $conn;
 
-		$ref = mysqli_real_escape_string( $ref, $conn );
+		$ref = mysqli_real_escape_string( $conn, $ref );
 		$query = "SELECT `id` FROM `devices` WHERE `id` = $ref;";
-		$result = mysql_query($query,$conn);
+		$result = mysqli_query($conn,$query);
 		if ( !( $result ) ) {
-			echo "CheckValidRef: there was a problem with the Database!.<br/>";
-			echo mysql_error();
+			error_log( "CheckValidRef: there was a problem with the Database!." );
+			echo mysqli_error($conn);
 		}
 
-		if ( mysql_num_rows($result) > 0 ) {
+		if ( mysqli_num_rows($result) > 0 ) {
 			return true;
 		} else {
 			return false;
@@ -140,16 +139,16 @@
 	{
 		global $conn;
 
-		$ref = mysqli_real_escape_string( $ref, $conn );
+		$ref = mysqli_real_escape_string( $conn, $ref );
 		$query = "SELECT `id` FROM `devices` WHERE `key` = '$ref';";
-		$result = mysql_query($query,$conn);
+		$result = mysqli_query($conn,$query);
 		if ( !( $result ) ) {
-			echo "GetValidRef: there was a problem with the Database!.<br/>";
-			echo mysql_error();
+			error_log( "GetValidRef: there was a problem with the Database!." );
+			echo mysqli_error($conn);
 		}
 
-		if ( mysql_num_rows($result) > 0 ) {
-			if( $row = mysql_fetch_assoc( $result ) ) {
+		if ( mysqli_num_rows($result) > 0 ) {
+			if( $row = mysqli_fetch_assoc( $result ) ) {
 				echo $row['id'];
 			}
 			return true;
@@ -166,17 +165,17 @@
 	{
 		global $conn;
 
-		$ref = mysqli_real_escape_string( $ref, $conn );
-		$ip = mysqli_real_escape_string( $ip, $conn );
+		$ref = mysqli_real_escape_string( $conn, $ref );
+		$ip = mysqli_real_escape_string( $conn, $ip );
 
 		$query = "SELECT `id` FROM `refs` WHERE `deviceid` = '$ref' AND `ip` = '$ip';";
-		$result = mysql_query($query,$conn);
+		$result = mysqli_query($conn,$query);
 		if ( !( $result ) ) {
-			echo "CheckRefForIp: there was a problem with the Database!.<br/>";
-			echo mysql_error();
+			error_log( "CheckRefForIp: there was a problem with the Database!." );
+			echo mysqli_error($conn);
 		}
 
-		if ( mysql_num_rows($result) == 0 ) {
+		if ( mysqli_num_rows($result) == 0 ) {
 			return true;
 		}
 		return false;
@@ -186,13 +185,13 @@
 	{
 		global $conn;
 
-		$ref = mysqli_real_escape_string( $ref, $conn );
-		$ip = mysqli_real_escape_string( $ip, $conn );
+		$ref = mysqli_real_escape_string( $conn, $ref );
+		$ip = mysqli_real_escape_string( $conn, $ip );
 		$time = time();
 
 		$query = "INSERT INTO `refs` VALUES(NULL, '$ref', '$ip', $time);";
 
-		$result = mysql_query($query,$conn) or die( mysql_error() );
+		$result = mysqli_query($conn,$query) or die( mysqli_error($conn) );
 	}
 
 	//_____duplicates return string -1 which java reads as integer...
@@ -201,14 +200,14 @@
 	{
 		global $conn;
 
-		$registerid = mysqli_real_escape_string( $registerid, $conn );
+		$registerid = mysqli_real_escape_string( $conn, $registerid );
 		$time = time();
 
 		$query = "INSERT INTO `devices` VALUES(NULL, '$registerid', $time);";
 
-		$result = mysql_query($query,$conn) or die( "-1" );
+		$result = mysqli_query($conn,$query) or die( "-1" );
 
-		return mysql_insert_id( $conn );
+		return mysqli_insert_id( $conn );
 	}
 
 	function GetAllMP3Data()
@@ -216,14 +215,14 @@
 		global $conn;
 
 		$query = "SELECT * FROM `mp3s` WHERE `verified` = 0 OR `verified` = 1;"; //verified=2 means it was checked and not good...
-		$result = mysql_query($query,$conn);
+		$result = mysqli_query($conn,$query);
 		if ( !( $result ) ) {
-			echo "GetAllVerifiedMP3Data: there was a problem with the Database!.<br/>";
-			echo mysql_error();
+			error_log( "GetAllVerifiedMP3Data: there was a problem with the Database!." );
+			echo mysqli_error($conn);
 		}
 
 		$mp3s = Array();
-		while ( $mp3 = mysql_fetch_assoc($result) ) {
+		while ( $mp3 = mysqli_fetch_assoc($result) ) {
 			$mp3s[] = $mp3;
 		}
 		return $mp3s;
@@ -237,13 +236,13 @@
 	{
 		global $conn;
 
-		$id = mysqli_real_escape_string($_GET['id'],$conn);
-		$filename = mysqli_real_escape_string($_GET['filename'],$conn);
-		$title = mysqli_real_escape_string($_GET['title'],$conn);
-		$author = mysqli_real_escape_string($_GET['author'],$conn);
-		$website = mysqli_real_escape_string($_GET['website'],$conn);
-		$email = mysqli_real_escape_string($_GET['email'],$conn);
-		$verified = mysqli_real_escape_string($_GET['verified'],$conn);
+		$id = mysqli_real_escape_string($conn, $_GET['id']);
+		$filename = mysqli_real_escape_string($conn, $_GET['filename']);
+		$title = mysqli_real_escape_string($conn, $_GET['title']);
+		$author = mysqli_real_escape_string($conn, $_GET['author']);
+		$website = mysqli_real_escape_string($conn, $_GET['website']);
+		$email = mysqli_real_escape_string($conn, $_GET['email']);
+		$verified = mysqli_real_escape_string($conn, $_GET['verified']);
 
 		$query = "UPDATE `mp3s` SET 
 			`filename` = '$filename',
@@ -254,20 +253,14 @@
 			`verified` = '$verified'
 			WHERE `id` = '$id';";
 
-		$result = mysql_query($query,$conn);
+		$result = mysqli_query($conn,$query);
 		if ( !( $result ) ) {
-			echo "UpdateMP3Entry: there was a problem with the Database!";
-			echo mysql_error();
+			error_log( "UpdateMP3Entry: there was a problem with the Database!" );
+			echo mysqli_error($conn);
 			return FALSE;
 		} else {
 			return TRUE;
 		}
-	}
-
-	function open_db_conn()
-	{
-		$DB = new DatabaseConnection();
-		return $DB->conn;
 	}
 
 ?>

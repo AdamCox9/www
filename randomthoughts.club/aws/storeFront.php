@@ -16,6 +16,7 @@
 		$title = "Store Front - $SearchTerm - $Category - $pagenum";
 
 	$head = "<base href='..'>";
+	$head .= "\n<META NAME='ROBOTS' CONTENT='NOINDEX, FOLLOW'>\n";
 	$head .= "<link rel='canonical' href='http://randomthoughts.club/aws/storeFront.php?pagenum=$pagenum&amp;category=$Category&amp;displayCat=".urlencode(ucwords(strtolower($SearchTerm)))."' />";
 
 	//Will be overwritten in functions
@@ -42,11 +43,11 @@
 	else
 		$wordnet_def = null;
 
-	$labels = getLabels($labels);
+	$labels = getLabels($labels,1);
 
 	if( $pagenum > 1 || $Category != 'All' ) {
 		$YoutubeVideos = $WikipediaSearch = $wordnet_def = null;
-		$head .= '<META NAME="ROBOTS" CONTENT="NOINDEX, FOLLOW">';
+		//$head .= '<META NAME="ROBOTS" CONTENT="NOINDEX, FOLLOW">';
 	}
 
 	if( ! isset( $_GET['displayCat'] ) && ! isset( $_GET['category'] ) && ! isset( $_GET['pagenum'] ) ) {

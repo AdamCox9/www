@@ -1,8 +1,9 @@
 <?PHP
 
-	require 'local.php';
+	require_once 'local.php';
 
-	$conn = open_db_conn();
+	$DB = new DatabaseConnection();
+	$conn = $DB->getConn();
 
 	$test = implode( " ", $_POST ) . " ";
 

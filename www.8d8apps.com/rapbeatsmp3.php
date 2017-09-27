@@ -1,19 +1,9 @@
 <?PHP
 
-	require 'local.php';
+	require_once 'local.php';
 
-	$conn = open_db_conn();
-
-/*
-
-<audio controls="controls">
-  <source src="horse.ogg" type="audio/ogg">
-  <source src="horse.mp3" type="audio/mpeg">
-Your browser does not support the audio element.
-</audio> 
-
-*/
-
+	$DB = new DatabaseConnection();
+	$conn = $DB->getConn();
 
 	/*
 		Let's get the correct MP3...
@@ -63,20 +53,5 @@ HTML;
 	$template = str_replace( '<!--[[[~TITLE~]]]-->', " - Rap MP3 $filename", $template );
 
 	echo $template;
-
-/*
-
-CREATE TABLE `generatedmp3s` (
-  `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
-  `filename` VARCHAR(100) UNIQUE,
-  `deviceid` INTEGER NOT NULL,
-  `ip` VARCHAR(16) NOT NULL,
-  `name` VARCHAR(36),
-  `time` int(11) default NULL,
-  FOREIGN KEY (deviceid) REFERENCES devices(id) ON DELETE CASCADE
-) ENGINE=InnoDB;
-
-
-*/
 
 ?>

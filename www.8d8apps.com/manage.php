@@ -1,21 +1,21 @@
 <?php
 
-	ini_set( 'display_errors', 1 );
-	error_reporting( E_ALL );
-
-	if( $_SERVER['REMOTE_ADDR'] != "10.1.10.13" ) {
-		die( $_SERVER['REMOTE_ADDR'] );
-	}
-
 	die( 'test' );
 
-	require 'local.php';
+	require_once 'local.php';
+
+	$DB = new DatabaseConnection();
+	$conn = $DB->getConn();
+
+	//TODO put in a config file:
+	if( $_SERVER['REMOTE_ADDR'] != "70.90.241.53" ) {
+		die( $_SERVER['REMOTE_ADDR'] );
+	}
 
 	//print_r( $_FILES );
 	//print_r( $_POST );
 
 	if( isset( $_GET['action'] ) ) {
-		$conn = open_db_conn();
 
 		switch( $_GET['action'] ) {
 			case 'getall':
@@ -29,7 +29,6 @@
 			break;
 		}
 
-		close_db_conn();
 	} else {
 		echo "ISSET ERROR";
 	}

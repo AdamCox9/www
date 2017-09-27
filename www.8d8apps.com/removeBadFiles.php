@@ -2,9 +2,10 @@
 
 	die('safety');
 
-	require 'local.php';
+	require_once 'local.php';
 
-	$conn = open_db_conn();
+	$DB = new DatabaseConnection();
+	$conn = $DB->getConn();
 
 	if ($handle = opendir('wavs')) {
 		while (false !== ($entry = readdir($handle)))

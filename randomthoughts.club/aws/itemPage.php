@@ -5,21 +5,6 @@
 
 	$head = "<base href='..'>";
 	$title = null;
-	$ipTag = "<input type='hidden' id='iplookup' value='US'>\n";
-
-	try {
-		if ( isset( $_SERVER['REMOTE_ADDR'] )) {
-			$db = new PDO("mysql:host=localhost;dbname=randomthoughts", "root", "123233abc");
-			$dbip = new DBIP($db);
-			$inf = $dbip->Lookup($_SERVER['REMOTE_ADDR']);
-			//$inf = $dbip->Lookup("2.15.255.255");
-			
-			// Show the associated country
-			$ipTag = "<input type='hidden' id='iplookup' value='".$inf->country . "'>\n";
-		}
-	} catch (DBIP_Exception $e) {
-		error_log( $e->getMessage() );
-	}
 
 	$asin = isset( $_GET['item'] ) ? $_GET['item'] : '1602609667';
 
@@ -133,9 +118,7 @@
 				<div>
 					$labels
 				</div>
-
-				$ipTag
-				
+		
 HTML;
 	}
 

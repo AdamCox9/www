@@ -28,6 +28,8 @@ function wtf($var, $arrayOfObjectsToHide=null, $fontSize=11)
  *****/
 function getLabels($labels,$lCnt=50)
 {
+	return null;
+
 	//Clean up data
 	$labels = strtoupper($labels);
 	$labels = preg_replace("/[^a-zA-Z0-9\s]/", " ", $labels);
