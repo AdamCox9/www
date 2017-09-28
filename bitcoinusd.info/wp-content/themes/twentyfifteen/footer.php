@@ -22,24 +22,13 @@
 				 */
 				do_action( 'twentyfifteen_credits' );
 			?>
-			<a href="<?php bloginfo('atom_url'); ?>">Atom Feed</a> | <a href="mailto:bitcoinusd.info@gmail.com">BitcoinUSD.info@gmail.com</a>
+			<a href="<?php echo esc_url( __( 'https://wordpress.org/', 'twentyfifteen' ) ); ?>"><?php printf( __( 'Proudly powered by %s', 'twentyfifteen' ), 'WordPress' ); ?></a>
 		</div><!-- .site-info -->
 	</footer><!-- .site-footer -->
 
 </div><!-- .site -->
 
 <?php wp_footer(); ?>
-
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-58768851-1', 'auto');
-  ga('send', 'pageview');
-
-</script>
 
 </body>
 </html>
