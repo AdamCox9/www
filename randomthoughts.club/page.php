@@ -29,8 +29,8 @@ HTML;
 		}
 	}
 
-
 	$RandomThought = makePresentable( getThought($lim) );
+
 	$Comments = getComments( $lim );
 
 	$SearchKey = implode( 0, array_slice( explode(" ", $RandomThought ), 0, 10 ) );
@@ -38,13 +38,15 @@ HTML;
 	$SearchKey = substr($RandomThought,0,75);
 
 	$MicroAmazonList = microSearchForItems('All',$SearchKey,1);
-//	die( $MicroAmazonList );
+
 	if( ! $MicroAmazonList )
 		$MicroAmazonList = microSearchForItems('All',"Random Thoughts",1);
 
 
-
 	$YoutubeVideos = GetYoutubeVideos($SearchKey,null);
+
+	$MicroAmazonList = str_replace( 'href="', 'href="http://www.8d8apps.com/', $MicroAmazonList );
+	$YoutubeVideos = str_replace( "href='", "href='http://www.8d8apps.com/", $YoutubeVideos );
 
 	$labels = getLabels($RandomThought);
 

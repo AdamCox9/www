@@ -7,13 +7,19 @@
 		header("Location: http://www.8d8apps.com/");
 	}
 
-	$MicroAmazonList = microSearchForItems('All','Android',1);
+	$MicroAmazonList = microSearchForItems('All','DJ Equipment',1);
 
 	$template = file_get_contents( 'template.html' );
 
 	$head = "";
 	
 	$content = <<<HTML
+
+			<div style='margin-bottom:50px;'>
+				<img style='float:left;max-width:150px;max-height:150px;padding-right:25px;' alt="android" src="/images/android.png">
+				<img style='float:left;max-width:350px;' alt="android" src="/images/8d8apps.gif">
+				<div style="clear:both;"></div>
+			</div>
 
 			$MicroAmazonList
 

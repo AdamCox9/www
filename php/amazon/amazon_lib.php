@@ -27,7 +27,7 @@ function repeatGetItems($category,$keywords,$pagenum)
 
 	$escape = false;
 	/*if( $items == null ) {
-		usleep(500000);
+		sleep(5);
 		$keywords = explode(" ",$keywords);
 		if( sizeof( $keywords ) <= 1 )
 			$escape = true;
@@ -36,7 +36,7 @@ function repeatGetItems($category,$keywords,$pagenum)
 		$items = requestSearch($category,$keywords,$pagenum);
 	}
 	if( ! $escape && $items == null ) {
-		usleep(500000);
+		sleep(5);
 		$keywords = explode(" ",$keywords);
 		if( sizeof( $keywords ) <= 1 )
 			$escape = true;
@@ -45,7 +45,7 @@ function repeatGetItems($category,$keywords,$pagenum)
 		$items = requestSearch($category,$keywords,$pagenum);
 	}
 	if( ! $escape && $items == null ) {
-		usleep(500000);
+		sleep(5);
 		$keywords = explode(" ",$keywords);
 		if( sizeof( $keywords ) <= 1 )
 			$escape = true;
@@ -63,6 +63,20 @@ function repeatGetItems($category,$keywords,$pagenum)
 	}
 
 	return $items;
+}
+
+function throttle()
+{
+	$last_hit = file_get_contents( 'cache/amazon/last_hit.txt' );
+
+	if( time() - $last_hit < 2 )
+		return true;
+
+}
+
+function setLastHit()
+{
+	file_put_contents( 'cache/amazon/last_hit.txt', time() );
 }
 
 /*****
@@ -198,6 +212,9 @@ function requestSearch($category,$keywords,$pagenum)
 		else
 			return $items;
 
+	if( throttle() ) {
+		return null;
+	}
 
     $array = array('Operation' => 'ItemSearch',
                    'ItemPage' => $pagenum,
@@ -207,6 +224,8 @@ function requestSearch($category,$keywords,$pagenum)
 				   'AssociateTag' => 'ezstbu-20');
 
 	$result = aws_signed_request("com", $array, TOKEN, SECRETKEY);
+
+	setLastHit();
 
 	if( $result ) {
 		$items = $result->Items;
@@ -236,7 +255,13 @@ function getItem($item)
 				   'ItemId' => "$item", 
 				   'AssociateTag' => 'ezstbu-20');
 	
+	if( throttle() ) {
+		return null;
+	}
+
 	$result = aws_signed_request("com", $array ,TOKEN,SECRETKEY);
+
+	setLastHit();
 
 	if( ! $result ) {
 		error_log( "throttled by aws for item '$item'" );
@@ -268,7 +293,13 @@ function getNode($node)
 				   'BrowseNodeId' => "$node", 
 				   'AssociateTag' => 'ezstbu-20');
 
+	if( throttle() ) {
+		return null;
+	}
+
 	$result = aws_signed_request("com", $array ,TOKEN,SECRETKEY);
+
+	setLastHit();
 
     if($result && ! $result->BrowseNodes->Request->Errors->Error){
         if( $result ){
