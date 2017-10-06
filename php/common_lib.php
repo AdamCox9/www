@@ -61,7 +61,7 @@ function getLabels($labels,$lCnt=50)
 	$labelLinks = null;
 	foreach( $labels as $label => $value ) {
 		if( $label != "" )
-			$labelLinks .= "[<a href='aws/storeFront.php?pagenum=1&amp;category=All&amp;displayCat=$label'>$label</a>] ";
+			$labelLinks .= "[<a href='storeFront.php?pagenum=1&amp;category=All&amp;displayCat=$label'>$label</a>] ";
 	}
 
 	return "<br><br>$labelLinks";

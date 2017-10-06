@@ -37,13 +37,13 @@ HTML;
 
 	$SearchKey = substr($RandomThought,0,75);
 
-	$MicroAmazonList = microSearchForItems('All',$SearchKey,1);
+	$MicroAmazonList = null;//microSearchForItems('All',$SearchKey,1);
 
-	if( ! $MicroAmazonList )
-		$MicroAmazonList = microSearchForItems('All',"Random Thoughts",1);
+	//if( ! $MicroAmazonList )
+		//$MicroAmazonList = microSearchForItems('All',"Random Thoughts",1);
 
 
-	$YoutubeVideos = GetYoutubeVideos($SearchKey,null);
+	$YoutubeVideos = null;//GetYoutubeVideos($SearchKey,null);
 
 	$MicroAmazonList = str_replace( 'href="', 'href="http://www.8d8apps.com/', $MicroAmazonList );
 	$YoutubeVideos = str_replace( "href='", "href='http://www.8d8apps.com/", $YoutubeVideos );

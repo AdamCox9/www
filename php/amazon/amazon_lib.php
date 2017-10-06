@@ -16,7 +16,7 @@ function getAmazonLinkCat($word)
 	$catLinks = null;
 
 	foreach( $categories as $cat => $hCat )
-		$catLinks .= " [<a style='font-size:8pt;font-weight:normal;' href='aws/storeFront.php?pagenum=1&amp;category=$cat&amp;displayCat=$word'>$hCat-&gt;$word</a>] ";
+		$catLinks .= " [<a style='font-size:8pt;font-weight:normal;' href='storeFront.php?pagenum=1&amp;category=$cat&amp;displayCat=$word'>$hCat-&gt;$word</a>] ";
 
 	return "<br><br>".$catLinks;
 }
@@ -115,10 +115,10 @@ function searchForItems($category,$keywords,$pagenum=1)
 				<ul class='list-group'>
 					<li class='list-group-item'>
 						<div>
-							<a href="aws/itemPage.php?item={$item->ASIN}">{$item->ItemAttributes->Title}</a>
+							<a href="itemPage.php?item={$item->ASIN}">{$item->ItemAttributes->Title}</a>
 							<!--<a href="{$item->DetailPageURL}"><span class="glyphicon glyphicon-circle-arrow-right"></span></a>-->
 						</div>
-						<a href="aws/itemPage.php?item={$item->ASIN}"><img alt="View $altTitle Details" style="float:left;max-width:50px;" src="$imgUrl"></a>
+						<a href="itemPage.php?item={$item->ASIN}"><img alt="View $altTitle Details" style="float:left;max-width:50px;" src="$imgUrl"></a>
 						<div style='clear:both;'></div>
 					</li>
 				</ul>
@@ -130,13 +130,13 @@ AMAZONLIST;
 
 	if( $pagenum == 1 ) {
 		$LeftPagination = null;
-		$RightPagination = "<a class='btn btn-lg btn-primary' href='aws/storeFront.php?pagenum=2&amp;category=$category&amp;displayCat=$urlKeywords' role='button'>More Items &raquo;</a>";
+		$RightPagination = "<a class='btn btn-lg btn-primary' href='storeFront.php?pagenum=2&amp;category=$category&amp;displayCat=$urlKeywords' role='button'>More Items &raquo;</a>";
 	} else if( $pagenum == 2 ) {
-		$LeftPagination = "<a class='btn btn-lg btn-primary' href='aws/storeFront.php?pagenum=1&amp;category=$category&amp;displayCat=$urlKeywords' role='button'>&laquo; Previous</a>";
-		$RightPagination = "<a class='btn btn-lg btn-primary' href='aws/storeFront.php?pagenum=3&amp;category=$category&amp;displayCat=$urlKeywords' role='button'>More Items &raquo;</a>";
+		$LeftPagination = "<a class='btn btn-lg btn-primary' href='storeFront.php?pagenum=1&amp;category=$category&amp;displayCat=$urlKeywords' role='button'>&laquo; Previous</a>";
+		$RightPagination = "<a class='btn btn-lg btn-primary' href='storeFront.php?pagenum=3&amp;category=$category&amp;displayCat=$urlKeywords' role='button'>More Items &raquo;</a>";
 	} else {
-		$LeftPagination = "<a class='btn btn-lg btn-primary' href='aws/storeFront.php?pagenum=".($pagenum-1)."&amp;category=$category&amp;displayCat=$urlKeywords' role='button'>&laquo; Previous</a>";
-		$RightPagination = "<a class='btn btn-lg btn-primary' href='aws/storeFront.php?pagenum=".($pagenum+1)."&amp;category=$category&amp;displayCat=$urlKeywords' role='button'>More Items &raquo;</a>";
+		$LeftPagination = "<a class='btn btn-lg btn-primary' href='storeFront.php?pagenum=".($pagenum-1)."&amp;category=$category&amp;displayCat=$urlKeywords' role='button'>&laquo; Previous</a>";
+		$RightPagination = "<a class='btn btn-lg btn-primary' href='storeFront.php?pagenum=".($pagenum+1)."&amp;category=$category&amp;displayCat=$urlKeywords' role='button'>More Items &raquo;</a>";
 	}
 
 //	wtf( $AmazonListCnt );
@@ -189,9 +189,9 @@ function microSearchForItems($category,$keywords,$pagenum=1)
 			$AmazonList .= <<<AMAZONLIST
 			
 						<div style="border:1px solid #DEDEDE;text-align:center;height:110px;float:left;width:19%;margin:1px;padding:1px;" >
-							<a title="$altTitle" href="aws/itemPage.php?item={$item->ASIN}"><img alt="View $altTitle Details" src="$imgUrl"></a>
+							<a title="$altTitle" href="itemPage.php?item={$item->ASIN}"><img alt="View $altTitle Details" src="$imgUrl"></a>
 							<br>
-							<a style='font-size:8pt;line-height:none;display:inline-block;word-wrap:break-word;' title="$altTitle" href="aws/itemPage.php?item={$item->ASIN}">$disTitle</a>
+							<a style='font-size:8pt;line-height:none;display:inline-block;word-wrap:break-word;' title="$altTitle" href="itemPage.php?item={$item->ASIN}">$disTitle</a>
 						</div>
 
 AMAZONLIST;
@@ -325,7 +325,7 @@ function parseBrowseNodeLookup($TopBrowseNode)
 			//_____Current
 			$urlTitle = urlencode( $BrowseNode->Name );
 			if( ! isset( $BrowseNodes["{$BrowseNode->BrowseNodeId}"] ) ) {
-				$BrowseNodes["{$BrowseNode->BrowseNodeId}"] = "[<a href='aws/nodePage.php?node={$BrowseNode->BrowseNodeId}'>{$BrowseNode->Name}</a>]";
+				$BrowseNodes["{$BrowseNode->BrowseNodeId}"] = "[<a href='nodePage.php?node={$BrowseNode->BrowseNodeId}'>{$BrowseNode->Name}</a>]";
 			}
 
 			//_____Ancestors
@@ -333,7 +333,7 @@ function parseBrowseNodeLookup($TopBrowseNode)
 				while( true ) {
 					if( ! isset( $BrowseNodes["{$Ancestors->BrowseNode->BrowseNodeId}"] ) ) {
 						$urlTitle = urlencode( $Ancestors->BrowseNode->Name );
-						$BrowseNodes["{$Ancestors->BrowseNode->BrowseNodeId}"] = " [<a href='aws/nodePage.php?node={$Ancestors->BrowseNode->BrowseNodeId}'>{$Ancestors->BrowseNode->Name}</a>] ";
+						$BrowseNodes["{$Ancestors->BrowseNode->BrowseNodeId}"] = " [<a href='nodePage.php?node={$Ancestors->BrowseNode->BrowseNodeId}'>{$Ancestors->BrowseNode->Name}</a>] ";
 					}
 					if( $Ancestors->BrowseNode->Ancestors ) {
 						$Ancestors = $Ancestors->BrowseNode->Ancestors;
@@ -348,7 +348,7 @@ function parseBrowseNodeLookup($TopBrowseNode)
 				foreach( $Children->BrowseNode as $Child ) {
 					if( ! isset( $BrowseNodes["{$Child->BrowseNodeId}"] ) ) {
 						$urlTitle = urlencode( $Child->Name );
-						$BrowseNodes["{$Child->BrowseNodeId}"] = "[<a href='aws/nodePage.php?node={$Child->BrowseNodeId}'>{$Child->Name}</a>]";
+						$BrowseNodes["{$Child->BrowseNodeId}"] = "[<a href='nodePage.php?node={$Child->BrowseNodeId}'>{$Child->Name}</a>]";
 					}
 				}
 			}

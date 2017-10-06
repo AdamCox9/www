@@ -1,5 +1,5 @@
 <?PHP
-	chdir("..");
+
 	require 'local.php';
 
 	$SearchTerm = isset( $_GET['displayCat'] ) ? $_GET['displayCat'] : null;
@@ -11,8 +11,7 @@
 	else
 		$title = "Store Front - $SearchTerm - $Category - $pagenum";
 
-	$head = "<base href='..'>";
-	$head .= "<link rel='canonical' href='http://www.8d8apps.com/aws/storeFront.php?pagenum=$pagenum&amp;category=$Category&amp;displayCat=".urlencode(ucwords(strtolower($SearchTerm)))."' />";
+	$head = "<link rel='canonical' href='http://www.8d8apps.com/storeFront.php?pagenum=$pagenum&amp;category=$Category&amp;displayCat=".urlencode(ucwords(strtolower($SearchTerm)))."' />";
 
 	//$head .= "\n<META NAME='ROBOTS' CONTENT='NOINDEX, NOFOLLOW'>\n";
 
@@ -41,8 +40,7 @@
 		$head .= '<META NAME="ROBOTS" CONTENT="NOINDEX, FOLLOW">';
 	}
 
-	$customLabels = getArrLabels( Array("Android","8D8","Star Wars","DJ","Rap","Beats","Rap Beats","DJ Equipment","SmartPhone","Apps","Freestyle","Hip Hop","Instrumentals","Head Phones","Synthesizer","Studio","Recording","Recording Studio","Speakers","Microphone"), 25 );
-
+	$customLabels = getArrLabels( Array("Android","DJ","Rap","Beats","Rap Beats","DJ Equipment","SmartPhone","Apps","Freestyle","Hip Hop","Instrumentals","Head Phones","Synthesizer","Studio","Recording","Recording Studio","Speakers","Microphone"), 25 );
 
 	if( ! isset( $_GET['displayCat'] ) && ! isset( $_GET['category'] ) && ! isset( $_GET['pagenum'] ) ) {
 		$content = <<<HTML

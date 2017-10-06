@@ -1,8 +1,7 @@
 <?PHP
-	chdir("..");
+
 	require 'local.php';
 
-	$head = "<base href='..'>";
 	//$head .= "\n<META NAME='ROBOTS' CONTENT='NOINDEX, NOFOLLOW'>\n";
 
 	$nodeId = isset( $_GET['node'] ) ? $_GET['node'] : '171119';
@@ -23,21 +22,6 @@
 		unset( $node->BrowseNodes->BrowseNode->Ancestors );
 
 		$title = $Name;
-
-
-		//TopSellers
-		//http://www.amazon.com/gp/bestsellers/books/?ie=UTF8&camp=1789&creative=390957&linkCode=ur2&tag=ezstbu-20
-		//http://www.amazon.com/gp/bestsellers/automotive/?ie=UTF8&camp=1789&creative=390957&linkCode=ur2&tag=ezstbu-20
-		//http://www.amazon.com/gp/bestsellers/books/?ie=UTF8&tag=ezstbu-20
-
-		//NewReleases
-		//http://www.amazon.com/gp/new-releases/books/12290/?ie=UTF8&camp=1789&creative=390957&linkCode=ur2&tag=ezstbu-20
-
-		//MostWishedFor
-		//http://www.amazon.com/gp/most-wished-for/books/12290/?ie=UTF8&camp=1789&creative=390957&linkCode=ur2&tag=ezstbu-20
-
-		//MostGifted
-		//http://www.amazon.com/gp/most-gifted/books/12290/?ie=UTF8&camp=1789&creative=390957&linkCode=ur2&tag=ezstbu-20
 
 		$x = 0;
 		$TopSellers = $NewReleases = $MostGifted = $MostWishedFor = null;
@@ -136,6 +120,7 @@ AMAZONLIST;
 	} else {
 		$TopSellersOut = $NewReleasesOut = $MostWishedForOut = $MostGiftedOut = null;
 	}
+
 	//Get a wiki article about this topic...
 	//Get some Youtube Videos...
 	//Etc...

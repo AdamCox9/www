@@ -10,7 +10,7 @@
  	if( isset( $_GET['q'] ) ) {
  		$q = ucwords( strtolower( $_GET['q'] ) );
  		header("HTTP/1.1 301 Moved Permanently"); 
- 		header("Location: http://www.8d8apps.com/aws/storeFront.php?pagenum=1&category=All&displayCat=$q");
+ 		header("Location: http://www.8d8apps.com/storeFront.php?pagenum=1&category=All&displayCat=$q");
  		exit;
  	}
  

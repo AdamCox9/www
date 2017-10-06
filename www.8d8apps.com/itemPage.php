@@ -1,29 +1,10 @@
 <?PHP
-	chdir("..");
+
 	require_once 'local.php';
 	require_once "../php/iplookup/dbip.class.php";
 
-	$head = "<base href='..'>";
-
-	$title = null;
-	$ipTag = "<input type='hidden' id='iplookup' value='US'>\n";
-
-	/*try {
-		if ( isset( $_SERVER['REMOTE_ADDR'] )) {
-			$db = new PDO("mysql:host=localhost;dbname=randomthoughts", "root", "123233abc");
-			$dbip = new DBIP($db);
-			$inf = $dbip->Lookup($_SERVER['REMOTE_ADDR']);
-			//$inf = $dbip->Lookup("2.15.255.255");
-			
-			// Show the associated country
-			$ipTag = "<input type='hidden' id='iplookup' value='".$inf->country . "'>\n";
-		}
-	} catch (DBIP_Exception $e) {
-		error_log( $e->getMessage() );
-	}*/
-
 	$asin = isset( $_GET['item'] ) ? $_GET['item'] : '1602609667';
-	$head .= "<link rel='canonical' href='http://www.8d8apps.com/aws/itemPage.php?item=$asin' />";
+	$head = "<link rel='canonical' href='http://www.8d8apps.com/itemPage.php?item=$asin' />";
 
 	if( $asin == 'B00OD4YG9U' )
 		$asin = '1602609667';
@@ -56,10 +37,7 @@
 		 Content
 		 *****/
 
-
 		$content = <<<HTML
-
-
 
 				<h1>$title <a rel='nofollow' style='margin-left:10px;' class="btn btn-lg btn-primary" href="$DetailPageURL" role="button">View Price &raquo;</a></h1>
 				<br>
