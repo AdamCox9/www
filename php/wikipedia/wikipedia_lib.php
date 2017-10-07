@@ -10,15 +10,8 @@ function GetWikipediaSearch($SearchTerm)
 	$xml = checkCache("wikipedia","search",$SearchTerm);
 
 	if( ! $xml ) {
-		if( rand(0,2) === 1 ) {
-			error_log( 'trying wikipedia' );
-			$xml = simplexml_load_file('http://en.wikipedia.org/w/api.php?action=opensearch&search='.urlencode($SearchTerm).'&format=xml&callback=spellcheck');
-			if( ! $xml ) {
-				error_log( "throttled by wikipedia '$SearchTerm'" );
-			}
-			else
-				addToCache("wikipedia","search",$SearchTerm,'','',$xml->asXML());
-		}
+		$xml = simplexml_load_file('http://en.wikipedia.org/w/api.php?action=opensearch&search='.urlencode($SearchTerm).'&format=xml&callback=spellcheck');
+		addToCache("wikipedia","search",$SearchTerm,'','',$xml->asXML());
 	}
 
 	$content = NULL;
@@ -27,7 +20,7 @@ function GetWikipediaSearch($SearchTerm)
 		foreach( $xml->Section->Item as $Item ) {
 			$labels .= " ".$Item->Text." ".$Item->Description;
 
-			$Url = "aws/storeFront.php?pagenum=1&amp;category=All&amp;displayCat=" . urlencode(ucwords(strtolower($Item->Text)));
+			$Url = "storeFront.php?pagenum=1&amp;category=All&amp;displayCat=" . urlencode(ucwords(strtolower($Item->Text)));
 
 			if( isset( $Item->Image ) )
 				$image = $Item->Image->attributes()->source;

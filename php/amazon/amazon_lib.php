@@ -59,6 +59,7 @@ function throttle()
 function setLastHit()
 {
 	file_put_contents( 'cache/amazon/last_hit.txt', time() );
+	usleep(1000001);
 }
 
 /*****
