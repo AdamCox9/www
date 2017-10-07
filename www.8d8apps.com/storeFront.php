@@ -19,7 +19,7 @@
 	$labels = "";
 
 	$AmazonList = searchForItems($Category,$SearchTerm,$pagenum);
-	$YoutubeVideos = GetYoutubeVideos($SearchTerm,null,"Android");
+	$YoutubeVideos = GetYoutubeVideos($SearchTerm);
 	$SearchTerm = ucwords(strtolower($SearchTerm));
 	$linkCat = getAmazonLinkCat($SearchTerm);
 
