@@ -34,24 +34,6 @@ function repeatGetItems($category,$keywords,$pagenum)
 		$keywords = array_slice($keywords,0,sizeof($keywords)/3);
 		$keywords = implode(" ",$keywords);
 		$items = requestSearch($category,$keywords,$pagenum);
-	}
-	if( ! $escape && $items == null ) {
-		sleep(5);
-		$keywords = explode(" ",$keywords);
-		if( sizeof( $keywords ) <= 1 )
-			$escape = true;
-		$keywords = array_slice($keywords,0,sizeof($keywords)/3);
-		$keywords = implode(" ",$keywords);
-		$items = requestSearch($category,$keywords,$pagenum);
-	}
-	if( ! $escape && $items == null ) {
-		sleep(5);
-		$keywords = explode(" ",$keywords);
-		if( sizeof( $keywords ) <= 1 )
-			$escape = true;
-		$keywords = array_slice($keywords,0,sizeof($keywords)/3);
-		$keywords = implode(" ",$keywords);
-		$items = requestSearch($category,$keywords,$pagenum);
 	}*/
 	if( ! $escape && $items == null ) {
 		if( $_SERVER['SERVER_NAME'] === 'randomthoughts.club' || $_SERVER['SERVER_NAME'] === 'www.randomthoughts.club' )
@@ -69,7 +51,7 @@ function throttle()
 {
 	$last_hit = file_get_contents( 'cache/amazon/last_hit.txt' );
 
-	if( time() - $last_hit < 2 )
+	if( time() - $last_hit < 1 )
 		return true;
 
 }

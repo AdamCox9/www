@@ -26,10 +26,8 @@ function wtf($var, $arrayOfObjectsToHide=null, $fontSize=11)
 	TODO return max of 75 labels, ordered by number of occurences and then random
 
  *****/
-function getLabels($labels,$lCnt=50)
+function getLabels($labels,$lCnt=1)
 {
-	return null;
-
 	//Clean up data
 	$labels = strtoupper($labels);
 	$labels = preg_replace("/[^a-zA-Z0-9\s]/", " ", $labels);
