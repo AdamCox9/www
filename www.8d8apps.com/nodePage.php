@@ -44,7 +44,7 @@
 				$TopSellersOut .= <<<AMAZONLIST
 					<ul class="list-group">
 						<li class="list-group-item">
-							<a href="aws/itemPage.php?item={$TopSeller->ASIN}">{$TopSeller->Title}</a> <span class="glyphicon glyphicon-circle-arrow-right"></span>
+							<a href="itemPage.php?item={$TopSeller->ASIN}">{$TopSeller->Title}</a> <span class="glyphicon glyphicon-circle-arrow-right"></span>
 						</li>
 					</ul>
 AMAZONLIST;
@@ -64,7 +64,7 @@ AMAZONLIST;
 				$NewReleasesOut .= <<<AMAZONLIST
 					<ul class="list-group">
 						<li class="list-group-item">
-							<a href="aws/itemPage.php?item={$NewRelease->ASIN}">{$NewRelease->Title}</a> <span class="glyphicon glyphicon-circle-arrow-right"></span>
+							<a href="itemPage.php?item={$NewRelease->ASIN}">{$NewRelease->Title}</a> <span class="glyphicon glyphicon-circle-arrow-right"></span>
 						</li>
 					</ul>
 AMAZONLIST;
@@ -84,7 +84,7 @@ AMAZONLIST;
 				$MostGiftedOut .= <<<AMAZONLIST
 					<ul class="list-group">
 						<li class="list-group-item">
-							<a href="aws/itemPage.php?item={$MostGift->ASIN}">{$MostGift->Title}</a> <span class="glyphicon glyphicon-circle-arrow-right"></span>
+							<a href="itemPage.php?item={$MostGift->ASIN}">{$MostGift->Title}</a> <span class="glyphicon glyphicon-circle-arrow-right"></span>
 						</li>
 					</ul>
 AMAZONLIST;
@@ -104,7 +104,7 @@ AMAZONLIST;
 				$MostWishedForOut .= <<<AMAZONLIST
 					<ul class="list-group">
 						<li class="list-group-item">
-							<a href="aws/itemPage.php?item={$MostWished->ASIN}">{$MostWished->Title}</a> <span class="glyphicon glyphicon-circle-arrow-right"></span>
+							<a href="itemPage.php?item={$MostWished->ASIN}">{$MostWished->Title}</a> <span class="glyphicon glyphicon-circle-arrow-right"></span>
 						</li>
 					</ul>
 AMAZONLIST;
