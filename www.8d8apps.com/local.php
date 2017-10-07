@@ -9,5 +9,6 @@
 
 	$template = file_get_contents( 'template.html' );
 	$head = "";
+	$title = "8D8 Apps";
 
 ?>

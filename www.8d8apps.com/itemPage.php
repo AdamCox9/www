@@ -24,7 +24,7 @@
 
 		//List a sample of each content on this page...
 		$AmazonList = searchForItems('All',$title,1);
-		$YoutubeVideos = GetYoutubeVideos($title,null,"Android");
+		$YoutubeVideos = GetYoutubeVideos($title);
 		$WikipediaSearch = GetWikipediaSearch($title);
 
 		if( sizeof( explode(" ", $title) ) == 1 )

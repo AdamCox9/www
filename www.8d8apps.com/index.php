@@ -8,6 +8,7 @@
 	}
 
 	$MicroAmazonList = microSearchForItems('All','DJ Equipment',1);
+	$YoutubeVideos = GetYoutubeVideos('DJ Equipment');
 
 	$template = file_get_contents( 'template.html' );
 
@@ -34,6 +35,8 @@
 			<p><a href="https://market.android.com/details?id=com.adamcox.drunktest">Drunk Test</a> is an app that uses a device's orientation sensors to make a circle based on the tilt (roll & pitch) of a device. The user is supposed to try to hold the device as flat & steady as possible and a message will display how well they are doing.</p>
 			
 			<p><a href="http://www.8d8apps.com/coolthingstodo/">Cool Things to do Nearby</a> is an app that helps find interesting things near your current location.</p>
+
+			$YoutubeVideos
 
 HTML;
 
