@@ -77,7 +77,7 @@ CAROUSEL;
 		$SimilarProducts = "<ul>";
 		foreach( $item->SimilarProducts->SimilarProduct as $SimilarProduct ) {
 			$SP_ASIN = $SimilarProduct->ASIN;
-			$SimilarProducts .= "<li><a href='aws/itemPage.php?item=$SP_ASIN'>{$SimilarProduct->Title}</a></li>";
+			$SimilarProducts .= "<li><a href='itemPage.php?item=$SP_ASIN'>{$SimilarProduct->Title}</a></li>";
 			$labels .= " ".$SimilarProduct->Title;
 		}
 		$SimilarProducts .= "</ul>";
@@ -318,11 +318,11 @@ CAROUSEL;
 		unset( $item->ItemAttributes->RunningTime );
 	}
 	if($item->ParentASIN) {
-		$MiscellaneousTable .= "<tr><td>Parent</td><td><a href='aws/itemPage.php?item=".clone $item->ParentASIN."'>".clone $item->ParentASIN."</a></td></tr>";
+		$MiscellaneousTable .= "<tr><td>Parent</td><td><a href='itemPage.php?item=".clone $item->ParentASIN."'>".clone $item->ParentASIN."</a></td></tr>";
 		unset( $item->ParentASIN );
 	}
 	if($item->Accessories) {
-		$MiscellaneousTable .= "<tr><td>Accessories</td><td><a href=''aws/itemPage.php?item=".clone $item->Accessories->Accessory->ASIN."'>".clone $item->Accessories->Accessory->Title."</a></td></tr>";
+		$MiscellaneousTable .= "<tr><td>Accessories</td><td><a href='itemPage.php?item=".clone $item->Accessories->Accessory->ASIN."'>".clone $item->Accessories->Accessory->Title."</a></td></tr>";
 		$labels .= " ".$item->Accessories->Accessory->Title;
 		unset( $item->Accessories );
 	}

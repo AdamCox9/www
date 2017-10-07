@@ -19,6 +19,7 @@
 		$content = "NOT AVAILABLE";
 	} else {
 
+		//template needs $item to be not null:
 		require_once( 'lib/templates/amazon_item_template.php' );
 
 		//List a sample of each content on this page...
