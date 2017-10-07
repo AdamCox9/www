@@ -89,8 +89,6 @@
 					$labels
 				</div>
 
-				$ipTag
-				
 HTML;
 	}
 
