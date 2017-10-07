@@ -10,8 +10,20 @@ function GetYoutubeVideo($EntryID)
 	global $labels;
 	global $title;
 
-	$feedURL = "https://www.googleapis.com/youtube/v3/videos?id=$EntryID&key=AIzaSyBEyKLOPpZKjGXZtLQxM9cxTqoigSb6a8k&part=snippet,contentDetails,statistics,status&regionCode=US";
-	$json = file_get_contents( $feedURL );
+	$xml = checkCache("youtube","item",$EntryID);
+	$json = null;
+	if( ! is_null( $xml ) )
+		$json = $xml->root->youtube;
+
+
+	if( is_null( $json ) ) {
+		$feedURL = "https://www.googleapis.com/youtube/v3/videos?id=$EntryID&key=AIzaSyBEyKLOPpZKjGXZtLQxM9cxTqoigSb6a8k&part=snippet,contentDetails,statistics,status&regionCode=US";
+		$json = file_get_contents( $feedURL );
+		$xml = new SimpleXMLElement('<root/>');
+		$xml->addChild("youtube", htmlentities( $json ));
+
+		addToCache( 'youtube', 'item', $EntryID, '', '', $xml->asXML() );
+	}
 	$json = json_decode( $json );
 
 	if( ! $json )
